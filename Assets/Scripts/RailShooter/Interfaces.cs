@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IShootable
 {
-    void OnShotBehaviour(int damage);
+    void OnShotBehaviour(float damage);
 }

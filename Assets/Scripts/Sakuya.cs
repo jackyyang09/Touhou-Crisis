@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Photon.Pun;
 
 public class Sakuya : BaseEnemy
 {
@@ -18,24 +19,40 @@ public class Sakuya : BaseEnemy
 
     [SerializeField] Transform debugTarget;
 
+    [SerializeField] int[] preselectedPoints;
+
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine("Behaviour");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine("Behaviour");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    void Wander()
+    [PunRPC]
+    void PlayIdle()
     {
-        Vector3 destination = box.GetRandomPointInBox();
+        animator.Play("Idle");
+    }
+
+    Vector3 GetRandomPosition()
+    {
+        return box.GetRandomPointInBox();
+    }
+
+    [PunRPC]
+    void WanderTo(Vector3 destination)
+    {
         transform.DOMove(destination, 0.5f);
         animator.Play("Sakuya Move");
-        renderer.flipX = destination.x - transform.position.x > 0;
+        renderer.flipX = destination.x - transform.position.x < 0;
     }
 
     void GoToCenter()
@@ -43,25 +60,30 @@ public class Sakuya : BaseEnemy
         Vector3 destination = box.GetBoxCenter();
         transform.DOMove(destination, 0.5f);
         animator.Play("Sakuya Move");
-        renderer.flipX = destination.x - transform.position.x > 0;
+        renderer.flipX = destination.x - transform.position.x < 0;
     }
 
-    void Dash()
+    void DashTo(Vector3 destination)
     {
-        transform.DOMove(box.GetRandomPointInBox(), 0.25f);
+        transform.DOMove(destination, 0.25f);
+    }
+
+    [PunRPC]
+    void SakuyaVolley()
+    {
+        animator.Play("Sakuya Volley");
     }
 
     public void ThrowAccurateKnife()
     {
         EnemyBullet newKnife = pools[0].GetObject().GetComponent<EnemyBullet>();
-        //newKnife.Init(AreaLogic.Instance.GetPlayer1Cover);
         newKnife.transform.position = handTransform.position;
         newKnife.Init(debugTarget);
         newKnife.transform.SetParent(null);
         newKnife.gameObject.SetActive(true);
     }
 
-    [ContextMenu("TEST")]
+    [PunRPC]
     public void ArrangeKnivesClockwise()
     {
         StartCoroutine(ArrangeKnifeRoutine());
@@ -99,27 +121,27 @@ public class Sakuya : BaseEnemy
         while (true)
         {
             int wanderNum = (int)Random.Range(timesToWander.x, timesToWander.y);
-            for (int i = 0; i < /*wanderNum*/0; i++)
+            for (int i = 0; i < wanderNum; i++)
             {
-                Wander();
+                Vector3 destination = GetRandomPosition();
+                photonView.RPC("WanderTo", RpcTarget.All, destination);
                 float wanderTime = Random.Range(timeBetweenWander.x, timeBetweenWander.y);
                 yield return new WaitForSeconds(wanderTime);
-                //yield return null;
             }
 
-            switch (/*Random.Range(0, 3)*/0)
+            switch (Random.Range(0, 2))
             {
                 case 0:
-                    animator.Play("Sakuya Volley");
+                    photonView.RPC("SakuyaVolley", RpcTarget.All);
                     yield return new WaitForSeconds(5);
                     break;
                 case 1:
-                    ArrangeKnivesClockwise();
+                    photonView.RPC("ArrangeKnivesClockwise", RpcTarget.All);
                     yield return new WaitForSeconds(10);
                     break;
             }
 
-            animator.Play("Idle");
+            photonView.RPC("PlayIdle", RpcTarget.All);
         }
     }
 }

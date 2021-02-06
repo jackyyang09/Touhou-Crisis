@@ -19,6 +19,13 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] float coverThreshold = 0.7f;
 
     bool inCover = false;
+    public bool InCover
+    {
+        get
+        {
+            return inCover;
+        }
+    }
 
     [SerializeField] float damageRecoveryTime = 1.5f;
 
@@ -43,6 +50,14 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    public float ActiveWeaponDamage
+    {
+        get
+        {
+            return ActiveWeapon.bulletDamage * comboPuck.DamageMultiplier;
+        }
+    }
+
     [SerializeField] int activeWeaponIndex = 0;
 
     [Header("Object References")]
@@ -57,6 +72,8 @@ public class PlayerBehaviour : MonoBehaviour
             return railShooter.photonView;
         }
     }
+
+    [SerializeField] ComboPuck comboPuck;
 
     [SerializeField] Transform head;
 
@@ -125,7 +142,7 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 //hit.transform.GetComponent<IShootable>().OnShotBehaviour(ActiveWeapon);
                 var photonView = hit.transform.GetComponent<PhotonView>();
-                photonView.RPC("OnShotBehaviour", RpcTarget.All, ActiveWeapon.bulletDamage);
+                photonView.RPC("OnShotBehaviour", RpcTarget.All, ActiveWeaponDamage);
 
                 miss = false;
             }

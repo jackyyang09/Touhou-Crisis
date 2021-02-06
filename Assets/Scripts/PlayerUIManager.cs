@@ -8,6 +8,7 @@ using DG.Tweening;
 public class PlayerUIManager : MonoBehaviour
 {
     [SerializeField] PlayerBehaviour player;
+    [SerializeField] ComboPuck puck;
 
     [SerializeField] TextMeshProUGUI ammoText;
     [SerializeField] OptimizedCanvas[] bulletImages = null;
@@ -17,9 +18,13 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] Image waitImage;
     [SerializeField] TextMeshProUGUI timeText;
 
-    [SerializeField] OptimizedCanvas damageEffectCanvas;
     [SerializeField] Image slashDamageImage;
 
+    [Header("Combo System")]
+    [SerializeField] Image puckImage;
+    [SerializeField] Image puckFill;
+    [SerializeField] Color puckFlashColour;
+    [SerializeField] TextMeshProUGUI comboText;
 
     private void Awake()
     {
@@ -41,9 +46,14 @@ public class PlayerUIManager : MonoBehaviour
         player.OnReload += HideReloadGraphic;
         player.OnReload += ReloadAmmo;
         player.OnTakeDamage += FadeDamageEffect;
+        player.OnTakeDamage += ShakePuck;
         player.OnFireNoAmmo += ShowReloadGraphic;
         player.OnEnterTransit += FlashWaitGraphic;
         player.OnExitTransit += FlashActionGraphic;
+
+        puck.OnPassPuck += PassPuckEffect;
+        puck.OnReceivePuck += ReceivePuckEffect;
+        puck.OnUpdateMultiplier += UpdateComboMultiplier;
     }
 
     private void OnDisable()
@@ -52,15 +62,21 @@ public class PlayerUIManager : MonoBehaviour
         player.OnReload -= HideReloadGraphic;
         player.OnReload -= ReloadAmmo;
         player.OnTakeDamage -= FadeDamageEffect;
+        player.OnTakeDamage -= ShakePuck;
         player.OnFireNoAmmo -= ShowReloadGraphic;
         player.OnEnterTransit -= FlashWaitGraphic;
         player.OnExitTransit -= FlashActionGraphic;
+
+        puck.OnPassPuck -= PassPuckEffect;
+        puck.OnReceivePuck -= ReceivePuckEffect;
+        puck.OnUpdateMultiplier -= UpdateComboMultiplier;
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateTimeCounter();
+        UpdateComboDecay();
     }
 
     void SpawnMuzzleFlash(bool missed, Vector2 hitPosition)
@@ -162,5 +178,34 @@ public class PlayerUIManager : MonoBehaviour
             case DamageType.Bullet:
                 break;
         }
+    }
+
+    void PassPuckEffect()
+    {
+        puckImage.rectTransform.DORotate(new Vector3(0, 0, -100), 0.5f);
+    }
+
+    void ReceivePuckEffect()
+    {
+        puckImage.rectTransform.DORotate(new Vector3(0, 0, 0), 0.25f);
+        puckFill.DOColor(puckFlashColour, 0).SetDelay(0.25f);
+        puckFill.DOColor(Color.white, 0.5f).SetDelay(0.5f);
+    }
+
+    void ShakePuck(DamageType type)
+    {
+        // Prevent the shakes from overlapping
+        puckImage.rectTransform.DOComplete();
+        puckImage.rectTransform.DOShakeAnchorPos(1, 50, 50, 80);
+    }
+
+    void UpdateComboDecay()
+    {
+        puckFill.fillAmount = puck.ComboDecayPercentage;
+    }
+
+    void UpdateComboMultiplier(float comboCount)
+    {
+        comboText.text = comboCount.ToString("0.0");
     }
 }

@@ -68,6 +68,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             isConnecting = PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = gameVersion;
+            Debug.Log("Trying to connect...");
         }
     }
 
