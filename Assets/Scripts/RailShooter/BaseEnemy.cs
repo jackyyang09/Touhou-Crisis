@@ -7,6 +7,13 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
 {
     [SerializeField] protected float maxHealth;
     [SerializeField] protected float health;
+    public float HealthPercentage
+    {
+        get
+        {
+            return health / maxHealth;
+        }
+    }
 
     [SerializeField] new protected Collider collider;
     [SerializeField] protected Rigidbody rBody;
@@ -16,6 +23,10 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
 
     [SerializeField] protected PhotonView photonView;
 
+    [SerializeField] protected bool canTakeDamage = true;
+
+    public System.Action OnShot;
+
     /// <summary>
     /// What do you do when you get hit?
     /// </summary>
@@ -23,10 +34,12 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
     public void OnShotBehaviour(float damage)
     {
         TakeDamage(damage);
+        OnShot?.Invoke();
     }
 
     public virtual void TakeDamage(float d = 1)
     {
+        if (!canTakeDamage) return;
         bool alreadyDead = health == 0;
 
         health -= d;

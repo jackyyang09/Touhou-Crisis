@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Photon.Pun;
+using UnityEngine.UI;
+using JSAM;
 
 public class Sakuya : BaseEnemy
 {
+    [SerializeField] int[] healthPhases = new int[] { 75, 150, 200 };
+    
+    int currentPhase;
+
     [SerializeField] new SpriteRenderer renderer;
     [SerializeField] Color damagedColour;
     [SerializeField] ModularBox box;
@@ -21,19 +27,47 @@ public class Sakuya : BaseEnemy
 
     [SerializeField] int[] preselectedPoints;
 
+    [SerializeField] Transform magicCirclePrimary;
+
+    public System.Action OnChangePhase;
+
+    Coroutine behaviourRoutine;
+
     // Start is called before the first frame update
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            StartCoroutine("Behaviour");
+            behaviourRoutine = StartCoroutine(BehaviourTree());
         }
+
+        maxHealth = healthPhases[currentPhase];
+        health = maxHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public override void TakeDamage(float d = 1)
+    {
+        if (!canTakeDamage) return;
+
+        health -= d;
+
+        if (health <= 0)
+        {
+            canTakeDamage = false;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                StopCoroutine(behaviourRoutine);
+                StartCoroutine(ChangePhase());
+            }
+        }
+
+        DamageFlash();
     }
 
     [PunRPC]
@@ -55,6 +89,7 @@ public class Sakuya : BaseEnemy
         renderer.flipX = destination.x - transform.position.x < 0;
     }
 
+    [PunRPC]
     void GoToCenter()
     {
         Vector3 destination = box.GetBoxCenter();
@@ -85,6 +120,7 @@ public class Sakuya : BaseEnemy
 
     public void ThrowAccurateKnife()
     {
+        AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
         EnemyBullet newKnife = pools[0].GetObject().GetComponent<EnemyBullet>();
         newKnife.transform.position = handTransform.position;
         newKnife.Init(debugTarget);
@@ -123,7 +159,43 @@ public class Sakuya : BaseEnemy
         renderer.DOColor(Color.white, 0.25f);
     }
 
-    IEnumerator Behaviour()
+    IEnumerator ChangePhase()
+    {
+        if (currentPhase < healthPhases.Length)
+        {
+            photonView.RPC("GoToCenter", RpcTarget.All);
+
+            yield return new WaitForSeconds(2);
+
+            OnChangePhase?.Invoke();
+
+            currentPhase++;
+            maxHealth = healthPhases[currentPhase];
+            health = maxHealth;
+
+            switch (currentPhase)
+            {
+                case 1:
+                    magicCirclePrimary.DOScale(3, 1);
+                    break;
+                case 2:
+
+                    break;
+            }
+
+            yield return new WaitForSeconds(1);
+
+            canTakeDamage = true;
+
+            behaviourRoutine = StartCoroutine(BehaviourTree());
+        }
+        else
+        {
+
+        }
+    }
+
+    IEnumerator BehaviourTree()
     {
         yield return new WaitForSeconds(2);
 
@@ -138,7 +210,7 @@ public class Sakuya : BaseEnemy
                 yield return new WaitForSeconds(wanderTime);
             }
 
-            switch (Random.Range(0, 1))
+            switch (Random.Range(0, currentPhase + 1))
             {
                 case 0:
                     photonView.RPC("SakuyaVolley", RpcTarget.All);

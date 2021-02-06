@@ -10,18 +10,40 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public PlayerBehaviour HostPlayer;
 
-    public PlayerBehaviour LocalPlayer;
+    PlayerBehaviour localPlayer;
+    public PlayerBehaviour LocalPlayer
+    {
+        get
+        {
+            if (localPlayer == null)
+            {
+                var players = FindObjectsOfType<PlayerBehaviour>();
+                for (int i = 0; i < players.Length; i++)
+                {
+                    var pView = players[i].GetComponent<PhotonView>();
+                    if (pView.IsMine)
+                    {
+                        localPlayer = players[i];
+                    }
+                }
+            }
+            return localPlayer;
+        }
+    }
 
     PhotonView otherPlayer;
     public PhotonView OtherPlayer
     {
         get
         {
-            var players = FindObjectsOfType<PlayerBehaviour>();
-            for (int i = 0; i < players.Length; i++)
+            if (otherPlayer == null)
             {
-                var pView = players[i].GetComponent<PhotonView>();
-                if (!pView.IsMine) otherPlayer = pView;
+                var players = FindObjectsOfType<PlayerBehaviour>();
+                for (int i = 0; i < players.Length; i++)
+                {
+                    var pView = players[i].GetComponent<PhotonView>();
+                    if (!pView.IsMine) otherPlayer = pView;
+                }
             }
             return otherPlayer;
         }
@@ -58,15 +80,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
                 {
                     HostPlayer = players[i];
                 }
-            }
-        }
-
-        for (int i = 0; i < players.Length; i++)
-        {
-            var pView = players[i].GetComponent<PhotonView>();
-            if (pView.IsMine)
-            {
-                LocalPlayer = players[i];
             }
         }
     }

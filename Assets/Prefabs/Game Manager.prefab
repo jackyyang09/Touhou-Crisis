@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4455370620889030308}
   - component: {fileID: 7535467757937184003}
+  - component: {fileID: 4040438821760115355}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -47,12 +48,36 @@ MonoBehaviour:
   masterMuted: 0
   soundVolume: 1
   soundMuted: 0
-  musicVolume: 0.37
+  musicVolume: 1
   musicMuted: 0
   settings: {fileID: 11400000, guid: 6b6fa5823069a2b4d91294064912048b, type: 2}
-  library: {fileID: 0}
+  library: {fileID: 11400000, guid: fca1db88ca4f43545997c79b07e84632, type: 2}
   listener: {fileID: 0}
   sourcePrefab: {fileID: 3048837711066349604, guid: cf11aed7e0e56ae45afe7eaebe30a616, type: 3}
+--- !u!114 &4040438821760115355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2834435859071753847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd13adbb36a3a614fafbec256720d4c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spatializeSound: 0
+  transitionMode: 0
+  keepPlaybackPosition: 1
+  restartOnReplay: 0
+  musicFadeInTime: 0
+  musicFadeOutTime: 0
+  loopMode: 2
+  music: {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
+  onStart: 1
+  onEnable: 0
+  onDisable: 0
+  onDestroy: 2
 --- !u!1 &5827745458804979072
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,6 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 607749399971973752, guid: cea7444ae27dcc54cbade4eb6a40a4c6, type: 3}
   gameTimer: 0
+  timeBetweenSync: 3
 --- !u!114 &8535799602250606732
 MonoBehaviour:
   m_ObjectHideFlags: 0

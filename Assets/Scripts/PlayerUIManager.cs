@@ -10,6 +10,7 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] PlayerBehaviour player;
     [SerializeField] ComboPuck puck;
     [SerializeField] ScoreSystem score;
+    [SerializeField] Sakuya sakuya;
 
     [Header("Ammo Count")]
     [SerializeField] TextMeshProUGUI ammoText;
@@ -36,12 +37,17 @@ public class PlayerUIManager : MonoBehaviour
     [Header("Lives Display")]
     [SerializeField] Image[] livesImages = null;
 
+    [Header("Enemy UI")]
+    [SerializeField] Image enemyHealthBar;
+
     private void Awake()
     {
         if (!player.PhotonView.IsMine)
         {
             Destroy(gameObject);
         }
+
+        sakuya = FindObjectOfType<Sakuya>();
     }
 
     // Start is called before the first frame update
@@ -67,6 +73,12 @@ public class PlayerUIManager : MonoBehaviour
         puck.OnUpdateMultiplier += UpdateComboMultiplier;
 
         score.OnScoreChanged += UpdateScore;
+
+        if (sakuya != null)
+        {
+            sakuya.OnShot += UpdateBossHealth;
+            sakuya.OnChangePhase += RefillBossHealth;
+        }
     }
 
     private void OnDisable()
@@ -86,6 +98,12 @@ public class PlayerUIManager : MonoBehaviour
         puck.OnUpdateMultiplier -= UpdateComboMultiplier;
 
         score.OnScoreChanged -= UpdateScore;
+
+        if (sakuya != null)
+        {
+            sakuya.OnShot -= UpdateBossHealth;
+            sakuya.OnChangePhase -= RefillBossHealth;
+        }
     }
 
     // Update is called once per frame
@@ -242,5 +260,15 @@ public class PlayerUIManager : MonoBehaviour
         {
             livesImages[i].enabled = false;
         }
+    }
+
+    void UpdateBossHealth()
+    {
+        enemyHealthBar.fillAmount = sakuya.HealthPercentage;
+    }
+
+    void RefillBossHealth()
+    {
+        enemyHealthBar.DOFillAmount(1, 0.5f);
     }
 }

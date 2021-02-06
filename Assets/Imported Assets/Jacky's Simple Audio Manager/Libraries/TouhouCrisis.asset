@@ -14,19 +14,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundCategories:
   - 
+  - UI Sounds
+  - VoiceOver
   musicCategories:
   - 
-  sounds: []
-  music: []
-  soundEnumName: 
-  musicEnumName: 
+  sounds:
+  - {fileID: 11400000, guid: 5c5ed1bc1d5be5c4cba27dfd5d478b78, type: 2}
+  - {fileID: 11400000, guid: e760a325e6760014f9de63ac260e0503, type: 2}
+  - {fileID: 11400000, guid: 671d44d5abaf6674cb60849d3377cc66, type: 2}
+  - {fileID: 11400000, guid: 387532ea3067e994a957b792b28110b4, type: 2}
+  - {fileID: 11400000, guid: 6e253a8473ebd53419f8c7b9247421ee, type: 2}
+  - {fileID: 11400000, guid: a67bb71f57b467e4b8322e208c3070d6, type: 2}
+  - {fileID: 11400000, guid: 12774ec267f708d4b96057bad892ab24, type: 2}
+  - {fileID: 11400000, guid: aaf78250ab486f14b95be8cd9d7b81ec, type: 2}
+  - {fileID: 11400000, guid: 7a84bee8edd62aa499eb073dbd9270a4, type: 2}
+  - {fileID: 11400000, guid: cd823d12ee83c0a41867b45b98a3f4a7, type: 2}
+  music:
+  - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
+  soundEnumName: TouhouCrisisSounds
+  musicEnumName: TouhouCrisisMusic
   soundCategoriesToList:
   - name: 
-    files: []
+    files:
+    - {fileID: 11400000, guid: 6e253a8473ebd53419f8c7b9247421ee, type: 2}
+    - {fileID: 11400000, guid: a67bb71f57b467e4b8322e208c3070d6, type: 2}
+    - {fileID: 11400000, guid: 12774ec267f708d4b96057bad892ab24, type: 2}
+    - {fileID: 11400000, guid: cd823d12ee83c0a41867b45b98a3f4a7, type: 2}
+    foldout: 1
+  - name: UI Sounds
+    files:
+    - {fileID: 11400000, guid: 5c5ed1bc1d5be5c4cba27dfd5d478b78, type: 2}
+    - {fileID: 11400000, guid: e760a325e6760014f9de63ac260e0503, type: 2}
+    - {fileID: 11400000, guid: 671d44d5abaf6674cb60849d3377cc66, type: 2}
+    - {fileID: 11400000, guid: 387532ea3067e994a957b792b28110b4, type: 2}
+    foldout: 1
+  - name: VoiceOver
+    files:
+    - {fileID: 11400000, guid: 7a84bee8edd62aa499eb073dbd9270a4, type: 2}
+    - {fileID: 11400000, guid: aaf78250ab486f14b95be8cd9d7b81ec, type: 2}
     foldout: 1
   musicCategoriesToList:
   - name: 
-    files: []
+    files:
+    - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
     foldout: 1
-  safeName: 
+  safeName: TouhouCrisis
   showMusic: 0

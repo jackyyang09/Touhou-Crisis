@@ -100,16 +100,16 @@ namespace JSAM.JSAMEditor
 
             List<string> propertiesToExclude = new List<string>() { "spatialSound", "loopSound", "priority",
                 "pitchShift", "loopMode", "fadeMode", "playReversed", "safeName", "maxDistance" };
-            if (myScript.GetFile() == null)
-            {
-                propertiesToExclude.AddRange(new List<string>() { "m_Script", "useLibrary", "files", "relativeVolume",
-                "fadeMode", "clampBetweenLoopPoints", "startingPitch", "playReversed", "spatialize", "ignoreTimeScale",
-                "delay", });
-            }
-            else
-            {
-                propertiesToExclude.AddRange(new List<string>() { "m_Script", "useLibrary", "files", "maxDistance" });
-            }
+            //if (myScript.GetFile() == null)
+            //{
+            //    propertiesToExclude.AddRange(new List<string>() { "m_Script", "useLibrary", "files", "relativeVolume",
+            //    "fadeMode", "clampBetweenLoopPoints", "startingPitch", "playReversed", "spatialize", "ignoreTimeScale",
+            //    "delay", });
+            //}
+            //else
+            //{
+            //    propertiesToExclude.AddRange(new List<string>() { "m_Script", "useLibrary", "files", "maxDistance" });
+            //}
 
             DrawPropertiesExcluding(serializedObject, propertiesToExclude.ToArray());
 
