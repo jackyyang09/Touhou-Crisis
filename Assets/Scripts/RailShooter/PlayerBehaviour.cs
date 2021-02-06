@@ -3,8 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
+public enum DamageType
+{
+    Slash,
+    Bullet
+}
+
 public class PlayerBehaviour : MonoBehaviour
 {
+    [SerializeField] bool inTransit;
+
+    [SerializeField] float coverEnterTime = 0.5f;
+    float coverEnterTimer;
+    [Range(0, 1)]
+    [SerializeField] float coverThreshold = 0.7f;
+
+    bool inCover = false;
+
+    [SerializeField] float damageRecoveryTime = 1.5f;
+
+    [Header("Weapon Logic")]
     [SerializeField] List<WeaponObject> weapons = new List<WeaponObject>();
 
     public WeaponObject ActiveWeapon
@@ -25,21 +43,35 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    [SerializeField]  float coverEnterTime = 0.5f;
-    float coverEnterTimer;
-    [Range(0, 1)]
-    [SerializeField] float coverThreshold = 0.7f;
-
-    bool inCover = false;
-
     [SerializeField] int activeWeaponIndex = 0;
+
+    [Header("Object References")]
 
     [SerializeField] LayerMask shootableLayers;
 
     [SerializeField] RailShooterLogic railShooter = null;
+    public PhotonView PhotonView
+    {
+        get
+        {
+            return railShooter.photonView;
+        }
+    }
+
+    [SerializeField] Transform head;
+
+    [SerializeField] new Collider collider;
+
+    [SerializeField] Cinemachine.CinemachineImpulseSource impulse;
 
     public System.Action<bool, Vector2> OnBulletFired;
     public System.Action OnReload;
+    public System.Action OnFireNoAmmo;
+    public System.Action<DamageType> OnTakeDamage;
+
+    public System.Action OnEnterTransit;
+    public System.Action OnExitTransit;
+    public System.Action OnEnterSubArea;
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +80,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             ammoCount[i] = weapons[i].ammoCapacity;
         }
+        EnterTransit();
     }
 
     private void OnEnable()
@@ -63,7 +96,11 @@ public class PlayerBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!railShooter.photonView.IsMine) return;
+        if (PhotonNetwork.IsConnected)
+        {
+            if (!PhotonView.IsMine) return;
+        }
+        if (inTransit) return;
 
         if (Input.GetKey(KeyCode.Space))
         {
@@ -77,7 +114,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     void HandleShooting(Ray ray)
     {
-        if (inCover) return;
+        if (inCover || inTransit) return;
 
         if (CurrentAmmo > 0)
         {
@@ -101,27 +138,74 @@ public class PlayerBehaviour : MonoBehaviour
         }
         else
         {
-
+            OnFireNoAmmo?.Invoke();
         }
     }
 
     public void StepOnPedal()
     {
         coverEnterTimer = Mathf.Clamp(coverEnterTimer + Time.deltaTime, 0, coverEnterTime);
-        if (coverEnterTimer / coverEnterTime < coverThreshold)
+        if (coverEnterTimer / coverEnterTime > coverThreshold)
         {
             inCover = false;
         }
+
+        Transform coverTransform = AreaLogic.Instance.GetPlayer1Cover;
+        Transform fireTransform = AreaLogic.Instance.GetPlayer1Fire;
+        float lerpValue = coverEnterTimer / coverEnterTime;
+        head.transform.position = Vector3.Lerp(coverTransform.position, fireTransform.position, lerpValue);
+        head.transform.rotation = Quaternion.Lerp(coverTransform.rotation, fireTransform.rotation, lerpValue);
     }
 
     public void ReleasePedal()
     {
         coverEnterTimer = Mathf.Clamp(coverEnterTimer - Time.deltaTime, 0, coverEnterTime);
-        if (coverEnterTimer / coverEnterTime >= coverThreshold && !inCover)
+        if (coverEnterTimer / coverEnterTime <= coverThreshold && !inCover)
         {
             inCover = true;
             ammoCount[activeWeaponIndex] = ActiveWeapon.ammoCapacity;
             OnReload?.Invoke();
         }
+
+        Transform coverTransform = AreaLogic.Instance.GetPlayer1Cover;
+        Transform fireTransform = AreaLogic.Instance.GetPlayer1Fire;
+        float lerpValue = coverEnterTimer / coverEnterTime;
+        head.transform.position = Vector3.Lerp(coverTransform.position, fireTransform.position, lerpValue);
+        head.transform.rotation = Quaternion.Lerp(coverTransform.rotation, fireTransform.rotation, lerpValue);
+    }
+
+    public void EnterTransit()
+    {
+        inTransit = true;
+        OnEnterTransit?.Invoke();
+    }
+
+    public void ExitTransit()
+    {
+        inTransit = false;
+        coverEnterTimer = coverEnterTime;
+        OnExitTransit?.Invoke();
+        OnEnterSubArea?.Invoke();
+
+        if (PhotonView.IsMine)
+        {
+            AreaLogic.Instance.ReportPlayerArrival();
+        }
+    }
+
+    public void TakeDamage(DamageType damageType)
+    {
+        if (inCover) return;
+        Debug.Log("OOF!");
+        impulse.GenerateImpulse();
+        StartCoroutine("DamageRecovery");
+        OnTakeDamage?.Invoke(damageType);
+    }
+
+    IEnumerator DamageRecovery()
+    {
+        collider.enabled = false;
+        yield return new WaitForSeconds(damageRecoveryTime);
+        collider.enabled = true;
     }
 }

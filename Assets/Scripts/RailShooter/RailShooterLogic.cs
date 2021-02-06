@@ -26,6 +26,14 @@ public class RailShooterLogic : MonoBehaviour
 
     public System.Action<Ray> OnShoot;
 
+    private void Awake()
+    {
+        if (!photonView.IsMine)
+        {
+            Destroy(vCam.gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     //void Start()
     //{
@@ -34,7 +42,10 @@ public class RailShooterLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!photonView.IsMine) return;
+        if (PhotonNetwork.IsConnected)
+        {
+            if (!photonView.IsMine) return;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {

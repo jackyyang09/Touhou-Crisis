@@ -8,7 +8,7 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
     [SerializeField] protected int maxHealth;
     [SerializeField] protected int health;
 
-    [SerializeField] protected Collider coliderl;
+    [SerializeField] new protected Collider collider;
     [SerializeField] protected Rigidbody rBody;
     [SerializeField] protected Animator animator;
 
@@ -31,21 +31,21 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
 
         health -= d;
 
-        transform.Rotate(new Vector3(0, 0, 90));
-
         if (health == 0 && !alreadyDead)
         {
             StopAllCoroutines();
             Die();
         }
 
-        //Flash();
+        DamageFlash();
 
         if (health <= 0)
         {
 
         }
     }
+
+    protected abstract void DamageFlash();
 
     /// <summary>
     /// Plays a voice line, done through the animator

@@ -6,13 +6,16 @@ using Photon.Pun;
 public class PlayerManager : MonoBehaviourPunCallbacks
 {
     [Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
-    public static PlayerManager LocalPlayerInstance;
+    public static PlayerManager Instance;
 
-    //[Header("Object References")]
+    public static PlayerBehaviour HostPlayer;
+
+    public static PlayerBehaviour LocalPlayer;
+
+    public static PhotonView OtherPlayer;
 
     private void Reset()
     {
-
     }
 
     private void Awake()
@@ -23,15 +26,40 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         {
             if (photonView.IsMine)
             {
-                LocalPlayerInstance = this;
+                Instance = this;
             }
         }
         else
         {
-            LocalPlayerInstance = this;
+            Instance = this;
         }
 
         DontDestroyOnLoad(gameObject);
+
+        var players = FindObjectsOfType<PlayerBehaviour>();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            for (int i = 0; i < players.Length; i++)
+            {
+                if (players[i].GetComponent<PhotonView>().IsMine)
+                {
+                    HostPlayer = players[i];
+                }
+            }
+        }
+
+        for (int i = 0; i < players.Length; i++)
+        {
+            var pView = players[i].GetComponent<PhotonView>();
+            if (pView.IsMine)
+            {
+                LocalPlayer = players[i];
+            }
+            else
+            {
+                OtherPlayer = pView;
+            }
+        }
     }
 
     //// Start is called before the first frame update

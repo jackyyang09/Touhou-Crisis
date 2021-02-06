@@ -5,9 +5,35 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     [SerializeField] GameObject playerPrefab;
+
+    [SerializeField] float gameTimer = 0;
+    float remoteGameTimer = 0;
+    bool gameTimerEnabled = false;
+    public float GameTimeElapsed
+    {
+        get
+        {
+            return gameTimer;
+        }
+    }
+
+    [SerializeField] float timeBetweenSync = 3;
+
+    static GameManager instance;
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<GameManager>();
+            }
+            return instance;
+        }
+    }
 
     private void Start()
     {
@@ -17,7 +43,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            if (!PlayerManager.LocalPlayerInstance)
+            if (!PlayerManager.Instance)
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManager.GetActiveScene().name);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
@@ -28,6 +54,55 @@ public class GameManager : MonoBehaviourPunCallbacks
                 Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
             }
         }
+    }
+
+    new void OnEnable()
+    {
+        base.OnEnable();
+        AreaLogic.OnEnterFirstArea += StartGameTimer;
+    }
+
+    new void OnDisable()
+    {
+        base.OnDisable();
+        AreaLogic.OnEnterFirstArea -= StartGameTimer;
+    }
+
+    public void StartGameTimer()
+    {
+        gameTimerEnabled = true;
+
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            InvokeRepeating("SyncRemoteProperties", 0, timeBetweenSync);
+        }
+    }
+
+    private void Update()
+    {
+        if (gameTimerEnabled)
+        {
+            gameTimer += Time.deltaTime;
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting && PhotonNetwork.IsMasterClient)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(gameTimer);
+        }
+        else
+        {
+            // Network player, receive data
+            remoteGameTimer = (float)stream.ReceiveNext();
+        }
+    }
+
+    void SyncRemoteProperties()
+    {
+        gameTimer = remoteGameTimer;
     }
 
     /// <summary>
