@@ -42,7 +42,7 @@ public class EnemyBullet : MonoBehaviour
 
     public void HitTarget()
     {
-        PlayerManager.LocalPlayer.TakeDamage(damageType);
+        PlayerManager.Instance.LocalPlayer.TakeDamage(damageType);
     }
 
     public static float InverseLerp(Vector3 a, Vector3 b, Vector3 value)

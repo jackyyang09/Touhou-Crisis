@@ -8,11 +8,25 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
     public static PlayerManager Instance;
 
-    public static PlayerBehaviour HostPlayer;
+    public PlayerBehaviour HostPlayer;
 
-    public static PlayerBehaviour LocalPlayer;
+    public PlayerBehaviour LocalPlayer;
 
-    public static PhotonView OtherPlayer;
+    PhotonView otherPlayer;
+    public PhotonView OtherPlayer
+    {
+        get
+        {
+            var players = FindObjectsOfType<PlayerBehaviour>();
+            for (int i = 0; i < players.Length; i++)
+            {
+                var pView = players[i].GetComponent<PhotonView>();
+                if (!pView.IsMine) otherPlayer = pView;
+            }
+            return otherPlayer;
+        }
+    }
+
 
     private void Reset()
     {
@@ -54,10 +68,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             if (pView.IsMine)
             {
                 LocalPlayer = players[i];
-            }
-            else
-            {
-                OtherPlayer = pView;
             }
         }
     }

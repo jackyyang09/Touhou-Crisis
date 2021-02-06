@@ -5,8 +5,8 @@ using Photon.Pun;
 
 public abstract class BaseEnemy : MonoBehaviour, IShootable
 {
-    [SerializeField] protected int maxHealth;
-    [SerializeField] protected int health;
+    [SerializeField] protected float maxHealth;
+    [SerializeField] protected float health;
 
     [SerializeField] new protected Collider collider;
     [SerializeField] protected Rigidbody rBody;
@@ -14,24 +14,24 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
 
     [SerializeField] protected PlayerBehaviour player;
 
-    [SerializeField] PhotonView photonView;
+    [SerializeField] protected PhotonView photonView;
 
     /// <summary>
     /// What do you do when you get hit?
     /// </summary>
     [PunRPC]
-    public void OnShotBehaviour(int damage)
+    public void OnShotBehaviour(float damage)
     {
         TakeDamage(damage);
     }
 
-    public virtual void TakeDamage(int d = 1)
+    public virtual void TakeDamage(float d = 1)
     {
         bool alreadyDead = health == 0;
 
         health -= d;
 
-        if (health == 0 && !alreadyDead)
+        if (health <= 0 && !alreadyDead)
         {
             StopAllCoroutines();
             Die();
