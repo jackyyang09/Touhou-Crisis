@@ -11,6 +11,16 @@ public enum DamageType
 
 public class PlayerBehaviour : MonoBehaviour
 {
+    [SerializeField] int maxLives = 5;
+    int currentLives;
+    public int CurrentLives
+    {
+        get
+        {
+            return currentLives;
+        }
+    }
+
     [SerializeField] bool inTransit;
 
     [SerializeField] float coverEnterTime = 0.5f;
@@ -54,7 +64,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         get
         {
-            return ActiveWeapon.bulletDamage * comboPuck.DamageMultiplier;
+            return ActiveWeapon.bulletDamage * comboPuck.Multliplier;
         }
     }
 
@@ -93,6 +103,7 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentLives = maxLives;
         for (int i = 0; i < weapons.Count; i++)
         {
             ammoCount[i] = weapons[i].ammoCapacity;
@@ -216,6 +227,7 @@ public class PlayerBehaviour : MonoBehaviour
         Debug.Log("OOF!");
         impulse.GenerateImpulse();
         StartCoroutine("DamageRecovery");
+        currentLives--;
         OnTakeDamage?.Invoke(damageType);
     }
 

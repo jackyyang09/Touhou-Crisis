@@ -23,11 +23,6 @@ public class SpecialBullet : EnemyBullet
         }
     }
 
-    private void OnDisable()
-    {
-        rb.velocity = Vector3.zero;
-    }
-
     IEnumerator LookAtTarget()
     {
         yield return new WaitForSeconds(lookDelay);

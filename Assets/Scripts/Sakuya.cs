@@ -63,6 +63,15 @@ public class Sakuya : BaseEnemy
         renderer.flipX = destination.x - transform.position.x < 0;
     }
 
+    void Dash()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("DashTo", RpcTarget.All, GetRandomPosition());
+        }
+    }
+
+    [PunRPC]
     void DashTo(Vector3 destination)
     {
         transform.DOMove(destination, 0.25f);
@@ -129,7 +138,7 @@ public class Sakuya : BaseEnemy
                 yield return new WaitForSeconds(wanderTime);
             }
 
-            switch (Random.Range(0, 2))
+            switch (Random.Range(0, 1))
             {
                 case 0:
                     photonView.RPC("SakuyaVolley", RpcTarget.All);

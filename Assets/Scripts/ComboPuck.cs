@@ -11,7 +11,7 @@ public class ComboPuck : MonoBehaviour, IPunObservable
 
     [SerializeField] float maxMultiplier = 3;
     [SerializeField] float damageMultiplier = 1;
-    public float DamageMultiplier
+    public float Multliplier
     {
         get
         {
@@ -33,6 +33,8 @@ public class ComboPuck : MonoBehaviour, IPunObservable
     public System.Action OnReceivePuck;
     public System.Action OnPassPuck;
 
+    bool soloMode = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,13 +44,12 @@ public class ComboPuck : MonoBehaviour, IPunObservable
         }
         if (PhotonNetwork.PlayerListOthers.Length == 0)
         {
-            enabled = false;
-            Debug.LogError("NO OTHER PLAYERS, DISABLING PUCK");
+            soloMode = true;
         }
-        else
-        {
+        //else
+        //{
             comboDecayTimer = 0;
-        }
+        //}
     }
 
     // Update is called once per frame
@@ -97,7 +98,14 @@ public class ComboPuck : MonoBehaviour, IPunObservable
     {
         if (hasPuck)
         {
-            PlayerManager.Instance.OtherPlayer.RPC("QueuePuck", RpcTarget.All, damageMultiplier);
+            if (soloMode)
+            {
+                player.PhotonView.RPC("QueuePuck", RpcTarget.All, damageMultiplier);
+            }
+            else
+            {
+                PlayerManager.Instance.OtherPlayer.RPC("QueuePuck", RpcTarget.All, damageMultiplier);
+            }
             hasPuck = false;
             damageMultiplier = 1;
             OnPassPuck?.Invoke();
@@ -116,9 +124,12 @@ public class ComboPuck : MonoBehaviour, IPunObservable
     public void QueuePuck(float multiplier)
     {
         incomingMultiplier = multiplier;
-        if (player.InCover)
+        if (!soloMode)
         {
-            PassReceivePuck();
+            if (player.InCover)
+            {
+                PassReceivePuck();
+            }
         }
     }
 

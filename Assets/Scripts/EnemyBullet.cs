@@ -10,6 +10,8 @@ public class EnemyBullet : MonoBehaviour
 
     [SerializeField] protected DamageType damageType;
 
+    [SerializeField] GameObject effect;
+
     protected Vector3 ogPos;
     protected Vector3 targetPos;
 
@@ -28,7 +30,15 @@ public class EnemyBullet : MonoBehaviour
         targetPos = target.position;
         ogPos = transform.position;
 
+        effect.SetActive(true);
+
         rb.velocity = transform.forward * speed;
+    }
+
+    private void OnDisable()
+    {
+        effect.SetActive(false);
+        rb.velocity = Vector3.zero;
     }
 
     private void OnTriggerEnter(Collider other)

@@ -9,22 +9,32 @@ public class PlayerUIManager : MonoBehaviour
 {
     [SerializeField] PlayerBehaviour player;
     [SerializeField] ComboPuck puck;
+    [SerializeField] ScoreSystem score;
 
+    [Header("Ammo Count")]
     [SerializeField] TextMeshProUGUI ammoText;
     [SerializeField] OptimizedCanvas[] bulletImages = null;
 
+    [Header("HUD Alerts")]
     [SerializeField] OptimizedCanvas actionImage;
     [SerializeField] OptimizedCanvas reloadImage;
     [SerializeField] Image waitImage;
     [SerializeField] TextMeshProUGUI timeText;
-
-    [SerializeField] Image slashDamageImage;
 
     [Header("Combo System")]
     [SerializeField] Image puckImage;
     [SerializeField] Image puckFill;
     [SerializeField] Color puckFlashColour;
     [SerializeField] TextMeshProUGUI comboText;
+
+    [Header("Damage Effects")]
+    [SerializeField] Image slashDamageImage;
+
+    [Header("Score System")]
+    [SerializeField] TextMeshProUGUI scoreText;
+
+    [Header("Lives Display")]
+    [SerializeField] Image[] livesImages = null;
 
     private void Awake()
     {
@@ -47,6 +57,7 @@ public class PlayerUIManager : MonoBehaviour
         player.OnReload += ReloadAmmo;
         player.OnTakeDamage += FadeDamageEffect;
         player.OnTakeDamage += ShakePuck;
+        player.OnTakeDamage += UpdateLivesDisplay;
         player.OnFireNoAmmo += ShowReloadGraphic;
         player.OnEnterTransit += FlashWaitGraphic;
         player.OnExitTransit += FlashActionGraphic;
@@ -54,6 +65,8 @@ public class PlayerUIManager : MonoBehaviour
         puck.OnPassPuck += PassPuckEffect;
         puck.OnReceivePuck += ReceivePuckEffect;
         puck.OnUpdateMultiplier += UpdateComboMultiplier;
+
+        score.OnScoreChanged += UpdateScore;
     }
 
     private void OnDisable()
@@ -63,6 +76,7 @@ public class PlayerUIManager : MonoBehaviour
         player.OnReload -= ReloadAmmo;
         player.OnTakeDamage -= FadeDamageEffect;
         player.OnTakeDamage -= ShakePuck;
+        player.OnTakeDamage -= UpdateLivesDisplay;
         player.OnFireNoAmmo -= ShowReloadGraphic;
         player.OnEnterTransit -= FlashWaitGraphic;
         player.OnExitTransit -= FlashActionGraphic;
@@ -70,6 +84,8 @@ public class PlayerUIManager : MonoBehaviour
         puck.OnPassPuck -= PassPuckEffect;
         puck.OnReceivePuck -= ReceivePuckEffect;
         puck.OnUpdateMultiplier -= UpdateComboMultiplier;
+
+        score.OnScoreChanged -= UpdateScore;
     }
 
     // Update is called once per frame
@@ -110,6 +126,7 @@ public class PlayerUIManager : MonoBehaviour
     void ReloadAmmo()
     {
         RectTransform parentRect = bulletImages[0].transform.parent as RectTransform;
+        parentRect.DOComplete();
         parentRect.DOAnchorPosY(parentRect.anchoredPosition.y, 0.2f);
         parentRect.anchoredPosition -= new Vector2(0, 150);
         for (int i = 0; i < bulletImages.Length; i++)
@@ -182,7 +199,7 @@ public class PlayerUIManager : MonoBehaviour
 
     void PassPuckEffect()
     {
-        puckImage.rectTransform.DORotate(new Vector3(0, 0, -100), 0.5f);
+        puckImage.rectTransform.DORotate(new Vector3(0, 0, -180), 0.5f);
     }
 
     void ReceivePuckEffect()
@@ -207,5 +224,23 @@ public class PlayerUIManager : MonoBehaviour
     void UpdateComboMultiplier(float comboCount)
     {
         comboText.text = comboCount.ToString("0.0");
+    }
+
+    void UpdateScore(int newScore)
+    {
+        scoreText.text = newScore.ToString();
+    }
+
+    void UpdateLivesDisplay(DamageType type)
+    {
+        int i = 0;
+        for (; i < player.CurrentLives; i++)
+        {
+            livesImages[i].enabled = true;
+        }
+        for (; i < livesImages.Length; i++)
+        {
+            livesImages[i].enabled = false;
+        }
     }
 }

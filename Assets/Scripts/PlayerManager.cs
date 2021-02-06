@@ -27,7 +27,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         }
     }
 
-
     private void Reset()
     {
     }

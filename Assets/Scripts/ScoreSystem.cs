@@ -11,12 +11,15 @@ public class ScoreSystem : MonoBehaviour
     [Header("Object References")]
     [SerializeField] PlayerBehaviour player;
 
-    public Action OnScoreChanged;
+    [SerializeField] ComboPuck comboPuck;
+
+    public Action<int> OnScoreChanged;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        score = 0;
+        OnScoreChanged?.Invoke((int)score);
     }
 
     private void OnEnable()
@@ -29,10 +32,11 @@ public class ScoreSystem : MonoBehaviour
         player.OnBulletFired -= AddScoreOnHit;
     }
 
-
     private void AddScoreOnHit(bool miss, Vector2 position)
     {
-        OnScoreChanged?.Invoke();
+        if (miss) return;
+        score += scoreOnHit * comboPuck.Multliplier;
+        OnScoreChanged.Invoke((int)score);
     }
 
     // Update is called once per frame
