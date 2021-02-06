@@ -13,6 +13,11 @@ MonoBehaviour:
   m_Name: JSAMAudioFileWizard
   m_EditorClassIdentifier: 
   files:
-  - {fileID: 8300000, guid: 49123d8c3a205214a84741895d8874ff, type: 3}
-  fileType: 0
+  - {fileID: 8300000, guid: 7f3800bbe8335734ea1858d806686940, type: 3}
+  - {fileID: 8300000, guid: 8dd979fdf2d558642b952d90d0ccaf0a, type: 3}
+  - {fileID: 8300000, guid: a961d5e2989298845a0a3697ad34612b, type: 3}
+  - {fileID: 8300000, guid: efa2ee16f83e6d2439c308790720278d, type: 3}
+  - {fileID: 8300000, guid: b6a5e71e671bca042a02db18481c35a0, type: 3}
+  - {fileID: 8300000, guid: 4778a495c29bf454dbd38970e268503f, type: 3}
+  fileType: 1
   outputFolder: Assets/Audio/Audio Files
