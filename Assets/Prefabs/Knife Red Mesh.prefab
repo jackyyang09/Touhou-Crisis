@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2725476930953199676}
   - component: {fileID: 2725476930953199677}
   m_Layer: 0
-  m_Name: Knife Red
+  m_Name: Knife Red Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,6 +56,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -80,6 +81,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2725476931474442448
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +131,10 @@ VisualEffect:
     m_Float:
       m_Array: []
     m_Vector2f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0.1, y: 0.2}
+        m_Name: Flying Random Lifetime
+        m_Overridden: 1
     m_Vector3f:
       m_Array: []
     m_Vector4f:
@@ -194,6 +199,7 @@ VFXRenderer:
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
