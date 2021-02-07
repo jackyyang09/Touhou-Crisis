@@ -11,5 +11,6 @@
         WaitBeep
     }
     public enum TouhouCrisisMusic {
-        FloweringNight
+        FloweringNight,
+        LunaDial
     }

@@ -45,14 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b519ebae32b1548955d746015c02bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 20
   rb: {fileID: 687851539858144416}
   damageType: 0
   effect: {fileID: 5722139230446925081}
-  moveDelay: 4
+  moveDelay: 0
   lookDelay: 0
   smoothLookTime: 0
-  lookAtTarget: 1
+  lookAtTarget: 0
 --- !u!54 &687851539858144416
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -148,6 +148,14 @@ PrefabInstance:
     - target: {fileID: 2725476930953199678, guid: bfdd8ef84ed1cbe4a93b4a568588343e, type: 3}
       propertyPath: m_Name
       value: Knife Red Mesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 2725476930953199678, guid: bfdd8ef84ed1cbe4a93b4a568588343e, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2725476931474442448, guid: bfdd8ef84ed1cbe4a93b4a568588343e, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2725476931474442479, guid: bfdd8ef84ed1cbe4a93b4a568588343e, type: 3}
       propertyPath: m_Materials.Array.data[0]

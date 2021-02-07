@@ -190,6 +190,7 @@ public class Sakuya : BaseEnemy
                 case 2:
                     magicCircleSecondary.enabled = true;
                     animator.Play("Secondary MagicCircle Intro");
+                    AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 5);
                     break;
             }
 
@@ -205,7 +206,7 @@ public class Sakuya : BaseEnemy
         }
     }
 
-    void SpawnKnifeBundle(int delayCompensation)
+    void SpawnKnifeBundle()
     {
         AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
         Vector3 referencePosition = knifeBox.GetRandomPointInBox();
@@ -214,13 +215,25 @@ public class Sakuya : BaseEnemy
             Vector3 pos = referencePosition + Random.insideUnitSphere * 1.5f;
             SpecialBullet newKnife = pools[2].GetObject().GetComponent<SpecialBullet>();
             newKnife.transform.position = pos;
-            newKnife.moveDelay = 5 - delayCompensation * 0.5f;
             newKnife.gameObject.SetActive(true);
+            newKnife.transform.SetParent(null);
 
             target.position = AreaLogic.Instance.GetPlayer1Fire.position;
             target.position += targetOffset;
+
+            newKnife.transform.LookAt(target.position);
             newKnife.SpecialInit(target);
         }
+    }
+
+    public void StopTime()
+    {
+        Time.timeScale = 0;
+    }
+
+    public void TimeResumes()
+    {
+        Time.timeScale = 1;
     }
 
     [PunRPC]
@@ -235,19 +248,19 @@ public class Sakuya : BaseEnemy
 
         animator.Play("Sakuya Time Stop");
 
-        yield return new WaitForSeconds(3.5f);
+        yield return new WaitForSecondsRealtime(3.5f);
 
-        SpawnKnifeBundle(0);
+        SpawnKnifeBundle();
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
 
-        SpawnKnifeBundle(1);
+        SpawnKnifeBundle();
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
 
-        SpawnKnifeBundle(2);
+        SpawnKnifeBundle();
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSecondsRealtime(3f);
     }
 
 
@@ -266,6 +279,7 @@ public class Sakuya : BaseEnemy
                 yield return new WaitForSeconds(wanderTime);
             }
 
+            //switch (/*Random.Range(0, currentPhase + 1)*/2)
             switch (Random.Range(0, currentPhase + 1))
             {
                 case 0:
@@ -278,7 +292,7 @@ public class Sakuya : BaseEnemy
                     break;
                 case 2:
                     photonView.RPC("TimeStopCombo", RpcTarget.All);
-                    yield return new WaitForSeconds(12);
+                    yield return new WaitForSeconds(5);
                     break;
             }
 

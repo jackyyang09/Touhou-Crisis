@@ -217,12 +217,12 @@ public class PlayerUIManager : MonoBehaviour
 
     void PassPuckEffect()
     {
-        puckImage.rectTransform.DORotate(new Vector3(0, 0, -180), 0.5f);
+        puckImage.rectTransform.DORotate(new Vector3(0, 0, -180), 0.5f, RotateMode.LocalAxisAdd);
     }
 
     void ReceivePuckEffect()
     {
-        puckImage.rectTransform.DORotate(new Vector3(0, 0, 0), 0.25f);
+        puckImage.rectTransform.DORotate(new Vector3(0, 0, 180), 0.25f, RotateMode.LocalAxisAdd);
         puckFill.DOColor(puckFlashColour, 0).SetDelay(0.25f);
         puckFill.DOColor(Color.white, 0.5f).SetDelay(0.5f);
     }

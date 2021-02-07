@@ -31,6 +31,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cd823d12ee83c0a41867b45b98a3f4a7, type: 2}
   music:
   - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
+  - {fileID: 11400000, guid: 69b8c277c5601824da6e241f30abc917, type: 2}
   soundEnumName: TouhouCrisisSounds
   musicEnumName: TouhouCrisisMusic
   soundCategoriesToList:
@@ -57,6 +58,7 @@ MonoBehaviour:
   - name: 
     files:
     - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
+    - {fileID: 11400000, guid: 69b8c277c5601824da6e241f30abc917, type: 2}
     foldout: 1
   safeName: TouhouCrisis
-  showMusic: 0
+  showMusic: 1

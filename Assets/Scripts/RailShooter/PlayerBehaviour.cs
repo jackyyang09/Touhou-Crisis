@@ -142,7 +142,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     void HandleShooting(Ray ray)
     {
-        if (inCover || inTransit) return;
+        if (inCover || inTransit || Time.timeScale == 0) return;
 
         if (CurrentAmmo > 0)
         {
