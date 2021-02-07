@@ -1450,7 +1450,6 @@ namespace JSAM
         {
             if (!instance) return null;
             int s = Convert.ToInt32(sound);
-            Debug.Log(instance.library.sounds[s]);
             return instance.PlaySoundInternal(instance.library.sounds[s], trans);
         }
 

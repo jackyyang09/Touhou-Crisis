@@ -49,6 +49,7 @@ MonoBehaviour:
   rb: {fileID: 1298026194886050737}
   damageType: 0
   effect: {fileID: 486157301637664187}
+  lifeTime: 5
 --- !u!54 &1298026194886050737
 Rigidbody:
   m_ObjectHideFlags: 0

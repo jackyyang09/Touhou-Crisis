@@ -32,6 +32,7 @@ public class Sakuya : BaseEnemy
     [SerializeField] SpriteRenderer magicCircleSecondary;
 
     public System.Action OnChangePhase;
+    public System.Action OnBossDefeat;
 
     Coroutine behaviourRoutine;
 
@@ -168,17 +169,30 @@ public class Sakuya : BaseEnemy
         renderer.DOColor(Color.white, 0.25f);
     }
 
+    [PunRPC]
+    void ChangePhaseEffect()
+    {
+        OnChangePhase?.Invoke();
+    }
+
     IEnumerator ChangePhase()
     {
+        currentPhase++;
+
         if (currentPhase < healthPhases.Length)
         {
+            animator.Play("Sakuya Hurt");
+
+            AudioManager.PlaySound(TouhouCrisisSounds.SpellcardBreak);
+
+            yield return new WaitForSeconds(1);
+
             photonView.RPC("GoToCenter", RpcTarget.All);
 
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
 
-            OnChangePhase?.Invoke();
+            photonView.RPC("ChangePhaseEffect", RpcTarget.All);
 
-            currentPhase++;
             maxHealth = healthPhases[currentPhase];
             health = maxHealth;
 
@@ -202,13 +216,25 @@ public class Sakuya : BaseEnemy
         }
         else
         {
+            StopCoroutine(behaviourRoutine);
 
+            AudioManager.FadeMusicOut(3);
+
+            canTakeDamage = false;
+
+            renderer.DOColor(Color.clear, 2).SetDelay(1);
+
+            animator.Play("Sakuya Defeat");
+
+            yield return new WaitForSeconds(3);
+
+            OnBossDefeat?.Invoke();
         }
     }
 
     void SpawnKnifeBundle()
     {
-        AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
+        AudioManager.PlaySound(TouhouCrisisSounds.KnifePlace);
         Vector3 referencePosition = knifeBox.GetRandomPointInBox();
         for (int i = 0; i < 5; i++)
         {
@@ -229,11 +255,13 @@ public class Sakuya : BaseEnemy
     public void StopTime()
     {
         Time.timeScale = 0;
+        AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDialLowPass, 0.1f, true);
     }
 
     public void TimeResumes()
     {
         Time.timeScale = 1;
+        AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 0.1f, true);
     }
 
     [PunRPC]

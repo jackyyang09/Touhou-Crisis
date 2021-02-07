@@ -10,7 +10,9 @@ public class EnemyBullet : MonoBehaviour
 
     [SerializeField] protected DamageType damageType;
 
-    [SerializeField] GameObject effect;
+    [SerializeField] protected GameObject effect;
+
+    [SerializeField] protected float lifeTime;
 
     protected Vector3 ogPos;
     protected Vector3 targetPos;
@@ -33,12 +35,15 @@ public class EnemyBullet : MonoBehaviour
         effect.SetActive(true);
 
         rb.velocity = transform.forward * speed;
+
+        Invoke("DisableSelf", lifeTime);
     }
 
     private void OnDisable()
     {
         effect.SetActive(false);
         rb.velocity = Vector3.zero;
+        if (IsInvoking("DisableSelf")) CancelInvoke("DisableSelf");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -60,5 +65,10 @@ public class EnemyBullet : MonoBehaviour
         Vector3 AB = b - a;
         Vector3 AV = value - a;
         return Vector3.Dot(AV, AB) / Vector3.Dot(AB, AB);
+    }
+
+    void DisableSelf()
+    {
+        gameObject.SetActive(false);
     }
 }

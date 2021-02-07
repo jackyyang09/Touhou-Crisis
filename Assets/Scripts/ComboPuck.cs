@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class ComboPuck : MonoBehaviour, IPunObservable
+public class ComboPuck : MonoBehaviour
 {
     [SerializeField] PlayerBehaviour player;
     [SerializeField] bool hasPuck;
@@ -131,19 +131,5 @@ public class ComboPuck : MonoBehaviour, IPunObservable
                 PassReceivePuck();
             }
         }
-    }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        //if (stream.IsWriting && PhotonNetwork.IsMasterClient)
-        //{
-        //    // We own this player: send the others our data
-        //    stream.SendNext(gameTimer);
-        //}
-        //else
-        //{
-        //    // Network player, receive data
-        //    remoteGameTimer = (float)stream.ReceiveNext();
-        //}
     }
 }

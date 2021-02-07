@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    Sakuya sakuya;
+
     private void Start()
     {
         if (playerPrefab == null)
@@ -60,12 +62,23 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         base.OnEnable();
         AreaLogic.OnEnterFirstArea += StartGameTimer;
+
+        sakuya = FindObjectOfType<Sakuya>();
+        if (sakuya != null)
+        {
+            sakuya.OnBossDefeat += StopGameTimer;
+        }
     }
 
     new void OnDisable()
     {
         base.OnDisable();
         AreaLogic.OnEnterFirstArea -= StartGameTimer;
+
+        if (sakuya != null)
+        {
+            sakuya.OnBossDefeat -= StopGameTimer;
+        }
     }
 
     public void StartGameTimer()
@@ -75,6 +88,16 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         if (!PhotonNetwork.IsMasterClient)
         {
             InvokeRepeating("SyncRemoteProperties", 0, timeBetweenSync);
+        }
+    }
+
+    public void StopGameTimer()
+    {
+        gameTimerEnabled = false;
+
+        if (IsInvoking("SyncRemoteProperties"))
+        {
+            CancelInvoke("SyncRemoteProperties");
         }
     }
 
@@ -110,7 +133,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     public override void OnLeftRoom()
     {
-        //SceneManager.LoadScene(0);
+        SceneManager.LoadScene(0);
     }
 
     public void LeaveRoom()
@@ -118,14 +141,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         PhotonNetwork.LeaveRoom();
     }
 
-    void LoadArena()
+    public void LoadArena()
     {
         if (!PhotonNetwork.IsMasterClient)
         {
             Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
         }
         Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-        PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
+        PhotonNetwork.LoadLevel("Room for 2");
     }
 
     public override void OnPlayerEnteredRoom(Player other)

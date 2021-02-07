@@ -20,6 +20,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b19b57df72c2d7443a2b2c36f816efe8, type: 2}
   music:
   - {fileID: 11400000, guid: e40153051e5f1ef428649ec7cef617bd, type: 2}
+  - {fileID: 11400000, guid: 7eb48473813ac984481d7ed74e8c45f7, type: 2}
   soundEnumName: MainMenuSounds
   musicEnumName: MainMenuMusic
   soundCategoriesToList:
@@ -31,6 +32,7 @@ MonoBehaviour:
   - name: 
     files:
     - {fileID: 11400000, guid: e40153051e5f1ef428649ec7cef617bd, type: 2}
+    - {fileID: 11400000, guid: 7eb48473813ac984481d7ed74e8c45f7, type: 2}
     foldout: 1
   safeName: MainMenu
-  showMusic: 0
+  showMusic: 1
