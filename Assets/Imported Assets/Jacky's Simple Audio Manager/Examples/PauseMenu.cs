@@ -22,13 +22,11 @@ namespace JSAM
         [SerializeField]
         KeyCode toggleButton = KeyCode.Escape;
 
-        Canvas pauseMenu;
+        [SerializeField] OptimizedCanvas canvas;
 
         // Start is called before the first frame update
         void Awake()
         {
-            pauseMenu = GetComponent<Canvas>();
-
             if (AudioManager.instance)
             {
                 LoadVolumeSettings();
@@ -40,10 +38,10 @@ namespace JSAM
         {
             if (Input.GetKeyDown(toggleButton))
             {
-                pauseMenu.enabled = !pauseMenu.enabled;
+                canvas.SetActive(!canvas.IsVisible);
             }
 
-            if (pauseMenu.enabled)
+            if (canvas.IsVisible)
             {
                 if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
                 {

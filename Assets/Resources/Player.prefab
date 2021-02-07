@@ -4099,6 +4099,7 @@ MonoBehaviour:
   musicSlider: {fileID: 6220937513065484040}
   soundSlider: {fileID: 905019138245408803}
   toggleButton: 27
+  canvas: {fileID: 2517102508517794328}
 --- !u!1 &2209780400482939191
 GameObject:
   m_ObjectHideFlags: 0
@@ -4308,7 +4309,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2253635765549522732}
+        m_TargetAssemblyTypeName: JSAM.PauseMenu, Assembly-CSharp
+        m_MethodName: ApplySoundVolume
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2987241276935424215
 GameObject:
   m_ObjectHideFlags: 0
@@ -6183,7 +6196,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2253635765549522732}
+        m_TargetAssemblyTypeName: JSAM.PauseMenu, Assembly-CSharp
+        m_MethodName: ApplyMasterVolume
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7417784489160568093
 GameObject:
   m_ObjectHideFlags: 0
@@ -6783,7 +6808,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2253635765549522732}
+        m_TargetAssemblyTypeName: JSAM.PauseMenu, Assembly-CSharp
+        m_MethodName: ApplyMusicVolume
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8712104815187388694
 GameObject:
   m_ObjectHideFlags: 0
