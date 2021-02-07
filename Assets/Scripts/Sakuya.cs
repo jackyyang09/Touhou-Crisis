@@ -23,9 +23,8 @@ public class Sakuya : BaseEnemy
 
     [SerializeField] ObjectPool[] pools;
 
-    [SerializeField] Transform debugTarget;
-
-    [SerializeField] int[] preselectedPoints;
+    [SerializeField] Vector3 targetOffset = Vector3.zero;
+    [SerializeField] Transform target;
 
     [SerializeField] Transform magicCirclePrimary;
 
@@ -123,7 +122,10 @@ public class Sakuya : BaseEnemy
         AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
         EnemyBullet newKnife = pools[0].GetObject().GetComponent<EnemyBullet>();
         newKnife.transform.position = handTransform.position;
-        newKnife.Init(debugTarget);
+        target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+
+        target.position += targetOffset;
+        newKnife.Init(target);
         newKnife.transform.SetParent(null);
         newKnife.gameObject.SetActive(true);
     }
@@ -147,7 +149,10 @@ public class Sakuya : BaseEnemy
             newKnife.transform.eulerAngles = new Vector3(360 * i / 12, 90, 180);
             newKnife.transform.Translate(Vector3.forward * 1);
             newKnife.gameObject.SetActive(true);
-            newKnife.SpecialInit(debugTarget);
+
+            target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+            target.position += targetOffset;
+            newKnife.SpecialInit(target);
             yield return new WaitForSeconds(0.04f);
         }
     }

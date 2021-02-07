@@ -123,6 +123,36 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &107482754
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 107482755}
+  m_Layer: 9
+  m_Name: Target
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &107482755
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107482754}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1288670846}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &304355468
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -926,8 +956,8 @@ MonoBehaviour:
   pools:
   - {fileID: 1069266834}
   - {fileID: 334917404}
-  debugTarget: {fileID: 1037930471}
-  preselectedPoints: 
+  targetOffset: {x: 0, y: -0.05, z: 0}
+  target: {fileID: 107482755}
   magicCirclePrimary: {fileID: 1374140758}
 --- !u!4 &1288670846
 Transform:
@@ -944,6 +974,7 @@ Transform:
   - {fileID: 1193451098}
   - {fileID: 1069266833}
   - {fileID: 334917403}
+  - {fileID: 107482755}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
