@@ -1287,6 +1287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 679949b391696144f9db0b8786ca4837, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offlineMode: 1
   vCam: {fileID: 0}
   photonView: {fileID: 0}
 --- !u!114 &561008707
@@ -1302,7 +1303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   railShooter: {fileID: 561008706}
-  shootSound: {fileID: 11400000, guid: 64df0c54db9ea73419da5e47fa52bb0f, type: 2}
+  shootSound: {fileID: 11400000, guid: 671d44d5abaf6674cb60849d3377cc66, type: 2}
   screenFlash: {fileID: 1480102065}
   fadeEffectTime: 0.05
 --- !u!114 &561008708

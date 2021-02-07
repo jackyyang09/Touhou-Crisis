@@ -5,6 +5,8 @@ using Photon.Pun;
 
 public class RailShooterLogic : MonoBehaviour
 {
+    [SerializeField] bool offlineMode = false;
+
     [Header("Object References")]
 
     [SerializeField] Cinemachine.CinemachineVirtualCamera vCam;
@@ -27,6 +29,7 @@ public class RailShooterLogic : MonoBehaviour
 
     private void Awake()
     {
+        if (offlineMode) return;
         if (PhotonNetwork.IsConnected)
         {
             if (!photonView.IsMine)
@@ -44,7 +47,7 @@ public class RailShooterLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (PhotonNetwork.IsConnected)
+        if (!offlineMode && PhotonNetwork.IsConnected)
         {
             if (!photonView.IsMine) return;
         }

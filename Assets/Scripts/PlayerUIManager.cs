@@ -241,7 +241,7 @@ public class PlayerUIManager : MonoBehaviour
 
     void UpdateComboMultiplier(float comboCount)
     {
-        comboText.text = comboCount.ToString("0.0");
+        comboText.text = comboCount.ToString("0.0") + "x";
     }
 
     void UpdateScore(int newScore)

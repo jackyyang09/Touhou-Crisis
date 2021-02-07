@@ -27,6 +27,7 @@ public class IntroEffect : MonoBehaviour
     void PlayMusic()
     {
         AudioManager.PlayMusic(MainMenuMusic.MenuMusic);
+        railShooter.OnShoot -= SkipOpening;
     }
 
     private void OnEnable()
@@ -41,6 +42,7 @@ public class IntroEffect : MonoBehaviour
 
     private void SkipOpening(Ray obj)
     {
-        
+        image.DOComplete();
+        image.color = Color.clear;
     }
 }

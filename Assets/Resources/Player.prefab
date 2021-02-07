@@ -2997,6 +2997,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 679949b391696144f9db0b8786ca4837, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offlineMode: 0
   vCam: {fileID: 8448969147946917378}
   photonView: {fileID: -4515361696080196063}
 --- !u!114 &6450433109259132974
