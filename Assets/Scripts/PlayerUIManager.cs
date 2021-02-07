@@ -40,6 +40,13 @@ public class PlayerUIManager : MonoBehaviour
     [Header("Enemy UI")]
     [SerializeField] Image enemyHealthBar;
 
+    [Header("Game Over")]
+    [SerializeField] OptimizedCanvas gameOverScreen;
+    [SerializeField] TextMeshProUGUI p1ScoreText;
+    [SerializeField] TextMeshProUGUI p2ScoreText;
+    [SerializeField] OptimizedCanvas p2ScoreCanvas;
+    [SerializeField] Button retryButton;
+
     private void Awake()
     {
         if (!player.PhotonView.IsMine)
@@ -67,6 +74,7 @@ public class PlayerUIManager : MonoBehaviour
         player.OnFireNoAmmo += ShowReloadGraphic;
         player.OnEnterTransit += FlashWaitGraphic;
         player.OnExitTransit += FlashActionGraphic;
+        player.OnPlayerDeath += LoseSequence;
 
         puck.OnPassPuck += PassPuckEffect;
         puck.OnReceivePuck += ReceivePuckEffect;
@@ -78,6 +86,7 @@ public class PlayerUIManager : MonoBehaviour
         {
             sakuya.OnShot += UpdateBossHealth;
             sakuya.OnChangePhase += RefillBossHealth;
+            sakuya.OnBossDefeat += WinSequence;
         }
     }
 
@@ -92,6 +101,7 @@ public class PlayerUIManager : MonoBehaviour
         player.OnFireNoAmmo -= ShowReloadGraphic;
         player.OnEnterTransit -= FlashWaitGraphic;
         player.OnExitTransit -= FlashActionGraphic;
+        player.OnPlayerDeath -= LoseSequence;
 
         puck.OnPassPuck -= PassPuckEffect;
         puck.OnReceivePuck -= ReceivePuckEffect;
@@ -103,6 +113,7 @@ public class PlayerUIManager : MonoBehaviour
         {
             sakuya.OnShot -= UpdateBossHealth;
             sakuya.OnChangePhase -= RefillBossHealth;
+            sakuya.OnBossDefeat -= WinSequence;
         }
     }
 
@@ -217,11 +228,15 @@ public class PlayerUIManager : MonoBehaviour
 
     void PassPuckEffect()
     {
+        puckImage.rectTransform.localEulerAngles = Vector3.zero;
+        puckImage.rectTransform.DOComplete();
         puckImage.rectTransform.DORotate(new Vector3(0, 0, -180), 0.5f, RotateMode.LocalAxisAdd);
     }
 
     void ReceivePuckEffect()
     {
+        puckImage.rectTransform.localEulerAngles = new Vector3(0, 0, -180);
+        puckImage.rectTransform.DOComplete();
         puckImage.rectTransform.DORotate(new Vector3(0, 0, 180), 0.25f, RotateMode.LocalAxisAdd);
         puckFill.DOColor(puckFlashColour, 0).SetDelay(0.25f);
         puckFill.DOColor(Color.white, 0.5f).SetDelay(0.5f);
@@ -270,5 +285,56 @@ public class PlayerUIManager : MonoBehaviour
     void RefillBossHealth()
     {
         enemyHealthBar.DOFillAmount(1, 0.5f);
+    }
+
+    void WinSequence()
+    {
+        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin);
+        ShowGameOverScreen();
+    }
+
+    void LoseSequence()
+    {
+        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
+        ShowGameOverScreen();
+    }
+
+    void ShowGameOverScreen()
+    {
+        gameOverScreen.Show();
+        bool isHost = Photon.Pun.PhotonNetwork.IsMasterClient;
+        retryButton.interactable = isHost;
+
+        var otherPlayer = PlayerManager.Instance.OtherPlayer;
+
+        if (isHost)
+        {
+            p1ScoreText.text = scoreText.text;
+        }
+        else
+        {
+            p1ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
+            p2ScoreCanvas.Show();
+            p2ScoreText.text = scoreText.text;
+        }
+
+        if (otherPlayer != null)
+        {
+            p2ScoreCanvas.Show();
+            p2ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
+        }
+    }
+
+    public void ReloadLevel()
+    {
+        GameManager.Instance.LoadArena();
+        Destroy(PlayerManager.Instance.gameObject);
+        Destroy(gameObject);
+    }
+
+    public void ReturnToTitle()
+    {
+        GameManager.Instance.LeaveRoom();
+        Destroy(gameObject);
     }
 }

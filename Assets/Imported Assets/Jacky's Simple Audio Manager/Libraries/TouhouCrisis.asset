@@ -29,9 +29,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aaf78250ab486f14b95be8cd9d7b81ec, type: 2}
   - {fileID: 11400000, guid: 7a84bee8edd62aa499eb073dbd9270a4, type: 2}
   - {fileID: 11400000, guid: cd823d12ee83c0a41867b45b98a3f4a7, type: 2}
+  - {fileID: 11400000, guid: 312331a21ffccfa4bb9c14c63e2cf478, type: 2}
+  - {fileID: 11400000, guid: 5bb9884620cf29745a76efee0b28e937, type: 2}
   music:
   - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
   - {fileID: 11400000, guid: 69b8c277c5601824da6e241f30abc917, type: 2}
+  - {fileID: 11400000, guid: 45ce914f03a03964fa0bdec3f0f74417, type: 2}
+  - {fileID: 11400000, guid: 7eb48473813ac984481d7ed74e8c45f7, type: 2}
+  - {fileID: 11400000, guid: 5ab76cc30f898c94db3d3b60d4524c0d, type: 2}
   soundEnumName: TouhouCrisisSounds
   musicEnumName: TouhouCrisisMusic
   soundCategoriesToList:
@@ -41,6 +46,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: a67bb71f57b467e4b8322e208c3070d6, type: 2}
     - {fileID: 11400000, guid: 12774ec267f708d4b96057bad892ab24, type: 2}
     - {fileID: 11400000, guid: cd823d12ee83c0a41867b45b98a3f4a7, type: 2}
+    - {fileID: 11400000, guid: 312331a21ffccfa4bb9c14c63e2cf478, type: 2}
+    - {fileID: 11400000, guid: 5bb9884620cf29745a76efee0b28e937, type: 2}
     foldout: 1
   - name: UI Sounds
     files:
@@ -59,6 +66,9 @@ MonoBehaviour:
     files:
     - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
     - {fileID: 11400000, guid: 69b8c277c5601824da6e241f30abc917, type: 2}
+    - {fileID: 11400000, guid: 45ce914f03a03964fa0bdec3f0f74417, type: 2}
+    - {fileID: 11400000, guid: 7eb48473813ac984481d7ed74e8c45f7, type: 2}
+    - {fileID: 11400000, guid: 5ab76cc30f898c94db3d3b60d4524c0d, type: 2}
     foldout: 1
   safeName: TouhouCrisis
   showMusic: 1

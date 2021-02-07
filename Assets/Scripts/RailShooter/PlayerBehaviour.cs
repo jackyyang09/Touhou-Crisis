@@ -95,6 +95,7 @@ public class PlayerBehaviour : MonoBehaviour
     public System.Action OnReload;
     public System.Action OnFireNoAmmo;
     public System.Action<DamageType> OnTakeDamage;
+    public System.Action OnPlayerDeath;
 
     public System.Action OnEnterTransit;
     public System.Action OnExitTransit;
@@ -128,7 +129,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (!PhotonView.IsMine) return;
         }
-        if (inTransit) return;
+        if (inTransit || currentLives <= 0) return;
 
         if (Input.GetKey(KeyCode.Space))
         {
@@ -224,11 +225,20 @@ public class PlayerBehaviour : MonoBehaviour
     public void TakeDamage(DamageType damageType)
     {
         if (inCover) return;
-        Debug.Log("OOF!");
         impulse.GenerateImpulse();
         StartCoroutine("DamageRecovery");
         currentLives--;
         OnTakeDamage?.Invoke(damageType);
+
+        if (currentLives == 0)
+        {
+            Invoke("PlayerDeath", 1.5f);
+        }
+    }
+
+    public void PlayerDeath()
+    {
+        OnPlayerDeath.Invoke();
     }
 
     IEnumerator DamageRecovery()

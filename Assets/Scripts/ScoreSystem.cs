@@ -2,10 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class ScoreSystem : MonoBehaviour
+public class ScoreSystem : MonoBehaviour, IPunObservable
 {
     [SerializeField] float score;
+    public int CurrentScore
+    {
+        get
+        {
+            return (int)score;
+        }
+    }
+
     [SerializeField] float scoreOnHit;
 
     [Header("Object References")]
@@ -43,5 +52,19 @@ public class ScoreSystem : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(score);
+        }
+        else
+        {
+            // Network player, receive data
+            score = (float)stream.ReceiveNext();
+        }
     }
 }

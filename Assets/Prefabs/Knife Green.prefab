@@ -62,6 +62,7 @@ MonoBehaviour:
   rb: {fileID: 2399703199294658373}
   damageType: 0
   effect: {fileID: 3300936349945839562}
+  lifeTime: 5
   moveDelay: 0
   lookDelay: 1
   smoothLookTime: 1

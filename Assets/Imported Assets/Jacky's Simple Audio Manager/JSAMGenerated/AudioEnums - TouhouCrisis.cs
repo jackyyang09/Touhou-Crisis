@@ -8,9 +8,14 @@
         PuckChange,
         ReloadVO,
         ActionVO,
-        WaitBeep
+        WaitBeep,
+        KnifePlace,
+        SpellcardBreak
     }
     public enum TouhouCrisisMusic {
         FloweringNight,
-        LunaDial
+        LunaDial,
+        LunaDialLowPass,
+        GameOverLose,
+        GameOverWin
     }

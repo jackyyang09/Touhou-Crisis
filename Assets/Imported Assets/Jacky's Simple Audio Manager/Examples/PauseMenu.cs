@@ -25,11 +25,12 @@ namespace JSAM
         [SerializeField] OptimizedCanvas canvas;
 
         // Start is called before the first frame update
-        void Awake()
+        void Start()
         {
             if (AudioManager.instance)
             {
                 LoadVolumeSettings();
+                LoadSliderSettings();
             }
         }
 
@@ -41,15 +42,15 @@ namespace JSAM
                 canvas.SetActive(!canvas.IsVisible);
             }
 
-            if (canvas.IsVisible)
-            {
-                if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
-                {
-                    // Sometimes the user has custom cursor locking code
-                    Cursor.lockState = CursorLockMode.None;
-                    Cursor.visible = true;
-                }
-            }
+            //if (canvas.IsVisible)
+            //{
+            //    if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+            //    {
+            //        // Sometimes the user has custom cursor locking code
+            //        Cursor.lockState = CursorLockMode.None;
+            //        Cursor.visible = true;
+            //    }
+            //}
         }
 
         public void LoadVolumeSettings()
