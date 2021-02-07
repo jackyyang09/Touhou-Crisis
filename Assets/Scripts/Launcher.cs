@@ -26,6 +26,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] OptimizedCanvas lobbyScreen;
     [SerializeField] Button multiplayerButton;
 
+    [SerializeField] TMPro.TMP_InputField inputField;
+
     /// <summary>
     /// Keep track of the current process. Since connection is asynchronous and is based on several callbacks from Photon,
     /// we need to keep track of this to properly adjust the behavior when we receive call back by Photon.
@@ -72,6 +74,27 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
     }
 
+    public void QuickPlay()
+    {
+        progressLabel.Show();
+        controlPanel.Hide();
+
+        // Check if we are connected or not, join if we are, else we initiate the connection to the server.
+        if (PhotonNetwork.IsConnected)
+        {
+            // We need at this point to attempt joining a Random Room.
+            // If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
+            PhotonNetwork.JoinRandomRoom();
+        }
+        else
+        {
+            isConnecting = PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.GameVersion = gameVersion;
+            Debug.Log("Trying to connect...");
+            inputField.text = string.Empty;
+        }
+    }
+
     public override void OnConnectedToMaster()
     {
         // we don't want to do anything if we are not attempting to join a room.
@@ -83,7 +106,13 @@ public class Launcher : MonoBehaviourPunCallbacks
             Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN");
             // first try to join a potential existing room. If there is, good
             // else, we'll be called back with OnJoinRandomFailed()
-            PhotonNetwork.JoinRandomRoom();
+
+            if (inputField.text == string.Empty)
+            {
+                inputField.text = Random.Range(0, 9999).ToString("0000");
+            }
+            PhotonNetwork.JoinOrCreateRoom(inputField.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, new TypedLobby(null, LobbyType.Default));
+
             isConnecting = false;
         }
     }
@@ -115,6 +144,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             //PhotonNetwork.LoadLevel("Room for 1");
             progressLabel.Hide();
             lobbyScreen.Show();
+            Debug.Log(PhotonNetwork.CurrentRoom.Name);
         }
     }
 

@@ -16,19 +16,21 @@ MonoBehaviour:
   - 
   musicCategories:
   - 
-  sounds: []
+  sounds:
+  - {fileID: 11400000, guid: b19b57df72c2d7443a2b2c36f816efe8, type: 2}
   music:
   - {fileID: 11400000, guid: e40153051e5f1ef428649ec7cef617bd, type: 2}
-  soundEnumName: 
-  musicEnumName: 
+  soundEnumName: MainMenuSounds
+  musicEnumName: MainMenuMusic
   soundCategoriesToList:
   - name: 
-    files: []
+    files:
+    - {fileID: 11400000, guid: b19b57df72c2d7443a2b2c36f816efe8, type: 2}
     foldout: 1
   musicCategoriesToList:
   - name: 
     files:
     - {fileID: 11400000, guid: e40153051e5f1ef428649ec7cef617bd, type: 2}
     foldout: 1
-  safeName: 
-  showMusic: 1
+  safeName: MainMenu
+  showMusic: 0

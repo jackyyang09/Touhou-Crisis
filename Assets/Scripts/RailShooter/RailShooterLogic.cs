@@ -5,7 +5,6 @@ using Photon.Pun;
 
 public class RailShooterLogic : MonoBehaviour
 {
-
     [Header("Object References")]
 
     [SerializeField] Cinemachine.CinemachineVirtualCamera vCam;
@@ -28,9 +27,12 @@ public class RailShooterLogic : MonoBehaviour
 
     private void Awake()
     {
-        if (!photonView.IsMine)
+        if (PhotonNetwork.IsConnected)
         {
-            Destroy(vCam.gameObject);
+            if (!photonView.IsMine)
+            {
+                Destroy(vCam.gameObject);
+            }
         }
     }
 

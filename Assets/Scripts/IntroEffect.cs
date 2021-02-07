@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using DG.Tweening;
+using JSAM;
+
+public class IntroEffect : MonoBehaviour
+{
+    [SerializeField] RailShooterLogic railShooter;
+
+    [SerializeField] UnityEngine.UI.Image image;
+
+    [SerializeField] float musicDelay = 0.5f;
+    [SerializeField] float holdBlackTime = 1;
+    [SerializeField] float fadeToWhiteTime = 0.5f;
+    [SerializeField] float fadeToClearTime;
+
+    private void Awake()
+    {
+        image.DOColor(Color.black, 0);
+        image.DOColor(Color.white, fadeToWhiteTime).SetDelay(holdBlackTime);
+        image.DOColor(Color.clear, fadeToClearTime).SetDelay(holdBlackTime + fadeToWhiteTime);
+        Invoke("PlayMusic", musicDelay);
+    }
+
+    void PlayMusic()
+    {
+        AudioManager.PlayMusic(MainMenuMusic.MenuMusic);
+    }
+
+    private void OnEnable()
+    {
+        railShooter.OnShoot += SkipOpening;
+    }
+
+    private void OnDisable()
+    {
+        railShooter.OnShoot -= SkipOpening;
+    }
+
+    private void SkipOpening(Ray obj)
+    {
+        
+    }
+}
