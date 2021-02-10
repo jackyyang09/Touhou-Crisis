@@ -15,7 +15,8 @@ public class ComboPuck : MonoBehaviour
     {
         get
         {
-            return damageMultiplier;
+            if (hasPuck) return damageMultiplier;
+            else return 1;
         }
     }
 

@@ -44,15 +44,21 @@ public class ScoreSystem : MonoBehaviour, IPunObservable
     private void AddScoreOnHit(bool miss, Vector2 position)
     {
         if (miss) return;
+        player.PhotonView.RPC("AddScoreOnSuccessfulHit", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void AddScoreOnSuccessfulHit()
+    {
         score += scoreOnHit * comboPuck.Multliplier;
-        OnScoreChanged.Invoke((int)score);
+        OnScoreChanged?.Invoke((int)score);
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //void Update()
+    //{
+    //    
+    //}
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -64,7 +70,12 @@ public class ScoreSystem : MonoBehaviour, IPunObservable
         else
         {
             // Network player, receive data
-            score = (float)stream.ReceiveNext();
+            float newScore = (float)stream.ReceiveNext();
+            if (newScore != score)
+            {
+                score = newScore;
+                OnScoreChanged?.Invoke((int)score);
+            }
         }
     }
 }

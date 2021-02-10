@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Crosshair : MonoBehaviour
 {
+    [SerializeField] UnityEngine.UI.Image image;
+
     //// Start is called before the first frame update
     //void Start()
     //{
@@ -14,20 +16,21 @@ public class Crosshair : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
+        image.enabled = true;
     }
 
     void OnDisable()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        image.enabled = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        var rect = gameObject.transform as RectTransform;
-        var mousePos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-        mousePos.Scale(new Vector2(1920, 1080));
-        rect.anchoredPosition = mousePos - new Vector3(960, 540);
+        // Why this works: 
+        // https://answers.unity.com/questions/849117/46-ui-image-follow-mouse-position.html?_ga=2.45598500.148015968.1612849553-1895421686.1612849553
+        transform.position = Input.mousePosition;
     }
 }

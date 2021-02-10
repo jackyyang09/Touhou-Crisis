@@ -69,7 +69,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             Instance = this;
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
         var players = FindObjectsOfType<PlayerBehaviour>();
         if (PhotonNetwork.IsMasterClient)

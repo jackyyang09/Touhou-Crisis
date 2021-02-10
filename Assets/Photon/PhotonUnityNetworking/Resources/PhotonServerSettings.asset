@@ -16,9 +16,9 @@ MonoBehaviour:
     AppIdRealtime: 626a2755-8914-4b8a-bb79-2cc2967a349d
     AppIdChat: 
     AppIdVoice: 
-    AppVersion: 1
+    AppVersion: 
     UseNameServer: 1
-    FixedRegion: 
+    FixedRegion: usw
     Server: 
     Port: 0
     ProxyServer: 
@@ -27,19 +27,27 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: cae
+  DevRegion: usw
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - ArrangeKnivesClockwise
+  - ChangePhaseEffect
   - ClickRpc
+  - DashTo
   - DestroyRpc
   - DestroySpaceship
   - Fire
+  - GoToCenter
   - OnShotBehaviour
+  - PlayIdle
   - QueuePuck
   - RespawnSpaceship
+  - SakuyaVolley
+  - TimeStopCombo
+  - WanderTo
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

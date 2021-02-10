@@ -7,7 +7,7 @@ using Photon.Pun;
 public class AudioHelper : MonoBehaviour
 {
     [SerializeField] PhotonView photonView;
-    [SerializeField] PlayerBehaviour player;
+    [SerializeField] PlayerBehaviour player = null;
     [SerializeField] ComboPuck puck;
 
     private void OnEnable()

@@ -26,12 +26,6 @@ public class PlayerNameInputField : MonoBehaviour
         PhotonNetwork.NickName = playerName;
     }
 
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    
-    //}
-
     public void SetPlayerName(string newName)
     {
         if (!string.IsNullOrEmpty(newName))

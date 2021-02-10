@@ -42,9 +42,14 @@ public class PlayerUIManager : MonoBehaviour
 
     [Header("Game Over")]
     [SerializeField] OptimizedCanvas gameOverScreen;
+    [SerializeField] TextMeshProUGUI gameOverText;
+    [SerializeField] TextMeshProUGUI gameOverTimeText;
+    [SerializeField] OptimizedCanvas gameOverTimeCanvas;
+    [SerializeField] OptimizedCanvas p1ScoreCanvas;
     [SerializeField] TextMeshProUGUI p1ScoreText;
-    [SerializeField] TextMeshProUGUI p2ScoreText;
     [SerializeField] OptimizedCanvas p2ScoreCanvas;
+    [SerializeField] TextMeshProUGUI p2ScoreText;
+    [SerializeField] OptimizedCanvas gameOverButtonCanvas;
     [SerializeField] Button retryButton;
 
     private void Awake()
@@ -290,21 +295,21 @@ public class PlayerUIManager : MonoBehaviour
     void WinSequence()
     {
         JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin);
-        ShowGameOverScreen();
+        gameOverText.text = "BOSS CLEAR";
+        StartCoroutine(ShowGameOverScreen());
     }
 
     void LoseSequence()
     {
         JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
-        ShowGameOverScreen();
+        gameOverText.text = "GAME OVER";
+        StartCoroutine(ShowGameOverScreen());
     }
 
-    void ShowGameOverScreen()
+    IEnumerator ShowGameOverScreen()
     {
-        gameOverScreen.Show();
         bool isHost = Photon.Pun.PhotonNetwork.IsMasterClient;
-        retryButton.interactable = isHost;
-
+        
         var otherPlayer = PlayerManager.Instance.OtherPlayer;
 
         if (isHost)
@@ -314,27 +319,68 @@ public class PlayerUIManager : MonoBehaviour
         else
         {
             p1ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
-            p2ScoreCanvas.Show();
             p2ScoreText.text = scoreText.text;
+            UpdateTimeCounter();
         }
 
         if (otherPlayer != null)
         {
-            p2ScoreCanvas.Show();
-            p2ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
+            if (isHost)
+            {
+                p2ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
+            }
+            else
+            {
+                p1ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
+            }
         }
+
+        gameOverScreen.Show();
+
+        yield return new WaitForSeconds(0.25f);
+
+        gameOverText.enabled = true;
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
+
+        yield return new WaitForSeconds(1);
+
+        UpdateTimeCounter();
+        cachedTime = GameManager.Instance.GameTimeElapsed;
+        gameOverTimeText.text = HelperMethods.TimeToString(cachedTime);
+        if (gameOverTimeText.text.Length > 8)
+        {
+            gameOverTimeText.text = gameOverTimeText.text.Remove(8);
+        }
+        gameOverTimeCanvas.Show();
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
+
+        yield return new WaitForSeconds(0.1f);
+
+        p1ScoreCanvas.Show();
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
+
+        yield return new WaitForSeconds(0.1f);
+
+        if (!isHost || otherPlayer != null)
+        {
+            p2ScoreCanvas.Show();
+            JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        retryButton.interactable = isHost;
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
+        gameOverButtonCanvas.Show();
     }
 
     public void ReloadLevel()
     {
-        GameManager.Instance.LoadArena();
-        Destroy(PlayerManager.Instance.gameObject);
-        Destroy(gameObject);
+        //GameManager.Instance.LoadArena();
+        GameManager.Instance.photonView.RPC("LoadScene", Photon.Pun.RpcTarget.All, 1);
     }
 
     public void ReturnToTitle()
     {
         GameManager.Instance.LeaveRoom();
-        Destroy(gameObject);
     }
 }

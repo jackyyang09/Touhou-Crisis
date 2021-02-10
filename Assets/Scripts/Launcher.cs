@@ -17,16 +17,20 @@ public class Launcher : MonoBehaviourPunCallbacks
     private byte maxPlayersPerRoom = 4;
 
     [Tooltip("The UI Panel to let the user enter name, connect and play")]
-    [SerializeField]
-    private OptimizedCanvas controlPanel;
-    [Tooltip("The UI Label to inform the user that the connection is in progress")]
-    [SerializeField]
-    private OptimizedCanvas progressLabel;
+    [SerializeField] OptimizedCanvas controlPanel;
+
+    [SerializeField] TMPro.TextMeshProUGUI progressLabel;
 
     [SerializeField] OptimizedCanvas lobbyScreen;
     [SerializeField] Button multiplayerButton;
 
     [SerializeField] TMPro.TMP_InputField inputField;
+    [SerializeField] TMPro.TextMeshProUGUI roomCode;
+
+    [SerializeField] TMPro.TextMeshProUGUI player1NameText;
+    [SerializeField] TMPro.TextMeshProUGUI player2NameText;
+
+    public bool quickPlay = false;
 
     /// <summary>
     /// Keep track of the current process. Since connection is asynchronous and is based on several callbacks from Photon,
@@ -43,10 +47,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     }
 
     // Start is called before the first frame update
-    //void Start()
-    //{
-    //
-    //}
+    void Start()
+    {
+        RandomizeRoomCode();
+    }
 
     // Update is called once per frame
     //void Update()
@@ -54,10 +58,14 @@ public class Launcher : MonoBehaviourPunCallbacks
     //    
     //}
 
+    void RandomizeRoomCode()
+    {
+        inputField.text = Random.Range(0, 9999).ToString("0000");
+    }
+
     public void Connect()
     {
-        progressLabel.Show();
-        controlPanel.Hide();
+        ShowConnectingText();
 
         // Check if we are connected or not, join if we are, else we initiate the connection to the server.
         if (PhotonNetwork.IsConnected)
@@ -70,14 +78,14 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             isConnecting = PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = gameVersion;
-            Debug.Log("Trying to connect...");
         }
+        Debug.Log("Trying to connect...");
+        quickPlay = false;
     }
 
     public void QuickPlay()
     {
-        progressLabel.Show();
-        controlPanel.Hide();
+        ShowConnectingText();
 
         // Check if we are connected or not, join if we are, else we initiate the connection to the server.
         if (PhotonNetwork.IsConnected)
@@ -90,9 +98,9 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             isConnecting = PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = gameVersion;
-            Debug.Log("Trying to connect...");
-            inputField.text = string.Empty;
         }
+        Debug.Log("Trying to connect...");
+        quickPlay = true;
     }
 
     public override void OnConnectedToMaster()
@@ -109,9 +117,17 @@ public class Launcher : MonoBehaviourPunCallbacks
 
             if (inputField.text == string.Empty)
             {
-                inputField.text = Random.Range(0, 9999).ToString("0000");
+                RandomizeRoomCode();
             }
-            PhotonNetwork.JoinOrCreateRoom(inputField.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, new TypedLobby(null, LobbyType.Default));
+
+            if (quickPlay)
+            {
+                PhotonNetwork.JoinRandomRoom();
+            }
+            else
+            {
+                PhotonNetwork.JoinOrCreateRoom(inputField.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, TypedLobby.Default);
+            }
 
             isConnecting = false;
         }
@@ -119,7 +135,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        progressLabel.Hide();
+        HideConnectingText();
         controlPanel.Show();
         isConnecting = false;
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
@@ -129,7 +145,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
+        RandomizeRoomCode();
+        string name = inputField.text;
+        PhotonNetwork.CreateRoom(name, new RoomOptions { MaxPlayers = maxPlayersPerRoom, IsOpen = true });
     }
 
     public override void OnJoinedRoom()
@@ -141,11 +159,16 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
             Debug.Log("Loading the 'Room for 1' ");
-            //PhotonNetwork.LoadLevel("Room for 1");
-            progressLabel.Hide();
-            lobbyScreen.Show();
-            Debug.Log(PhotonNetwork.CurrentRoom.Name);
+            player1NameText.text = PhotonNetwork.LocalPlayer.NickName;
+            roomCode.text = PhotonNetwork.CurrentRoom.Name;
         }
+        else
+        {
+            player1NameText.text = PhotonNetwork.MasterClient.NickName;
+            roomCode.text = PhotonNetwork.CurrentRoom.Name;
+        }
+        HideConnectingText();
+        lobbyScreen.Show();
     }
 
     public override void OnPlayerEnteredRoom(Player other)
@@ -164,7 +187,8 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            //LoadArena();
+            multiplayerButton.interactable = false;
+            player1NameText.text = PhotonNetwork.LocalPlayer.NickName;
         }
     }
 
@@ -179,5 +203,48 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
         Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
         PhotonNetwork.LoadLevel("Room for 2");
+    }
+
+    public void Disconnect()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
+    Coroutine connectingTextRoutine;
+
+    void ShowConnectingText()
+    {
+        progressLabel.enabled = true;
+        if (connectingTextRoutine == null)
+        {
+            connectingTextRoutine = StartCoroutine(AnimateConnectingText());
+        }
+    }
+
+    void HideConnectingText()
+    {
+        if (connectingTextRoutine != null)
+        {
+            StopCoroutine(connectingTextRoutine);
+            connectingTextRoutine = null;
+            progressLabel.enabled = false;
+        }
+    }
+
+    IEnumerator AnimateConnectingText()
+    {
+        int ellipsesCount = 1;
+        int maxDots = 4;
+        while (progressLabel.enabled)
+        {
+            progressLabel.text = "Connecting";
+            for (int i = 0; i < ellipsesCount; i++)
+            {
+                progressLabel.text += ".";
+            }
+            ellipsesCount = (int)Mathf.Repeat(ellipsesCount + 1, maxDots);
+            yield return new WaitForSeconds(0.25f);
+        }
+        connectingTextRoutine = null;
     }
 }

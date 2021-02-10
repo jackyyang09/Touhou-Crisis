@@ -6,26 +6,56 @@ using DG.Tweening;
 
 public class RailShooterEffects : MonoBehaviour
 {
+    [SerializeField] bool playSound = false;
     [SerializeField] RailShooterLogic railShooter;
+    [SerializeField] PlayerBehaviour player;
     [SerializeField] AudioFileSoundObject shootSound;
 
+    [SerializeField] Color flashColor = new Color(0.7f, 0.7f, 0.7f);
     [SerializeField] UnityEngine.UI.Image screenFlash;
     [SerializeField] float fadeEffectTime = 0.05f;
 
+    private void Start()
+    {
+    }
+
     private void OnEnable()
     {
-        railShooter.OnShoot += PlayEffect;
+        if (railShooter != null)
+        {
+            railShooter.OnShoot += PlayEffect;
+        }
+        else if (player != null)
+        {
+            player.OnBulletFired += PlayEffect;
+        }
     }
 
     private void OnDisable()
     {
-        railShooter.OnShoot += PlayEffect;
+        if (railShooter != null)
+        {
+            railShooter.OnShoot -= PlayEffect;
+        }
+        else if (player != null)
+        {
+            player.OnBulletFired -= PlayEffect;
+        }
     }
 
     void PlayEffect(Ray ray)
     {
-        screenFlash.DOColor(Color.white, 0);
+        screenFlash.DOColor(flashColor, 0);
         screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime);
-        AudioManager.instance.PlaySoundInternal(shootSound);
+        if (playSound)
+        {
+            AudioManager.instance.PlaySoundInternal(shootSound);
+        }
+    }
+
+    void PlayEffect(bool miss, Vector2 hitPosition)
+    {
+        screenFlash.DOColor(flashColor, 0);
+        screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime);
     }
 }

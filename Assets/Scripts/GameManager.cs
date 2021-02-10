@@ -95,9 +95,11 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         gameTimerEnabled = false;
 
+        // Cancel replication and manually perform it one last time
         if (IsInvoking("SyncRemoteProperties"))
         {
             CancelInvoke("SyncRemoteProperties");
+            InvokeRepeating("SyncRemoteProperties", 0, 1);
         }
     }
 
@@ -115,17 +117,23 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             // We own this player: send the others our data
             stream.SendNext(gameTimer);
+            Debug.LogError(gameTimer);
         }
         else
         {
             // Network player, receive data
-            remoteGameTimer = (float)stream.ReceiveNext();
+            if (gameTimerEnabled)
+            {
+                remoteGameTimer = (float)stream.ReceiveNext();
+                Debug.LogError(gameTimer);
+            }
         }
     }
 
     void SyncRemoteProperties()
     {
         gameTimer = remoteGameTimer;
+
     }
 
     /// <summary>
@@ -134,6 +142,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     public override void OnLeftRoom()
     {
         SceneManager.LoadScene(0);
+        LeaveRoom();
     }
 
     public void LeaveRoom()
@@ -147,8 +156,20 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
         }
-        Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
         PhotonNetwork.LoadLevel("Room for 2");
+    }
+    
+    public void LoadScene(int id)
+    {
+        SceneManager.LoadSceneAsync(id);
+    }
+
+    [PunRPC]
+    public void ReloadScene()
+    {
+        var currentScene = SceneManager.GetActiveScene().buildIndex;
+        PhotonNetwork.LoadLevel(1);
+        PhotonNetwork.LoadLevel(currentScene);
     }
 
     public override void OnPlayerEnteredRoom(Player other)
@@ -167,7 +188,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            LoadArena();
+            //LoadArena();
+            PhotonNetwork.LoadLevel(0);
+            LeaveRoom();
         }
     }
 }

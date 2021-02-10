@@ -10,6 +10,8 @@ namespace JSAM
         const string MasterVolumeKey = "MASTER_VOLUME";
         const string MusicVolumeKey = "MUSIC_VOLUME";
         const string SoundVolumeKey = "SOUND_VOLUME";
+        const string CrosshairKey = "USE_CROSSHAIR";
+        const string ScreenFlashKey = "USE_SCREENFLASH";
 
         [SerializeField] Slider masterSlider = null;
         [SerializeField] Slider musicSlider = null;
@@ -24,6 +26,28 @@ namespace JSAM
 
         [SerializeField] OptimizedCanvas canvas;
 
+        [SerializeField] Image crossHairButton;
+        [SerializeField] Image screenFlashButton;
+
+        Crosshair crosshair;
+        GameObject flashEffect;
+
+        void Awake()
+        {
+            crosshair = FindObjectOfType<Crosshair>();
+            flashEffect = GameObject.Find("Lightgun Flash");
+
+            if (!PlayerPrefs.HasKey(CrosshairKey))
+            {
+                PlayerPrefs.SetInt(CrosshairKey, 1);
+            }
+
+            if (!PlayerPrefs.HasKey(ScreenFlashKey))
+            {
+                PlayerPrefs.SetInt(ScreenFlashKey, 1);
+            }
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -31,8 +55,15 @@ namespace JSAM
             {
                 LoadVolumeSettings();
                 LoadSliderSettings();
+                LoadMiscSettings();
+                LoadToggleSettings();
             }
         }
+
+        //void OnDisable()
+        //{
+        //    SaveVolumeSettings();
+        //}
 
         // Update is called once per frame
         void Update()
@@ -71,19 +102,59 @@ namespace JSAM
             }
         }
 
+        public void LoadSliderSettings()
+        {
+            masterSlider.value = AudioManager.GetMasterVolume();
+            musicSlider.value = AudioManager.GetMusicVolume();
+            soundSlider.value = AudioManager.GetSoundVolume();
+        }
+
+        public void LoadMiscSettings()
+        {
+            if (PlayerPrefs.HasKey(CrosshairKey))
+            {
+                crosshair.gameObject.SetActive(PlayerPrefs.GetInt(CrosshairKey) == 1);
+            }
+
+            if (PlayerPrefs.HasKey(ScreenFlashKey))
+            {
+                flashEffect.gameObject.SetActive(PlayerPrefs.GetInt(ScreenFlashKey) == 1);
+            }
+        }
+
+        public void LoadToggleSettings()
+        {
+            if (PlayerPrefs.HasKey(CrosshairKey))
+            {
+                if (PlayerPrefs.GetInt(CrosshairKey) == 1)
+                {
+                    crossHairButton.color = Color.red;
+                }
+                else
+                {
+                    crossHairButton.color = Color.white;
+                }
+            }
+
+            if (PlayerPrefs.HasKey(ScreenFlashKey))
+            {
+                if (PlayerPrefs.GetInt(ScreenFlashKey) == 1)
+                {
+                    screenFlashButton.color = Color.red;
+                }
+                else
+                {
+                    screenFlashButton.color = Color.white;
+                }
+            }
+        }
+
         public void SaveVolumeSettings()
         {
             PlayerPrefs.SetFloat(MasterVolumeKey, AudioManager.GetMasterVolume());
             PlayerPrefs.SetFloat(MusicVolumeKey, AudioManager.GetMusicVolume());
             PlayerPrefs.SetFloat(SoundVolumeKey, AudioManager.GetSoundVolume());
             PlayerPrefs.Save();
-        }
-
-        public void LoadSliderSettings()
-        {
-            masterSlider.value = AudioManager.GetMasterVolume();
-            musicSlider.value = AudioManager.GetMusicVolume();
-            soundSlider.value = AudioManager.GetSoundVolume();
         }
 
         public void ApplyMasterVolume()
@@ -99,6 +170,22 @@ namespace JSAM
         public void ApplySoundVolume()
         {
             AudioManager.SetSoundVolume(soundSlider.value);
+        }
+
+        public void ApplyScreenFlashSettings()
+        {
+            PlayerPrefs.SetInt(ScreenFlashKey, (int)Mathf.Repeat(PlayerPrefs.GetInt(ScreenFlashKey) + 1, 2f));
+            PlayerPrefs.Save();
+            flashEffect.gameObject.SetActive(PlayerPrefs.GetInt(ScreenFlashKey) == 1);
+            LoadToggleSettings();
+        }
+
+        public void ApplyCrosshairSettings()
+        {
+            PlayerPrefs.SetInt(CrosshairKey, (int)Mathf.Repeat(PlayerPrefs.GetInt(CrosshairKey) + 1, 2f));
+            PlayerPrefs.Save();
+            crosshair.enabled = PlayerPrefs.GetInt(CrosshairKey) == 1;
+            LoadToggleSettings();
         }
     }
 }
