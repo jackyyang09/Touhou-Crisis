@@ -12,29 +12,31 @@ public class Sakuya : BaseEnemy
     
     int currentPhase;
 
-    [SerializeField] new SpriteRenderer renderer;
+    [SerializeField] new SpriteRenderer renderer = null;
     [SerializeField] Color damagedColour;
 
-    [SerializeField] ModularBox box;
-    [SerializeField] ModularBox knifeBox;
+    [SerializeField] ModularBox box = null;
+    [SerializeField] ModularBox knifeBox = null;
 
-    [SerializeField] Transform handTransform;
+    [SerializeField] Transform handTransform = null;
 
     [SerializeField] Vector2 timeBetweenWander = new Vector2(1.5f, 4);
     [SerializeField] Vector2 timesToWander = new Vector2(3, 5);
 
-    [SerializeField] ObjectPool[] pools;
+    [SerializeField] ObjectPool[] pools = null;
 
     [SerializeField] Vector3 targetOffset = Vector3.zero;
-    [SerializeField] Transform target;
+    [SerializeField] Transform target = null;
 
-    [SerializeField] Transform magicCirclePrimary;
-    [SerializeField] SpriteRenderer magicCircleSecondary;
+    [SerializeField] Transform magicCirclePrimary = null;
+    [SerializeField] SpriteRenderer magicCircleSecondary = null;
 
     public System.Action OnChangePhase;
     public System.Action OnBossDefeat;
 
     Coroutine behaviourRoutine;
+    Coroutine attackRoutine;
+    bool changingPhase = false;
 
     // Start is called before the first frame update
     void Start()
@@ -60,17 +62,27 @@ public class Sakuya : BaseEnemy
 
         health -= d;
 
+        if (changingPhase) return;
+
         if (health <= 0)
         {
             canTakeDamage = false;
+            changingPhase = true;
             if (PhotonNetwork.IsMasterClient)
             {
                 StopCoroutine(behaviourRoutine);
-                StartCoroutine(ChangePhase());
+                photonView.RPC("StartPhaseChange", RpcTarget.All);
+            }
+            if (attackRoutine != null)
+            {
+                StopCoroutine(attackRoutine);
             }
         }
 
-        DamageFlash();
+        if (currentPhase < healthPhases.Length)
+        {
+            DamageFlash();
+        }
     }
 
     [PunRPC]
@@ -137,7 +149,10 @@ public class Sakuya : BaseEnemy
     [PunRPC]
     public void ArrangeKnivesClockwise()
     {
-        StartCoroutine(ArrangeKnifeRoutine());
+        if (attackRoutine == null)
+        {
+            attackRoutine = StartCoroutine(ArrangeKnifeRoutine());
+        }
     }
 
     IEnumerator ArrangeKnifeRoutine()
@@ -160,6 +175,7 @@ public class Sakuya : BaseEnemy
             AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
             yield return new WaitForSeconds(0.04f);
         }
+        attackRoutine = null;
     }
 
     protected override void DamageFlash()
@@ -167,17 +183,26 @@ public class Sakuya : BaseEnemy
         renderer.DOComplete();
         renderer.DOColor(damagedColour, 0);
         renderer.DOColor(Color.white, 0.25f);
+        renderer.transform.localEulerAngles = new Vector3(10, 0, -5);
+        renderer.transform.DORotate(Vector3.zero, 0.25f);
     }
 
     [PunRPC]
-    void ChangePhaseEffect()
+    void StartPhaseChange()
     {
-        OnChangePhase?.Invoke();
+        StartCoroutine(ChangePhase());
     }
 
     IEnumerator ChangePhase()
     {
         currentPhase++;
+
+        // Deactivate all knives in the scene
+        var knives = FindObjectsOfType<EnemyBullet>();
+        for (int i = 0; i < knives.Length; i++)
+        {
+            knives[i].gameObject.SetActive(false);
+        }
 
         if (currentPhase < healthPhases.Length)
         {
@@ -187,11 +212,11 @@ public class Sakuya : BaseEnemy
 
             yield return new WaitForSeconds(1);
 
-            photonView.RPC("GoToCenter", RpcTarget.All);
+            GoToCenter();
 
             yield return new WaitForSeconds(1);
 
-            photonView.RPC("ChangePhaseEffect", RpcTarget.All);
+            OnChangePhase?.Invoke();
 
             maxHealth = healthPhases[currentPhase];
             health = maxHealth;
@@ -211,24 +236,36 @@ public class Sakuya : BaseEnemy
             yield return new WaitForSeconds(1);
 
             canTakeDamage = true;
+            changingPhase = false;
 
-            behaviourRoutine = StartCoroutine(BehaviourTree());
+            if (PhotonNetwork.IsMasterClient)
+            {
+                behaviourRoutine = StartCoroutine(BehaviourTree());
+            }
         }
         else
         {
-            StopCoroutine(behaviourRoutine);
+            collider.enabled = false;
+
+            if (behaviourRoutine != null)
+            {
+                StopCoroutine(behaviourRoutine);
+            }
 
             AudioManager.FadeMusicOut(3);
 
             canTakeDamage = false;
 
-            renderer.DOColor(Color.clear, 2).SetDelay(1);
-
             animator.Play("Sakuya Defeat");
+
+            renderer.DOComplete();
+            renderer.DOColor(Color.clear, 2).SetDelay(1);
 
             yield return new WaitForSeconds(3);
 
             OnBossDefeat?.Invoke();
+
+            Destroy(gameObject);
         }
     }
 

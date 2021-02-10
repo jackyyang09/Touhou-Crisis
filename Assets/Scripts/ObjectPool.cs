@@ -22,7 +22,7 @@ public class ObjectPool : MonoBehaviour
     {
         pool = new List<GameObject>();
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < objectsToSpawn; i++)
         {
             pool.Add(Instantiate(prefab, transform));
             pool[i].SetActive(false);

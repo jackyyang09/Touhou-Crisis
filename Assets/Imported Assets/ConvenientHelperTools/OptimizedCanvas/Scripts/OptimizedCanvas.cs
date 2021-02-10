@@ -5,8 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof(Canvas))]
 public class OptimizedCanvas : MonoBehaviour
 {
+    [SerializeField] bool hideOnAwake = false;
+
     [SerializeField]
     Canvas canvas = null;
+
+    public RectTransform rectTransform
+    {
+        get
+        {
+            return transform as RectTransform;
+        }
+    }
 
     [SerializeField]
     UnityEngine.UI.GraphicRaycaster caster;
@@ -22,6 +32,14 @@ public class OptimizedCanvas : MonoBehaviour
         get
         {
             return canvas.enabled;
+        }
+    }
+
+    void Awake()
+    {
+        if (hideOnAwake)
+        {
+            Hide();
         }
     }
 
@@ -105,6 +123,7 @@ public class OptimizedCanvas : MonoBehaviour
 
     public void SetActive(bool active)
     {
+        if (canvas == null) return;
         canvas.enabled = active;
         if (caster)
         {
