@@ -117,23 +117,17 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             // We own this player: send the others our data
             stream.SendNext(gameTimer);
-            Debug.LogError(gameTimer);
         }
         else
         {
             // Network player, receive data
-            if (gameTimerEnabled)
-            {
-                remoteGameTimer = (float)stream.ReceiveNext();
-                Debug.LogError(gameTimer);
-            }
+            remoteGameTimer = (float)stream.ReceiveNext();
         }
     }
 
     void SyncRemoteProperties()
     {
         gameTimer = remoteGameTimer;
-
     }
 
     /// <summary>
@@ -164,12 +158,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         SceneManager.LoadSceneAsync(id);
     }
 
-    [PunRPC]
     public void ReloadScene()
     {
-        var currentScene = SceneManager.GetActiveScene().buildIndex;
         PhotonNetwork.LoadLevel(1);
-        PhotonNetwork.LoadLevel(currentScene);
     }
 
     public override void OnPlayerEnteredRoom(Player other)

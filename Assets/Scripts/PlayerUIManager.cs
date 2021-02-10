@@ -376,7 +376,8 @@ public class PlayerUIManager : MonoBehaviour
     public void ReloadLevel()
     {
         //GameManager.Instance.LoadArena();
-        GameManager.Instance.photonView.RPC("LoadScene", Photon.Pun.RpcTarget.All, 1);
+        GameManager.Instance.ReloadScene();
+        //GameManager.Instance.photonView.RPC("ReloadScene", Photon.Pun.RpcTarget.All);
     }
 
     public void ReturnToTitle()

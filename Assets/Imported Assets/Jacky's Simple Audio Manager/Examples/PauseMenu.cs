@@ -44,7 +44,7 @@ namespace JSAM
 
             if (!PlayerPrefs.HasKey(ScreenFlashKey))
             {
-                PlayerPrefs.SetInt(ScreenFlashKey, 1);
+                PlayerPrefs.SetInt(ScreenFlashKey, 0);
             }
         }
 
@@ -70,7 +70,7 @@ namespace JSAM
         {
             if (Input.GetKeyDown(toggleButton))
             {
-                canvas.SetActive(!canvas.IsVisible);
+                canvas.SetActive(true);
             }
 
             //if (canvas.IsVisible)
@@ -113,7 +113,7 @@ namespace JSAM
         {
             if (PlayerPrefs.HasKey(CrosshairKey))
             {
-                crosshair.gameObject.SetActive(PlayerPrefs.GetInt(CrosshairKey) == 1);
+                crosshair.enabled = PlayerPrefs.GetInt(CrosshairKey) == 1;
             }
 
             if (PlayerPrefs.HasKey(ScreenFlashKey))

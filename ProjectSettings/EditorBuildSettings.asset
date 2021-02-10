@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Launcher.unity
     guid: 95816e02da8656847852d8a18fedd2bf
   - enabled: 1
+    path: Assets/Scenes/TweenScene.unity
+    guid: 3992f909d3dfd6b4db9a91234af125a7
+  - enabled: 1
     path: Assets/Scenes/Room for 2.unity
     guid: 6a163e10e810c5c4ebd37447576d5296
   m_configObjects: {}

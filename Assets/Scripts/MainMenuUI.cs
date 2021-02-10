@@ -5,11 +5,14 @@ using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using JSAM;
 
 public class MainMenuUI : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     public const string playerNamePrefKey = "PlayerName";
+
+    [SerializeField] AudioFileSoundObject buttonShoot;
 
     [SerializeField] Launcher launcher;
 
@@ -26,6 +29,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] UnityEngine.UI.Image multiplayerMask;
     [SerializeField] TMPro.TextMeshProUGUI remotePlayer1Name;
     [SerializeField] TMPro.TextMeshProUGUI player2Name;
+    [SerializeField] TMPro.TextMeshProUGUI hostPrivilegeText;
 
     Coroutine settingsRoutine = null;
 
@@ -35,8 +39,14 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     //    
     //}
 
+    public void PlayButtonSound()
+    {
+        AudioManager.instance.PlaySoundInternal(buttonShoot);
+    }
+
     public void JoinOrCreateGame()
     {
+        PlayButtonSound();
         RectTransform rect = controlPanel.transform as RectTransform;
         rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
         Invoke("DelayedConnect", uiMoveSpeed);
@@ -44,6 +54,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     public void QuickPlay()
     {
+        PlayButtonSound();
         RectTransform rect = controlPanel.transform as RectTransform;
         rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
         Invoke("DelayedQuickplay", uiMoveSpeed);
@@ -67,6 +78,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         if (settingsRoutine == null)
         {
+            PlayButtonSound();
             settingsRoutine = StartCoroutine(ShowSettingsRoutine());
         }
     }
@@ -75,6 +87,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         if (settingsRoutine == null)
         {
+            PlayButtonSound();
             settingsRoutine = StartCoroutine(HideSettingsRoutine());
         }
     }
@@ -111,6 +124,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         if (settingsRoutine == null)
         {
+            PlayButtonSound();
             settingsRoutine = StartCoroutine(LeaveLobby());
         }
     }
@@ -135,6 +149,11 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
         {
             OnPlayerTwoJoin(PhotonNetwork.LocalPlayer.NickName);
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                hostPrivilegeText.enabled = true;
+                multiplayerMask.enabled = true;
+            }
         }
     }
 
@@ -142,6 +161,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
+            AudioManager.PlaySound(MainMenuSounds.PlayerJoin);
             OnPlayerTwoJoin(other.NickName);
         }
     }
@@ -174,10 +194,12 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(16, 0);
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(-700, uiMoveSpeed).SetEase(easeType);
         multiplayerMask.enabled = true;
+        hostPrivilegeText.enabled = false;
     }
 
     public void QuitGame()
     {
+        PlayButtonSound();
         Application.Quit();
     }
 }

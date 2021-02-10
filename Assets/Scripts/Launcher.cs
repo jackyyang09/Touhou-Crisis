@@ -22,7 +22,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMPro.TextMeshProUGUI progressLabel;
 
     [SerializeField] OptimizedCanvas lobbyScreen;
-    [SerializeField] Button multiplayerButton;
+    [SerializeField] Image multiplayerButton;
 
     [SerializeField] TMPro.TMP_InputField inputField;
     [SerializeField] TMPro.TextMeshProUGUI roomCode;
@@ -177,7 +177,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            multiplayerButton.interactable = true;
+            multiplayerButton.raycastTarget = true;
         }
     }
 
@@ -187,7 +187,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            multiplayerButton.interactable = false;
+            multiplayerButton.raycastTarget = false;
             player1NameText.text = PhotonNetwork.LocalPlayer.NickName;
         }
     }

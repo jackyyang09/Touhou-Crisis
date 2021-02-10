@@ -35,6 +35,7 @@ public class Sakuya : BaseEnemy
     public System.Action OnBossDefeat;
 
     Coroutine behaviourRoutine;
+    Coroutine attackRoutine;
     bool changingPhase = false;
 
     // Start is called before the first frame update
@@ -71,6 +72,10 @@ public class Sakuya : BaseEnemy
             {
                 StopCoroutine(behaviourRoutine);
                 photonView.RPC("StartPhaseChange", RpcTarget.All);
+            }
+            if (attackRoutine != null)
+            {
+                StopCoroutine(attackRoutine);
             }
         }
 
@@ -144,7 +149,10 @@ public class Sakuya : BaseEnemy
     [PunRPC]
     public void ArrangeKnivesClockwise()
     {
-        StartCoroutine(ArrangeKnifeRoutine());
+        if (attackRoutine == null)
+        {
+            attackRoutine = StartCoroutine(ArrangeKnifeRoutine());
+        }
     }
 
     IEnumerator ArrangeKnifeRoutine()
@@ -167,6 +175,7 @@ public class Sakuya : BaseEnemy
             AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
             yield return new WaitForSeconds(0.04f);
         }
+        attackRoutine = null;
     }
 
     protected override void DamageFlash()
@@ -174,6 +183,8 @@ public class Sakuya : BaseEnemy
         renderer.DOComplete();
         renderer.DOColor(damagedColour, 0);
         renderer.DOColor(Color.white, 0.25f);
+        renderer.transform.localEulerAngles = new Vector3(10, 0, -5);
+        renderer.transform.DORotate(Vector3.zero, 0.25f);
     }
 
     [PunRPC]

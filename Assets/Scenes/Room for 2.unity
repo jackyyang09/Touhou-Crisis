@@ -1116,9 +1116,9 @@ MonoBehaviour:
   player: {fileID: 0}
   photonView: {fileID: 1288670847}
   canTakeDamage: 1
-  healthPhases: 050000000500000005000000
+  healthPhases: 4b00000096000000e1000000
   renderer: {fileID: 1193451099}
-  damagedColour: {r: 1, g: 0.7058824, b: 0.7058824, a: 1}
+  damagedColour: {r: 1, g: 0.23113209, b: 0.23113209, a: 1}
   box: {fileID: 1180432540}
   knifeBox: {fileID: 664051681}
   handTransform: {fileID: 1840746739}
