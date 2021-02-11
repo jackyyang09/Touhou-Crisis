@@ -58,6 +58,11 @@ public class Sakuya : BaseEnemy
 
     public override void TakeDamage(float d = 1)
     {
+        if (currentPhase < healthPhases.Length)
+        {
+            DamageFlash();
+        }
+
         if (!canTakeDamage) return;
 
         health -= d;
@@ -77,11 +82,6 @@ public class Sakuya : BaseEnemy
             {
                 StopCoroutine(attackRoutine);
             }
-        }
-
-        if (currentPhase < healthPhases.Length)
-        {
-            DamageFlash();
         }
     }
 
@@ -183,7 +183,7 @@ public class Sakuya : BaseEnemy
         renderer.DOComplete();
         renderer.DOColor(damagedColour, 0);
         renderer.DOColor(Color.white, 0.25f);
-        renderer.transform.localEulerAngles = new Vector3(10, 0, -5);
+        renderer.transform.localEulerAngles = new Vector3(5, 0, -2.5f);
         renderer.transform.DORotate(Vector3.zero, 0.25f);
     }
 

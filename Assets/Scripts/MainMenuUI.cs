@@ -27,7 +27,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     [SerializeField] RectTransform singleplayerButton;
     [SerializeField] RectTransform multiplayerButton;
-    [SerializeField] UnityEngine.UI.Image multiplayerMask;
+    [SerializeField] OptimizedCanvas multiplayerMask;
     [SerializeField] TMPro.TextMeshProUGUI remotePlayer1Name;
     [SerializeField] TMPro.TextMeshProUGUI player2Name;
     [SerializeField] OptimizedCanvas hostPrivilegeMask;
@@ -156,7 +156,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
             if (!PhotonNetwork.IsMasterClient)
             {
                 hostPrivilegeMask.Show();
-                multiplayerMask.enabled = false;
+                multiplayerMask.Hide();
                 reimuBG.DOFade(0, bgFadeTime);
                 marisaBG.DOKill();
                 marisaBG.DOFade(1, bgFadeTime);
@@ -197,7 +197,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(-700, 0);
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(16, uiMoveSpeed).SetEase(easeType);
         remotePlayer1Name.text = PhotonNetwork.MasterClient.NickName;
-        multiplayerMask.enabled = false;
+        multiplayerMask.Hide();
     }
 
     public void OnPlayerTwoLeave()
@@ -207,7 +207,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(16, 0);
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(-700, uiMoveSpeed).SetEase(easeType);
-        multiplayerMask.enabled = true;
+        multiplayerMask.Show();
         hostPrivilegeMask.Hide();
         reimuBG.DOFade(1, bgFadeTime);
         marisaBG.DOKill();
