@@ -7,55 +7,60 @@ using DG.Tweening;
 
 public class PlayerUIManager : MonoBehaviour
 {
-    [SerializeField] PlayerBehaviour player;
-    [SerializeField] ComboPuck puck;
-    [SerializeField] ScoreSystem score;
-    [SerializeField] Sakuya sakuya;
+    [SerializeField] PlayerBehaviour player = null;
+    [SerializeField] ComboPuck puck = null;
+    [SerializeField] ScoreSystem score = null;
+    [SerializeField] Sakuya sakuya = null;
+    [SerializeField] GameObject[] personalObjects = null;
 
     [Header("Ammo Count")]
-    [SerializeField] TextMeshProUGUI ammoText;
+    [SerializeField] TextMeshProUGUI ammoText = null;
     [SerializeField] OptimizedCanvas[] bulletImages = null;
 
     [Header("HUD Alerts")]
-    [SerializeField] OptimizedCanvas actionImage;
-    [SerializeField] OptimizedCanvas reloadImage;
-    [SerializeField] Image waitImage;
-    [SerializeField] TextMeshProUGUI timeText;
+    [SerializeField] OptimizedCanvas actionImage = null;
+    [SerializeField] OptimizedCanvas reloadImage = null;
+    [SerializeField] Image waitImage = null;
+    [SerializeField] TextMeshProUGUI timeText = null;
 
     [Header("Combo System")]
-    [SerializeField] Image puckImage;
-    [SerializeField] Image puckFill;
-    [SerializeField] Color puckFlashColour;
-    [SerializeField] TextMeshProUGUI comboText;
+    [SerializeField] Image puckImage = null;
+    [SerializeField] Image puckFill = null;
+    [SerializeField] Color puckFlashColour = Color.white;
+    [SerializeField] TextMeshProUGUI comboText = null;
 
     [Header("Damage Effects")]
-    [SerializeField] Image slashDamageImage;
+    [SerializeField] Image slashDamageImage = null;
 
     [Header("Score System")]
-    [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] TextMeshProUGUI scoreText = null;
 
     [Header("Lives Display")]
     [SerializeField] Image[] livesImages = null;
 
     [Header("Enemy UI")]
-    [SerializeField] Image enemyHealthBar;
+    [SerializeField] Image enemyHealthBar = null;
 
     [Header("Game Over")]
-    [SerializeField] OptimizedCanvas gameOverScreen;
-    [SerializeField] TextMeshProUGUI gameOverText;
-    [SerializeField] TextMeshProUGUI gameOverTimeText;
-    [SerializeField] OptimizedCanvas gameOverTimeCanvas;
-    [SerializeField] OptimizedCanvas p1ScoreCanvas;
-    [SerializeField] TextMeshProUGUI p1ScoreText;
-    [SerializeField] OptimizedCanvas p2ScoreCanvas;
-    [SerializeField] TextMeshProUGUI p2ScoreText;
-    [SerializeField] OptimizedCanvas gameOverButtonCanvas;
-    [SerializeField] Button retryButton;
+    [SerializeField] OptimizedCanvas gameOverScreen = null;
+    [SerializeField] TextMeshProUGUI gameOverText = null;
+    [SerializeField] TextMeshProUGUI gameOverTimeText = null;
+    [SerializeField] OptimizedCanvas gameOverTimeCanvas = null;
+    [SerializeField] OptimizedCanvas p1ScoreCanvas = null;
+    [SerializeField] TextMeshProUGUI p1ScoreText = null;
+    [SerializeField] OptimizedCanvas p2ScoreCanvas = null;
+    [SerializeField] TextMeshProUGUI p2ScoreText = null;
+    [SerializeField] OptimizedCanvas gameOverButtonCanvas = null;
+    [SerializeField] Button retryButton = null;
 
     private void Awake()
     {
         if (!player.PhotonView.IsMine)
         {
+            for (int i = 0; i < personalObjects.Length; i++)
+            {
+                Destroy(personalObjects[i]);
+            }
             Destroy(gameObject);
         }
 

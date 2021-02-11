@@ -34,8 +34,41 @@ namespace JSAM
 
         void Awake()
         {
-            crosshair = FindObjectOfType<Crosshair>();
-            flashEffect = GameObject.Find("Lightgun Flash");
+            var crossHairs = FindObjectsOfType<Crosshair>();
+            var flashEffects = FindObjectsOfType<RailShooterEffects>();
+            if (crossHairs.Length > 1)
+            {
+                for (int i = 0; i < crossHairs.Length; i++)
+                {
+                    // Do these objects share the same root?
+                    if (crossHairs[i].transform.root == transform.root)
+                    {
+                        crosshair = crossHairs[i];
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                crosshair = crossHairs[0];
+            }
+
+            if (flashEffects.Length > 1)
+            {
+                for (int i = 0; i < flashEffects.Length; i++)
+                {
+                    // Do these objects share the same root?
+                    if (flashEffects[i].transform.root == transform.root)
+                    {
+                        flashEffect = flashEffects[i].transform.GetChild(0).gameObject;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                flashEffect = flashEffects[0].transform.GetChild(0).gameObject;
+            }
 
             if (!PlayerPrefs.HasKey(CrosshairKey))
             {
