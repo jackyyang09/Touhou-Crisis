@@ -3768,7 +3768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
       propertyPath: m_PropertySheet.m_Int.m_Array.Array.data[0].m_Value
-      value: 90
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
       propertyPath: m_PropertySheet.m_Vector2f.m_Array.Array.data[1].m_Value.x
@@ -3776,7 +3776,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
       propertyPath: m_PropertySheet.m_Vector2f.m_Array.Array.data[2].m_Value.y
-      value: 0.2
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
       propertyPath: m_PropertySheet.m_Vector2f.m_Array.Array.data[2].m_Name
@@ -3788,11 +3788,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
       propertyPath: m_PropertySheet.m_Vector2f.m_Array.Array.data[2].m_Value.x
-      value: 0.1
+      value: 0.09
       objectReference: {fileID: 0}
     - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
       propertyPath: m_PropertySheet.m_Vector2f.m_Array.Array.data[0].m_Value.x
-      value: -20
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
+      propertyPath: m_PropertySheet.m_Vector2f.m_Array.Array.data[1].m_Value.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
+      propertyPath: m_PropertySheet.m_Vector2f.m_Array.Array.data[0].m_Value.y
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
+      propertyPath: m_PropertySheet.m_Vector3f.m_Array.Array.data[1].m_Value.y
+      value: -3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
