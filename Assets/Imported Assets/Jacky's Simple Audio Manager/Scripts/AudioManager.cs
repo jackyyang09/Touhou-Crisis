@@ -2735,6 +2735,7 @@ namespace JSAM
         /// <returns></returns>
         public bool IsSoundPlayingInternal(AudioFileSoundObject s, Transform trans = null)
         {
+            if (sources == null) return false;
             for (int i = 0; i < sources.Count; i++) // Loop through all sources
             {
                 if (sources[i] == null) continue;

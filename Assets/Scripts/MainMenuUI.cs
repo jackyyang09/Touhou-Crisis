@@ -18,6 +18,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     [SerializeField] Ease easeType = Ease.Linear;
     [SerializeField] float uiMoveSpeed = 0.15f;
+    [SerializeField] float bgFadeTime = 0.5f;
 
     [SerializeField] OptimizedCanvas title;
     [SerializeField] OptimizedCanvas controlPanel;
@@ -29,7 +30,10 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] UnityEngine.UI.Image multiplayerMask;
     [SerializeField] TMPro.TextMeshProUGUI remotePlayer1Name;
     [SerializeField] TMPro.TextMeshProUGUI player2Name;
-    [SerializeField] TMPro.TextMeshProUGUI hostPrivilegeText;
+    [SerializeField] OptimizedCanvas hostPrivilegeMask;
+
+    [SerializeField] UnityEngine.UI.RawImage reimuBG;
+    [SerializeField] UnityEngine.UI.RawImage marisaBG;
 
     Coroutine settingsRoutine = null;
 
@@ -151,8 +155,11 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
             OnPlayerTwoJoin(PhotonNetwork.LocalPlayer.NickName);
             if (!PhotonNetwork.IsMasterClient)
             {
-                hostPrivilegeText.enabled = true;
-                multiplayerMask.enabled = true;
+                hostPrivilegeMask.Show();
+                multiplayerMask.enabled = false;
+                reimuBG.DOFade(0, bgFadeTime);
+                marisaBG.DOKill();
+                marisaBG.DOFade(1, bgFadeTime);
             }
         }
     }
@@ -172,6 +179,13 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         {
             OnPlayerTwoLeave();
         }
+    }
+
+    public override void OnLeftRoom()
+    {
+        reimuBG.DOFade(1, bgFadeTime);
+        marisaBG.DOKill();
+        marisaBG.DOFade(0, bgFadeTime);
     }
 
     public void OnPlayerTwoJoin(string name)
@@ -194,7 +208,10 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(16, 0);
         (remotePlayer1Name.transform as RectTransform).DOAnchorPosX(-700, uiMoveSpeed).SetEase(easeType);
         multiplayerMask.enabled = true;
-        hostPrivilegeText.enabled = false;
+        hostPrivilegeMask.Hide();
+        reimuBG.DOFade(1, bgFadeTime);
+        marisaBG.DOKill();
+        marisaBG.DOFade(0, bgFadeTime);
     }
 
     public void QuitGame()
