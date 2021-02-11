@@ -6839,7 +6839,9 @@ MonoBehaviour:
     alpha vs. additive'
   m_Nodes:
   - m_Id: 0
-    linkedSlots: []
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615492}
+      inputSlot: {fileID: 8926484042661615702}
     position: {x: 187, y: 1355}
     expandedSlots: []
     expanded: 0
@@ -6876,7 +6878,8 @@ MonoBehaviour:
         Culture=neutral, PublicKeyToken=null
     attributes: []
   m_Direction: 1
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615702}
 --- !u!114 &8926484042661615603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8259,7 +8262,9 @@ MonoBehaviour:
   m_Tooltip: Determines particle's smoothness.
   m_Nodes:
   - m_Id: 0
-    linkedSlots: []
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615668}
+      inputSlot: {fileID: 8926484042661615700}
     position: {x: 188, y: 1299}
     expandedSlots: []
     expanded: 0
@@ -8296,7 +8301,8 @@ MonoBehaviour:
         PublicKeyToken=b77a5c561934e089
     attributes: []
   m_Direction: 1
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615700}
 --- !u!114 &8926484042661615678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8563,7 +8569,8 @@ MonoBehaviour:
       m_Regex: 
       m_RegexMaxLength: 0
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615668}
 --- !u!114 &8926484042661615701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8650,7 +8657,8 @@ MonoBehaviour:
       m_Regex: 
       m_RegexMaxLength: 0
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615492}
 --- !u!114 &8926484042661615703
 MonoBehaviour:
   m_ObjectHideFlags: 0
