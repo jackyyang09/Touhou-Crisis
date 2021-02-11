@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using JSAM;
 
 public class EnemyBullet : MonoBehaviour
 {
@@ -14,13 +15,16 @@ public class EnemyBullet : MonoBehaviour
 
     [SerializeField] protected float lifeTime;
 
+    [SerializeField] AudioFileSoundObject bulletSound;
+    public bool playSound;
+
     protected Vector3 ogPos;
     protected Vector3 targetPos;
 
     // Start is called before the first frame update
-    void Start()
-    {
-    }
+    //void Start()
+    //{
+    //}
 
     public void Init(Transform target = null)
     {
@@ -35,6 +39,11 @@ public class EnemyBullet : MonoBehaviour
         effect.SetActive(true);
 
         rb.velocity = transform.forward * speed;
+
+        if (playSound)
+        {
+            AudioManager.instance.PlaySoundInternal(bulletSound);
+        }
 
         Invoke("DisableSelf", lifeTime);
     }

@@ -58,11 +58,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b519ebae32b1548955d746015c02bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 12
   rb: {fileID: 2399703199294658373}
   damageType: 0
   effect: {fileID: 3300936349945839562}
   lifeTime: 5
+  bulletSound: {fileID: 11400000, guid: 6e253a8473ebd53419f8c7b9247421ee, type: 2}
+  playSound: 1
   moveDelay: 0
   lookDelay: 1
   smoothLookTime: 1

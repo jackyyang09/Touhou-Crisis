@@ -50,6 +50,8 @@ MonoBehaviour:
   damageType: 0
   effect: {fileID: 3456393804536371340}
   lifeTime: 5
+  bulletSound: {fileID: 11400000, guid: 6e253a8473ebd53419f8c7b9247421ee, type: 2}
+  playSound: 0
   moveDelay: 0
   lookDelay: 0
   smoothLookTime: 0

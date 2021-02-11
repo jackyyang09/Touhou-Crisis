@@ -31,6 +31,8 @@ public class Sakuya : BaseEnemy
     [SerializeField] Transform magicCirclePrimary = null;
     [SerializeField] SpriteRenderer magicCircleSecondary = null;
 
+    [SerializeField] Animator timeStopAnim;
+
     public System.Action OnChangePhase;
     public System.Action OnBossDefeat;
 
@@ -164,7 +166,17 @@ public class Sakuya : BaseEnemy
         {
             SpecialBullet newKnife = pools[1].GetObject().GetComponent<SpecialBullet>();
             newKnife.transform.position = renderer.transform.position;
-            newKnife.moveDelay = 2 + i * 0.15f;
+            newKnife.moveDelay = 2 + i * 0.05f;
+
+            if (i >= 3)
+            {
+                newKnife.moveDelay += 0.5f;
+            }
+            if (i >= 6)
+            {
+                newKnife.moveDelay += 0.5f;
+            }
+
             newKnife.transform.eulerAngles = new Vector3(360 * i / 12, 90, 180);
             newKnife.transform.Translate(Vector3.forward * 1);
             newKnife.gameObject.SetActive(true);
@@ -172,7 +184,7 @@ public class Sakuya : BaseEnemy
             target.position = AreaLogic.Instance.GetPlayer1Fire.position;
             target.position += targetOffset;
             newKnife.SpecialInit(target);
-            AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
+            AudioManager.PlaySound(TouhouCrisisSounds.KnifePlace);
             yield return new WaitForSeconds(0.04f);
         }
         attackRoutine = null;
@@ -204,11 +216,11 @@ public class Sakuya : BaseEnemy
             knives[i].gameObject.SetActive(false);
         }
 
+        AudioManager.PlaySound(TouhouCrisisSounds.SpellcardBreak);
+
         if (currentPhase < healthPhases.Length)
         {
             animator.Play("Sakuya Hurt");
-
-            AudioManager.PlaySound(TouhouCrisisSounds.SpellcardBreak);
 
             yield return new WaitForSeconds(1);
 
@@ -269,7 +281,7 @@ public class Sakuya : BaseEnemy
         }
     }
 
-    void SpawnKnifeBundle()
+    void SpawnKnifeBundle(float moveDelay)
     {
         AudioManager.PlaySound(TouhouCrisisSounds.KnifePlace);
         Vector3 referencePosition = knifeBox.GetRandomPointInBox();
@@ -280,11 +292,16 @@ public class Sakuya : BaseEnemy
             newKnife.transform.position = pos;
             newKnife.gameObject.SetActive(true);
             newKnife.transform.SetParent(null);
+            newKnife.moveDelay = moveDelay;
 
             target.position = AreaLogic.Instance.GetPlayer1Fire.position;
             target.position += targetOffset;
 
             newKnife.transform.LookAt(target.position);
+
+            if (i == 4) newKnife.playSound = true;
+            else newKnife.playSound = false;
+
             newKnife.SpecialInit(target);
         }
     }
@@ -293,12 +310,14 @@ public class Sakuya : BaseEnemy
     {
         Time.timeScale = 0;
         AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDialLowPass, 0.1f, true);
+        AudioManager.PlaySound(TouhouCrisisSounds.TimeStop);
+        timeStopAnim.Play("Time Stop");
     }
 
     public void TimeResumes()
     {
-        Time.timeScale = 1;
-        AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 0.1f, true);
+        //Time.timeScale = 1;
+        //AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 0.1f, true);
     }
 
     [PunRPC]
@@ -313,21 +332,36 @@ public class Sakuya : BaseEnemy
 
         animator.Play("Sakuya Time Stop");
 
-        yield return new WaitForSecondsRealtime(3.5f);
+        yield return new WaitForSecondsRealtime(4.5f);
 
-        SpawnKnifeBundle();
-
-        yield return new WaitForSecondsRealtime(0.5f);
-
-        SpawnKnifeBundle();
+        SpawnKnifeBundle(0.01f);
 
         yield return new WaitForSecondsRealtime(0.5f);
 
-        SpawnKnifeBundle();
+        SpawnKnifeBundle(0.33f);
 
-        yield return new WaitForSecondsRealtime(3f);
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        SpawnKnifeBundle(1.25f);
+
+        yield return new WaitForSecondsRealtime(1.5f);
+
+        timeStopAnim.Play("Time Resumes");
+        AudioManager.PlaySound(TouhouCrisisSounds.TimeResumes);
+        float timer = 0;
+        float timeToFlowAgain = 2;
+        AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 2, true);
+        while (timer < timeToFlowAgain)
+        {
+            Time.timeScale = Mathf.Lerp(0, 1, timer / timeToFlowAgain);
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        Time.timeScale = 1;
+
+        yield return new WaitForSecondsRealtime(1f);
     }
-
 
     IEnumerator BehaviourTree()
     {

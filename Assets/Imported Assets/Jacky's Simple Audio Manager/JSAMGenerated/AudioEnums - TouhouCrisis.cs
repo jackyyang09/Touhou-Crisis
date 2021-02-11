@@ -10,7 +10,9 @@
         ActionVO,
         WaitBeep,
         KnifePlace,
-        SpellcardBreak
+        SpellcardBreak,
+        TimeStop,
+        TimeResumes
     }
     public enum TouhouCrisisMusic {
         FloweringNight,
