@@ -341,7 +341,7 @@ public class Sakuya : BaseEnemy
 
         yield return new WaitForSecondsRealtime(0.5f);
 
-        SpawnKnifeBundle(0.33f);
+        SpawnKnifeBundle(0.5f);
 
         yield return new WaitForSecondsRealtime(0.5f);
 
