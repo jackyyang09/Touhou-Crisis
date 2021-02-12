@@ -150,8 +150,7 @@ public class PlayerUIManager : MonoBehaviour
         //Spawn bullet on the canvas
         var bullet = Instantiate(muzzleFlash, transform).transform as RectTransform;
 
-        bullet.anchorMax = hitPosition;
-        bullet.anchorMin = hitPosition;
+        bullet.position = hitPosition;
 
         UpdateAmmoCount();
         ExpendAmmo();

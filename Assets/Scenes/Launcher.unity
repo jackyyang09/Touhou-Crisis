@@ -7054,6 +7054,14 @@ PrefabInstance:
       propertyPath: playSound
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4034704608295890199, guid: 5e3f219e646f97240aab82207d6e02ce, type: 3}
+      propertyPath: spawnMuzzleFlash
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4034704608295890199, guid: 5e3f219e646f97240aab82207d6e02ce, type: 3}
+      propertyPath: muzzleFlashPrefab
+      value: 
+      objectReference: {fileID: 5146475814407794022, guid: c358f2adcf8c7bd42b7018c2d380fe6c, type: 3}
     - target: {fileID: 7181412679228466394, guid: 5e3f219e646f97240aab82207d6e02ce, type: 3}
       propertyPath: m_LocalPosition.x
       value: 538

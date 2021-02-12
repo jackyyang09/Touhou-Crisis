@@ -78,11 +78,13 @@ public class Sakuya : BaseEnemy
             if (PhotonNetwork.IsMasterClient)
             {
                 StopCoroutine(behaviourRoutine);
+                behaviourRoutine = null;
                 photonView.RPC("StartPhaseChange", RpcTarget.All);
             }
             if (attackRoutine != null)
             {
                 StopCoroutine(attackRoutine);
+                attackRoutine = null;
             }
         }
     }
@@ -262,6 +264,7 @@ public class Sakuya : BaseEnemy
             if (behaviourRoutine != null)
             {
                 StopCoroutine(behaviourRoutine);
+                behaviourRoutine = null;
             }
 
             AudioManager.FadeMusicOut(3);

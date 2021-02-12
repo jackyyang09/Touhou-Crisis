@@ -129,9 +129,9 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (!PhotonView.IsMine) return;
         }
-        if (inTransit || currentLives <= 0) return;
+        if (inTransit) return;
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) && currentLives > 0)
         {
             StepOnPedal();
         }

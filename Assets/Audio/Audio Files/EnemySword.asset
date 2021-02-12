@@ -31,7 +31,7 @@ MonoBehaviour:
   maxDistance: 0
   priority: 192
   startingPitch: 1
-  pitchShift: 0.05
+  pitchShift: 0.1
   playReversed: 0
   delay: 0
   ignoreTimeScale: 0

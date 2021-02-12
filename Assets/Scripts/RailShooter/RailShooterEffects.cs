@@ -15,9 +15,12 @@ public class RailShooterEffects : MonoBehaviour
     [SerializeField] UnityEngine.UI.Image screenFlash;
     [SerializeField] float fadeEffectTime = 0.05f;
 
-    private void Start()
-    {
-    }
+    [SerializeField] GameObject muzzleFlashPrefab;
+    [SerializeField] bool spawnMuzzleFlash;
+
+    //private void Start()
+    //{
+    //}
 
     private void OnEnable()
     {
@@ -47,6 +50,15 @@ public class RailShooterEffects : MonoBehaviour
     {
         screenFlash.DOColor(flashColor, 0);
         screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime);
+
+        if (spawnMuzzleFlash)
+        {
+            //Spawn bullet on the canvas
+            var bullet = Instantiate(muzzleFlashPrefab, transform.GetChild(0).transform as RectTransform).transform as RectTransform;
+
+            bullet.position = Input.mousePosition;
+        }
+
         if (playSound)
         {
             AudioManager.instance.PlaySoundInternal(shootSound);
