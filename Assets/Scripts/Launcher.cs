@@ -49,7 +49,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        RandomizeRoomCode();
+        //RandomizeRoomCode();
     }
 
     // Update is called once per frame
@@ -61,6 +61,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     void RandomizeRoomCode()
     {
         inputField.text = Random.Range(0, 9999).ToString("0000");
+    }
+
+    public void EnterSinglePlayerMode()
+    {
+        PhotonNetwork.OfflineMode = true;
+        Connect();
     }
 
     public void Connect()

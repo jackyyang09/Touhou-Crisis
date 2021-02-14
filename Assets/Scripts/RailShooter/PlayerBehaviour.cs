@@ -23,6 +23,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] bool inTransit;
 
+    [SerializeField] KeyCode coverKey = KeyCode.Space;
+
     [SerializeField] float coverEnterTime = 0.5f;
     float coverEnterTimer;
     [Range(0, 1)]
@@ -110,6 +112,8 @@ public class PlayerBehaviour : MonoBehaviour
             ammoCount[i] = weapons[i].ammoCapacity;
         }
         EnterTransit();
+
+        coverKey = (KeyCode)PlayerPrefs.GetInt(JSAM.PauseMenu.CoverInputKey);
     }
 
     private void OnEnable()
@@ -131,7 +135,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
         if (inTransit) return;
 
-        if (Input.GetKey(KeyCode.Space) && currentLives > 0)
+        if (Input.GetKey(coverKey) && currentLives > 0)
         {
             StepOnPedal();
         }

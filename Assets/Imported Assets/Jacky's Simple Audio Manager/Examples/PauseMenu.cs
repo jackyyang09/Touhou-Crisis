@@ -2,20 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace JSAM
 {
     public class PauseMenu : MonoBehaviour
     {
-        const string MasterVolumeKey = "MASTER_VOLUME";
-        const string MusicVolumeKey = "MUSIC_VOLUME";
-        const string SoundVolumeKey = "SOUND_VOLUME";
-        const string CrosshairKey = "USE_CROSSHAIR";
-        const string ScreenFlashKey = "USE_SCREENFLASH";
+        public const string MasterVolumeKey = "MASTER_VOLUME";
+        public const string MusicVolumeKey = "MUSIC_VOLUME";
+        public const string SoundVolumeKey = "SOUND_VOLUME";
+        public const string CrosshairKey = "USE_CROSSHAIR";
+        public const string ScreenFlashKey = "USE_SCREENFLASH";
+        public const string HideCursorKey = "HIDE_CURSOR";
+        public const string CoverInputKey = "COVER_KEYBIND";
 
         [SerializeField] Slider masterSlider = null;
         [SerializeField] Slider musicSlider = null;
         [SerializeField] Slider soundSlider = null;
+
+        [SerializeField] KeyInputEvents inputEvents;
 
         /// <summary>
         /// Button used to toggle the pause menu, incompatible with Unity's new input manager
@@ -24,13 +29,20 @@ namespace JSAM
         [SerializeField]
         KeyCode toggleButton = KeyCode.Escape;
 
-        [SerializeField] OptimizedCanvas canvas;
+        [SerializeField] OptimizedCanvas canvas = null;
 
-        [SerializeField] Image crossHairButton;
-        [SerializeField] Image screenFlashButton;
+        [SerializeField] Image crossHairButton = null;
+        [SerializeField] Image screenFlashButton = null;
+        [SerializeField] Image hideCursorButton = null;
 
-        Crosshair crosshair;
-        GameObject flashEffect;
+        [SerializeField] OptimizedCanvas rebindInterface = null;
+        [SerializeField] TMPro.TextMeshProUGUI rebindText = null;
+
+        Crosshair crosshair = null;
+        GameObject flashEffect = null;
+
+        [SerializeField] Image rebindMask;
+        Coroutine rebindRoutine = null;
 
         void Awake()
         {
@@ -78,6 +90,16 @@ namespace JSAM
             if (!PlayerPrefs.HasKey(ScreenFlashKey))
             {
                 PlayerPrefs.SetInt(ScreenFlashKey, 0);
+            }
+
+            if (!PlayerPrefs.HasKey(HideCursorKey))
+            {
+                PlayerPrefs.SetInt(HideCursorKey, 0);
+            }
+
+            if (!PlayerPrefs.HasKey(CoverInputKey))
+            {
+                PlayerPrefs.SetInt(CoverInputKey, (int)KeyCode.Space);
             }
         }
 
@@ -153,32 +175,31 @@ namespace JSAM
             {
                 flashEffect.gameObject.SetActive(PlayerPrefs.GetInt(ScreenFlashKey) == 1);
             }
+
+            if (PlayerPrefs.HasKey(HideCursorKey))
+            {
+                Cursor.visible = !(PlayerPrefs.GetInt(HideCursorKey) == 1);
+            }
         }
 
+        /// <summary>
+        /// Sets the corresponding settings menu buttons to be red or white
+        /// </summary>
         public void LoadToggleSettings()
         {
             if (PlayerPrefs.HasKey(CrosshairKey))
             {
-                if (PlayerPrefs.GetInt(CrosshairKey) == 1)
-                {
-                    crossHairButton.color = Color.red;
-                }
-                else
-                {
-                    crossHairButton.color = Color.white;
-                }
+                crossHairButton.color = PlayerPrefs.GetInt(CrosshairKey) == 1 ? Color.red : Color.white;
             }
 
             if (PlayerPrefs.HasKey(ScreenFlashKey))
             {
-                if (PlayerPrefs.GetInt(ScreenFlashKey) == 1)
-                {
-                    screenFlashButton.color = Color.red;
-                }
-                else
-                {
-                    screenFlashButton.color = Color.white;
-                }
+                screenFlashButton.color = PlayerPrefs.GetInt(ScreenFlashKey) == 1 ? Color.red : Color.white;
+            }
+
+            if (PlayerPrefs.HasKey(HideCursorKey))
+            {
+                hideCursorButton.color = PlayerPrefs.GetInt(HideCursorKey) == 1 ? Color.red : Color.white;
             }
         }
 
@@ -219,6 +240,129 @@ namespace JSAM
             PlayerPrefs.Save();
             crosshair.enabled = PlayerPrefs.GetInt(CrosshairKey) == 1;
             LoadToggleSettings();
+        }
+
+        public void ApplyCursorSettings()
+        {
+            PlayerPrefs.SetInt(HideCursorKey, (int)Mathf.Repeat(PlayerPrefs.GetInt(HideCursorKey) + 1, 2f));
+            PlayerPrefs.Save();
+            Cursor.visible = !(PlayerPrefs.GetInt(HideCursorKey) == 1);
+            LoadToggleSettings();
+        }
+
+        public void RebindKeys()
+        {
+            if (rebindRoutine == null)
+            {
+                rebindRoutine = StartCoroutine(KeyRebindInterface());
+            }
+
+            inputEvents.OnKeyDown += OnKeyDown;
+        }
+
+        KeyCode lastKeyDown;
+        void OnKeyDown(KeyCode keyCode) => lastKeyDown = keyCode;
+
+        IEnumerator KeyRebindInterface()
+        {
+            bool cancel = false;
+            inputEvents.enabled = true;
+            lastKeyDown = KeyCode.None;
+            rebindInterface.Show();
+
+            rebindMask.enabled = true;
+
+            KeyCode newCoverKey = (KeyCode)PlayerPrefs.GetInt(CoverInputKey);
+
+            // Set new crouch key binding
+            bool keyFound = false;
+            if (!cancel)
+            {
+                AudioManager.PlaySound(MainMenuSounds.MenuButton);
+                rebindText.text =
+                "PRESS COVER BUTTON, \"ESC\" TO CANCEL\n" +
+                "(CURRENTLY " + "\"" + newCoverKey + "\"" + ")";
+                rebindInterface.rectTransform.DOScaleX(1, 0.125f);
+                yield return new WaitForSeconds(0.25f);
+            }
+
+            if (!cancel)
+            {
+                do
+                {
+                    if (lastKeyDown != KeyCode.None)
+                    {
+                        if (lastKeyDown == KeyCode.Escape)
+                        {
+                            cancel = true;
+                            break;
+                        }
+                        else
+                        {
+                            keyFound = true;
+                            newCoverKey = lastKeyDown;
+                            break;
+                        }
+                    }
+                    yield return null;
+                }
+                while (!keyFound);
+            }
+
+            // Confirm new bindings
+            keyFound = false;
+            lastKeyDown = KeyCode.None;
+            if (!cancel)
+            {
+                AudioManager.PlaySound(MainMenuSounds.MenuButton);
+                rebindInterface.rectTransform.DOScaleX(0, 0.125f);
+                rebindText.text =
+                "NEW COVER BUTTON: " + newCoverKey + "\n" +
+                "PRESS " + "\"" + newCoverKey + "\"" + " TO CONFIRM, PRESS \"ESC\" TO CANCEL";
+                rebindInterface.rectTransform.DOScaleX(1, 0.125f).SetDelay(0.125f);
+                yield return new WaitForSeconds(0.25f);
+            }
+
+            if (!cancel)
+            {
+                // Set new crouch key binding
+                do
+                {
+                    if (lastKeyDown != KeyCode.None)
+                    {
+                        if (lastKeyDown == KeyCode.Escape)
+                        {
+                            cancel = true;
+                            break;
+                        }
+                        else if (lastKeyDown == newCoverKey)
+                        {
+                            keyFound = true;
+                            newCoverKey = lastKeyDown;
+                            break;
+                        }
+                    }
+                    yield return null;
+                }
+                while (!keyFound);
+            }
+
+            if (!cancel)
+            {
+                AudioManager.PlaySound(MainMenuSounds.PlayerJoin);
+                PlayerPrefs.SetInt(CoverInputKey, (int)newCoverKey);
+                PlayerPrefs.Save();
+
+                rebindInterface.rectTransform.DOScaleX(0, 0.125f);
+                rebindText.text = string.Empty;
+                yield return new WaitForSeconds(0.125f);
+            }
+
+            rebindMask.enabled = false;
+            inputEvents.OnKeyDown -= OnKeyDown;
+            inputEvents.enabled = false;
+            rebindRoutine = null;
+            rebindInterface.Hide();
         }
     }
 }

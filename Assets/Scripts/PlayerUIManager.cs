@@ -24,7 +24,7 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI timeText = null;
 
     [Header("Combo System")]
-    [SerializeField] Image puckImage = null;
+    [SerializeField] RectTransform puckImage = null;
     [SerializeField] Image puckFill = null;
     [SerializeField] Color puckFlashColour = Color.white;
     [SerializeField] TextMeshProUGUI comboText = null;
@@ -150,7 +150,7 @@ public class PlayerUIManager : MonoBehaviour
         //Spawn bullet on the canvas
         var bullet = Instantiate(muzzleFlash, transform).transform as RectTransform;
 
-        bullet.position = hitPosition;
+        bullet.position = Input.mousePosition;
 
         UpdateAmmoCount();
         ExpendAmmo();
@@ -237,16 +237,16 @@ public class PlayerUIManager : MonoBehaviour
 
     void PassPuckEffect()
     {
-        puckImage.rectTransform.localEulerAngles = Vector3.zero;
-        puckImage.rectTransform.DOComplete();
-        puckImage.rectTransform.DORotate(new Vector3(0, 0, -180), 0.5f, RotateMode.LocalAxisAdd);
+        puckImage.localEulerAngles = Vector3.zero;
+        puckImage.DOComplete();
+        puckImage.DORotate(new Vector3(0, 0, -180), 0.5f, RotateMode.LocalAxisAdd);
     }
 
     void ReceivePuckEffect()
     {
-        puckImage.rectTransform.localEulerAngles = new Vector3(0, 0, -180);
-        puckImage.rectTransform.DOComplete();
-        puckImage.rectTransform.DORotate(new Vector3(0, 0, 180), 0.25f, RotateMode.LocalAxisAdd);
+        puckImage.localEulerAngles = new Vector3(0, 0, -180);
+        puckImage.DOComplete();
+        puckImage.DORotate(new Vector3(0, 0, 180), 0.25f, RotateMode.LocalAxisAdd);
         puckFill.DOColor(puckFlashColour, 0).SetDelay(0.25f);
         puckFill.DOColor(Color.white, 0.5f).SetDelay(0.5f);
     }
@@ -254,8 +254,8 @@ public class PlayerUIManager : MonoBehaviour
     void ShakePuck(DamageType type)
     {
         // Prevent the shakes from overlapping
-        puckImage.rectTransform.DOComplete();
-        puckImage.rectTransform.DOShakeAnchorPos(1, 50, 50, 80);
+        puckImage.DOComplete();
+        puckImage.DOShakeAnchorPos(1, 50, 50, 80);
     }
 
     void UpdateComboDecay()

@@ -54,7 +54,7 @@ public class RailShooterEffects : MonoBehaviour
         if (spawnMuzzleFlash)
         {
             //Spawn bullet on the canvas
-            var bullet = Instantiate(muzzleFlashPrefab, transform.GetChild(0).transform as RectTransform).transform as RectTransform;
+            var bullet = Instantiate(muzzleFlashPrefab, transform.GetChild(1).transform as RectTransform).transform as RectTransform;
 
             bullet.position = Input.mousePosition;
         }

@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     Sakuya sakuya;
+    PlayerBehaviour player;
 
     private void Start()
     {
@@ -49,13 +50,16 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManager.GetActiveScene().name);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                var newPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                player = newPlayer.GetComponent<PlayerBehaviour>();
             }
             else
             {
                 Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
             }
         }
+
+        player.OnPlayerDeath += StopGameTimer;
     }
 
     new void OnEnable()
@@ -79,6 +83,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             sakuya.OnBossDefeat -= StopGameTimer;
         }
+
+        player.OnPlayerDeath -= StopGameTimer;
     }
 
     public void StartGameTimer()
@@ -136,12 +142,11 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     public override void OnLeftRoom()
     {
         SceneManager.LoadScene(0);
-        LeaveRoom();
     }
 
     public void LeaveRoom()
     {
-        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.Disconnect();
     }
 
     public void LoadArena()

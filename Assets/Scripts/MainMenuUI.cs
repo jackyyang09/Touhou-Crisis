@@ -78,6 +78,16 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         launcher.QuickPlay();
     }
 
+    public void OfflinePlay()
+    {
+        PlayButtonSound();
+        RectTransform rect = controlPanel.transform as RectTransform;
+        rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
+        title.Hide();
+        controlPanel.Hide();
+        launcher.EnterSinglePlayerMode();
+    }
+
     public void OpenSettings()
     {
         if (settingsRoutine == null)
@@ -109,7 +119,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     IEnumerator HideSettingsRoutine()
     {
-        settingsPanel.DOAnchorPosX(1300, uiMoveSpeed).SetEase(easeType);
+        settingsPanel.DOAnchorPosX(1500, uiMoveSpeed).SetEase(easeType);
 
         yield return new WaitForSeconds(uiMoveSpeed);
 

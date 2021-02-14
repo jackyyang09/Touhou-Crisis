@@ -6,6 +6,14 @@ public class Crosshair : MonoBehaviour
 {
     [SerializeField] UnityEngine.UI.Image image;
 
+    string HideCursorKey
+    {
+        get
+        {
+            return JSAM.PauseMenu.HideCursorKey;
+        }
+    }
+
     //// Start is called before the first frame update
     //void Start()
     //{
@@ -15,14 +23,13 @@ public class Crosshair : MonoBehaviour
     void OnEnable()
     {
         Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
+        //Cursor.visible = !(PlayerPrefs.GetInt(HideCursorKey) == 0);
         image.enabled = true;
     }
 
     void OnDisable()
     {
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
         image.enabled = false;
     }
 

@@ -1,6 +1,7 @@
     public enum MainMenuSounds {
         TitleVO,
-        PlayerJoin
+        PlayerJoin,
+        MenuButton
     }
     public enum MainMenuMusic {
         MenuMusic
