@@ -14,6 +14,7 @@ namespace JSAM
         public const string CrosshairKey = "USE_CROSSHAIR";
         public const string ScreenFlashKey = "USE_SCREENFLASH";
         public const string HideCursorKey = "HIDE_CURSOR";
+        public const string FireInputKey = "FIRE_KEYBIND";
         public const string CoverInputKey = "COVER_KEYBIND";
 
         [SerializeField] Slider masterSlider = null;
@@ -95,6 +96,11 @@ namespace JSAM
             if (!PlayerPrefs.HasKey(HideCursorKey))
             {
                 PlayerPrefs.SetInt(HideCursorKey, 0);
+            }
+
+            if (!PlayerPrefs.HasKey(FireInputKey))
+            {
+                PlayerPrefs.SetInt(FireInputKey, (int)KeyCode.Space);
             }
 
             if (!PlayerPrefs.HasKey(CoverInputKey))
@@ -272,6 +278,7 @@ namespace JSAM
 
             rebindMask.enabled = true;
 
+            #region Rebind Cover Key
             KeyCode newCoverKey = (KeyCode)PlayerPrefs.GetInt(CoverInputKey);
 
             // Set new crouch key binding
@@ -357,6 +364,99 @@ namespace JSAM
                 rebindText.text = string.Empty;
                 yield return new WaitForSeconds(0.125f);
             }
+            #endregion
+
+            lastKeyDown = KeyCode.None;
+
+            // Don't actually implement this unless you want to work with PointerEvents again
+            #region Rebind Fire Key
+            //KeyCode newFireKey = (KeyCode)PlayerPrefs.GetInt(FireInputKey);
+            //
+            //// Set new crouch key binding
+            //keyFound = false;
+            //if (!cancel)
+            //{
+            //    AudioManager.PlaySound(MainMenuSounds.MenuButton);
+            //    rebindText.text =
+            //    "PRESS FIRE BUTTON, \"ESC\" TO CANCEL\n" +
+            //    "(CURRENTLY " + "\"" + newFireKey + "\"" + ")";
+            //    rebindInterface.rectTransform.DOScaleX(1, 0.125f);
+            //    yield return new WaitForSeconds(0.25f);
+            //}
+            //
+            //if (!cancel)
+            //{
+            //    do
+            //    {
+            //        if (lastKeyDown != KeyCode.None)
+            //        {
+            //            if (lastKeyDown == KeyCode.Escape)
+            //            {
+            //                cancel = true;
+            //                break;
+            //            }
+            //            else
+            //            {
+            //                keyFound = true;
+            //                newFireKey = lastKeyDown;
+            //                break;
+            //            }
+            //        }
+            //        yield return null;
+            //    }
+            //    while (!keyFound);
+            //}
+            //
+            //// Confirm new bindings
+            //keyFound = false;
+            //lastKeyDown = KeyCode.None;
+            //if (!cancel)
+            //{
+            //    AudioManager.PlaySound(MainMenuSounds.MenuButton);
+            //    rebindInterface.rectTransform.DOScaleX(0, 0.125f);
+            //    rebindText.text =
+            //    "NEW FIRE BUTTON: " + newFireKey + "\n" +
+            //    "PRESS " + "\"" + newFireKey + "\"" + " TO CONFIRM, PRESS \"ESC\" TO CANCEL";
+            //    rebindInterface.rectTransform.DOScaleX(1, 0.125f).SetDelay(0.125f);
+            //    yield return new WaitForSeconds(0.25f);
+            //}
+            //
+            //if (!cancel)
+            //{
+            //    // Set new crouch key binding
+            //    do
+            //    {
+            //        if (lastKeyDown != KeyCode.None)
+            //        {
+            //            if (lastKeyDown == KeyCode.Escape)
+            //            {
+            //                cancel = true;
+            //                break;
+            //            }
+            //            else if (lastKeyDown == newFireKey)
+            //            {
+            //                keyFound = true;
+            //                newFireKey = lastKeyDown;
+            //                break;
+            //            }
+            //        }
+            //        yield return null;
+            //    }
+            //    while (!keyFound);
+            //}
+            //
+            //if (!cancel)
+            //{
+            //    AudioManager.PlaySound(MainMenuSounds.PlayerJoin);
+            //    PlayerPrefs.SetInt(FireInputKey, (int)newFireKey);
+            //    PlayerPrefs.Save();
+            //    FindObjectOfType<RailShooterLogic>().RebindFireKey(newFireKey);
+            //
+            //    rebindInterface.rectTransform.DOScaleX(0, 0.125f);
+            //    rebindText.text = string.Empty;
+            //    yield return new WaitForSeconds(0.125f);
+            //}
+            #endregion
 
             rebindMask.enabled = false;
             inputEvents.OnKeyDown -= OnKeyDown;

@@ -12,6 +12,7 @@ using System.Linq;
 public class KeyInputEvents : MonoBehaviour
 {
     public Action<KeyCode> OnKeyDown, OnKeyUp, OnKeyPress;
+    public Action<int> OnMouseDown, OnMouseUp, OnMousePress;
 
     private static readonly KeyCode[] keyCodes = Enum.GetValues(typeof(KeyCode))
         .Cast<KeyCode>()
@@ -19,15 +20,18 @@ public class KeyInputEvents : MonoBehaviour
         .ToArray();
 
     private List<KeyCode> _keysDown;
+    private List<int> mouseButtonsDown;
 
     public void OnEnable()
     {
         _keysDown = new List<KeyCode>();
+        mouseButtonsDown = new List<int>();
     }
 
     public void OnDisable()
     {
         _keysDown = null;
+        mouseButtonsDown = null;
 
         // Clear listeners
         OnKeyDown = null;
@@ -39,9 +43,9 @@ public class KeyInputEvents : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            for (int i = 0; i < keyCodes.Length; i++)
+            for (int i = 8; i < 330; i++)
             {
-                KeyCode kc = keyCodes[i];
+                KeyCode kc = (KeyCode)i;
                 if (Input.GetKeyDown(kc))
                 {
                     _keysDown.Add(kc);
@@ -49,7 +53,7 @@ public class KeyInputEvents : MonoBehaviour
                 }
             }
         }
-
+        
         if (_keysDown.Count > 0)
         {
             for (int i = 0; i < _keysDown.Count; i++)

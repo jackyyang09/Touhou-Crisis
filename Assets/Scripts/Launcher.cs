@@ -164,7 +164,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         // else we rely on `PhotonNetwork.AutomaticallySyncScene` to sync our instance scene.
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            Debug.Log("Loading the 'Room for 1' ");
+            Debug.Log("Loading Game Room");
             player1NameText.text = PhotonNetwork.LocalPlayer.NickName;
             roomCode.text = PhotonNetwork.CurrentRoom.Name;
         }

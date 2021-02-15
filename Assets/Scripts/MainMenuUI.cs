@@ -108,7 +108,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     IEnumerator ShowSettingsRoutine()
     {
-        (controlPanel.transform as RectTransform).DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
+        (controlPanel.transform as RectTransform).DOAnchorPosX(1200, uiMoveSpeed).SetEase(easeType);
 
         yield return new WaitForSeconds(uiMoveSpeed);
 

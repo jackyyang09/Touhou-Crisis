@@ -7,6 +7,8 @@ public class RailShooterLogic : MonoBehaviour
 {
     [SerializeField] bool offlineMode = false;
 
+    [SerializeField] KeyCode fireKey = KeyCode.Mouse0;
+
     [Header("Object References")]
 
     [SerializeField] Cinemachine.CinemachineVirtualCamera vCam;
@@ -37,6 +39,8 @@ public class RailShooterLogic : MonoBehaviour
                 Destroy(vCam.gameObject);
             }
         }
+
+        //fireKey = (KeyCode)PlayerPrefs.GetInt(JSAM.PauseMenu.FireInputKey);
     }
 
     // Start is called before the first frame update
@@ -52,7 +56,7 @@ public class RailShooterLogic : MonoBehaviour
             if (!photonView.IsMine) return;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(fireKey))
         {
             ShootBehaviour();
         }
@@ -64,5 +68,10 @@ public class RailShooterLogic : MonoBehaviour
         ray = Cam.ScreenPointToRay(Input.mousePosition);
 
         OnShoot?.Invoke(ray);
+    }
+
+    public void RebindFireKey(KeyCode newKey)
+    {
+        fireKey = newKey;
     }
 }
