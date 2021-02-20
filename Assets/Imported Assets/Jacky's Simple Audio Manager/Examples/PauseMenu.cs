@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 namespace JSAM
 {
@@ -44,6 +45,8 @@ namespace JSAM
 
         [SerializeField] Image rebindMask;
         Coroutine rebindRoutine = null;
+
+        RailShooterLogic railShooter = null;
 
         void Awake()
         {
@@ -121,10 +124,22 @@ namespace JSAM
             }
         }
 
-        //void OnDisable()
-        //{
-        //    SaveVolumeSettings();
-        //}
+        private void OnEnable()
+        {
+            railShooter = FindObjectOfType<RailShooterLogic>();
+
+            railShooter.OnShoot += DeselectEverything;
+        }
+
+        void OnDisable()
+        {
+            railShooter.OnShoot -= DeselectEverything;
+        }
+
+        private void DeselectEverything(Ray obj)
+        {
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+        }
 
         // Update is called once per frame
         void Update()

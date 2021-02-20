@@ -22,7 +22,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMPro.TextMeshProUGUI progressLabel;
 
     [SerializeField] OptimizedCanvas lobbyScreen;
-    [SerializeField] Image multiplayerButton;
+    [SerializeField] Image multiplayerButtonImage;
+    [SerializeField] Button multiplayerButton;
 
     [SerializeField] TMPro.TMP_InputField inputField;
     [SerializeField] TMPro.TextMeshProUGUI roomCode;
@@ -86,27 +87,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             PhotonNetwork.GameVersion = gameVersion;
         }
         Debug.Log("Trying to connect...");
-        quickPlay = false;
-    }
-
-    public void QuickPlay()
-    {
-        ShowConnectingText();
-
-        // Check if we are connected or not, join if we are, else we initiate the connection to the server.
-        if (PhotonNetwork.IsConnected)
-        {
-            // We need at this point to attempt joining a Random Room.
-            // If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
-            PhotonNetwork.JoinRandomRoom();
-        }
-        else
-        {
-            isConnecting = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = gameVersion;
-        }
-        Debug.Log("Trying to connect...");
-        quickPlay = true;
+        quickPlay = inputField.text == string.Empty;
     }
 
     public override void OnConnectedToMaster()
@@ -121,17 +102,17 @@ public class Launcher : MonoBehaviourPunCallbacks
             // first try to join a potential existing room. If there is, good
             // else, we'll be called back with OnJoinRandomFailed()
 
-            if (inputField.text == string.Empty)
-            {
-                RandomizeRoomCode();
-            }
-
             if (quickPlay)
             {
                 PhotonNetwork.JoinRandomRoom();
             }
             else
             {
+                if (inputField.text == string.Empty)
+                {
+                    RandomizeRoomCode();
+                }
+
                 PhotonNetwork.JoinOrCreateRoom(inputField.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, TypedLobby.Default);
             }
 
@@ -177,13 +158,20 @@ public class Launcher : MonoBehaviourPunCallbacks
         lobbyScreen.Show();
     }
 
+    public override void OnLeftRoom()
+    {
+        multiplayerButton.interactable = false;
+        multiplayerButtonImage.raycastTarget = false;
+    }
+
     public override void OnPlayerEnteredRoom(Player other)
     {
         Debug.LogFormat("OnPlayerEnteredRoom() {0}", other.NickName); // not seen if you're the player connecting
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            multiplayerButton.raycastTarget = true;
+            multiplayerButtonImage.raycastTarget = true;
+            multiplayerButton.interactable = true;
         }
     }
 
@@ -193,7 +181,8 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            multiplayerButton.raycastTarget = false;
+            multiplayerButtonImage.raycastTarget = false;
+            multiplayerButton.interactable = false;
             player1NameText.text = PhotonNetwork.LocalPlayer.NickName;
         }
     }
@@ -208,7 +197,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
         }
         Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-        PhotonNetwork.LoadLevel("Room for 2");
+        PhotonNetwork.LoadLevel(2);
     }
 
     public void Disconnect()

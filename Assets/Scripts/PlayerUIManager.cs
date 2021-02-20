@@ -7,6 +7,7 @@ using DG.Tweening;
 
 public class PlayerUIManager : MonoBehaviour
 {
+    [Header("Object References")]
     [SerializeField] PlayerBehaviour player = null;
     [SerializeField] ComboPuck puck = null;
     [SerializeField] ScoreSystem score = null;
@@ -40,6 +41,7 @@ public class PlayerUIManager : MonoBehaviour
 
     [Header("Enemy UI")]
     [SerializeField] Image enemyHealthBar = null;
+    [SerializeField] Image[] enemySpellcards = null;
 
     [Header("Game Over")]
     [SerializeField] OptimizedCanvas gameOverScreen = null;
@@ -289,6 +291,11 @@ public class PlayerUIManager : MonoBehaviour
     void UpdateBossHealth()
     {
         enemyHealthBar.fillAmount = sakuya.HealthPercentage;
+
+        if (enemyHealthBar.fillAmount <= 0)
+        {
+            enemySpellcards[enemySpellcards.Length - sakuya.CurrentPhase].enabled = false;
+        }
     }
 
     void RefillBossHealth()

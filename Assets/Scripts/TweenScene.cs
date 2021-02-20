@@ -11,7 +11,7 @@ public class TweenScene : MonoBehaviour
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel(2);
+            PhotonNetwork.LoadLevel(sceneNumber);
         }
     }
 }

@@ -56,13 +56,13 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         Invoke("DelayedConnect", uiMoveSpeed);
     }
 
-    public void QuickPlay()
-    {
-        PlayButtonSound();
-        RectTransform rect = controlPanel.transform as RectTransform;
-        rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
-        Invoke("DelayedQuickplay", uiMoveSpeed);
-    }
+    //public void QuickPlay()
+    //{
+    //    PlayButtonSound();
+    //    RectTransform rect = controlPanel.transform as RectTransform;
+    //    rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
+    //    Invoke("DelayedQuickplay", uiMoveSpeed);
+    //}
 
     public void DelayedConnect()
     {
@@ -71,12 +71,12 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         launcher.Connect();
     }
 
-    public void DelayedQuickplay()
-    {
-        title.Hide();
-        controlPanel.Hide();
-        launcher.QuickPlay();
-    }
+    //public void DelayedQuickplay()
+    //{
+    //    title.Hide();
+    //    controlPanel.Hide();
+    //    launcher.QuickPlay();
+    //}
 
     public void OfflinePlay()
     {
@@ -108,18 +108,18 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     IEnumerator ShowSettingsRoutine()
     {
-        (controlPanel.transform as RectTransform).DOAnchorPosX(1200, uiMoveSpeed).SetEase(easeType);
+        (controlPanel.transform as RectTransform).DOAnchorPosX(1400, uiMoveSpeed).SetEase(easeType);
 
         yield return new WaitForSeconds(uiMoveSpeed);
 
-        settingsPanel.DOAnchorPosX(411, uiMoveSpeed).SetEase(easeType);
+        settingsPanel.DOAnchorPosX(290, uiMoveSpeed).SetEase(easeType);
 
         settingsRoutine = null;
     }
 
     IEnumerator HideSettingsRoutine()
     {
-        settingsPanel.DOAnchorPosX(1500, uiMoveSpeed).SetEase(easeType);
+        settingsPanel.DOAnchorPosX(1600, uiMoveSpeed).SetEase(easeType);
 
         yield return new WaitForSeconds(uiMoveSpeed);
 
@@ -172,8 +172,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
                 marisaBG.DOFade(1, bgFadeTime);
             }
         }
-    }
 
+    }
     public override void OnPlayerEnteredRoom(Player other)
     {
         if (PhotonNetwork.IsMasterClient)
@@ -183,19 +183,21 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         }
     }
 
+    public override void OnLeftRoom()
+    {
+        multiplayerMask.Show();
+        reimuBG.DOFade(1, bgFadeTime);
+        marisaBG.DOKill();
+        marisaBG.DOFade(0, bgFadeTime);
+        hostPrivilegeMask.Hide();
+    }
+
     public override void OnPlayerLeftRoom(Player other)
     {
         if (PhotonNetwork.IsMasterClient)
         {
             OnPlayerTwoLeave();
         }
-    }
-
-    public override void OnLeftRoom()
-    {
-        reimuBG.DOFade(1, bgFadeTime);
-        marisaBG.DOKill();
-        marisaBG.DOFade(0, bgFadeTime);
     }
 
     public void OnPlayerTwoJoin(string name)

@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [SerializeField] float timeBetweenSync = 3;
+    [SerializeField] int shotsFired = 0;
+    [SerializeField] int shotsHit = 0;
 
     static GameManager instance;
     public static GameManager Instance
@@ -38,6 +40,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     Sakuya sakuya;
     PlayerBehaviour player;
 
+    public static Action<PlayerBehaviour> OnSpawnLocalPlayer;
+
     private void Start()
     {
         if (playerPrefab == null)
@@ -52,6 +56,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
                 var newPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
                 player = newPlayer.GetComponent<PlayerBehaviour>();
+                OnSpawnLocalPlayer?.Invoke(player);
             }
             else
             {
@@ -60,6 +65,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         player.OnPlayerDeath += StopGameTimer;
+        player.OnBulletFired += CountPlayerShot;
     }
 
     new void OnEnable()
@@ -85,6 +91,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         player.OnPlayerDeath -= StopGameTimer;
+        player.OnBulletFired -= CountPlayerShot;
     }
 
     public void StartGameTimer()
@@ -107,6 +114,12 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             CancelInvoke("SyncRemoteProperties");
             InvokeRepeating("SyncRemoteProperties", 0, 1);
         }
+    }
+
+    void CountPlayerShot(bool miss, Vector2 hitPosition)
+    {
+        if (!miss) shotsHit++;
+        shotsFired++;
     }
 
     private void Update()
@@ -155,7 +168,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
         }
-        PhotonNetwork.LoadLevel("Room for 2");
+        PhotonNetwork.LoadLevel(2);
     }
     
     public void LoadScene(int id)

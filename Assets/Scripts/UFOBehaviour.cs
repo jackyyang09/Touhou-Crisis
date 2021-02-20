@@ -5,11 +5,13 @@ using DG.Tweening;
 
 public class UFOBehaviour : BaseEnemy
 {
-    [SerializeField] ModularBox box = null;
+    ModularBox box = null;
 
     [SerializeField] Vector2 wanderTime = new Vector2(0.3f, 0.8f);
     [SerializeField] Vector2 waitTime = new Vector2(0.3f, 0.8f);
     [SerializeField] Vector2 timesToWander = new Vector2(3, 5);
+
+    [SerializeField] float timeToDestroy = 2;
 
     Coroutine behaviourRoutine;
 
@@ -18,7 +20,7 @@ public class UFOBehaviour : BaseEnemy
         //box = GameObject.Find("Special Knife Spawn Zone").GetComponent<ModularBox>();
     }
 
-    void Init(ModularBox spawnBox)
+    public void Init(ModularBox spawnBox)
     {
         box = spawnBox;
 
@@ -41,7 +43,6 @@ public class UFOBehaviour : BaseEnemy
         transform.DOMoveY(10, 1);
 
         Destroy(gameObject, 1);
-        //
         //behaviourRoutine = null;
     }
 
@@ -59,6 +60,17 @@ public class UFOBehaviour : BaseEnemy
 
     protected override void DamageFlash()
     {
+        animator.Play("UFO_Hit");
+    }
 
+    protected override void Die()
+    {
+        if (behaviourRoutine != null)
+        {
+            StopCoroutine(behaviourRoutine);
+        }
+
+        rBody.useGravity = true;
+        Destroy(gameObject, timeToDestroy);
     }
 }

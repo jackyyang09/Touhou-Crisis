@@ -11,6 +11,13 @@ public class Sakuya : BaseEnemy
     [SerializeField] int[] healthPhases = new int[] { 75, 150, 200 };
     
     int currentPhase;
+    public int CurrentPhase
+    {
+        get
+        {
+            return currentPhase;
+        }
+    }
 
     [SerializeField] new SpriteRenderer renderer = null;
     [SerializeField] Color damagedColour;

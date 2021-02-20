@@ -156,9 +156,16 @@ public class PlayerBehaviour : MonoBehaviour
             bool miss = true;
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, shootableLayers) && hit.rigidbody != null)
             {
-                //hit.transform.GetComponent<IShootable>().OnShotBehaviour(ActiveWeapon);
-                var photonView = hit.transform.GetComponent<PhotonView>();
-                photonView.RPC("OnShotBehaviour", RpcTarget.All, ActiveWeaponDamage);
+                PhotonView photonView = null;
+                if (hit.transform.TryGetComponent(out photonView))
+                {
+                    photonView.RPC("OnShotBehaviour", RpcTarget.All, ActiveWeaponDamage);
+                }
+                // Hit an offline object
+                else
+                {
+                    hit.transform.GetComponent<IShootable>().OnShotBehaviour(ActiveWeaponDamage);
+                }
 
                 miss = false;
             }
