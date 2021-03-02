@@ -359,7 +359,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 0
-  sharedProfile: {fileID: 11400000, guid: 6456ee81bd073f444a24137187157847, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 00fd992c6f92a1741a7a11f61bb91db6, type: 2}
 --- !u!1001 &235204033
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1128,7 +1128,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 609601553}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.84, y: 0.47, z: -0.96000004}
+  m_LocalPosition: {x: 1.84, y: 0.47, z: 0.8699999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1270952735}
@@ -1195,9 +1195,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43db8c0ac9072641a2e9eeea0362f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ufoPrefab: {fileID: 851426616380385810, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
+  ufoPrefab: {fileID: 7707117479210563684, guid: 4bd9e2c5a20c9bc408030321b2f80f42, type: 3}
   areaBox: {fileID: 635497959}
-  maximumUFOs: 0
+  sakuya: {fileID: 1288670845}
+  spawnDelay:
+  - 15
+  - 12.5
+  - 10
+  maximumUfos: 4
   spawnPositions:
   - {fileID: 61665952}
   - {fileID: 1270952735}
@@ -1537,9 +1542,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sakura Default
       objectReference: {fileID: 0}
+    - target: {fileID: 1334078634490302752, guid: b1227547f135aee4ba74d83e6e674005, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2108657689026256032, guid: b1227547f135aee4ba74d83e6e674005, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2108657689026256032, guid: b1227547f135aee4ba74d83e6e674005, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1961,7 +1970,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1193451097}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 10, y: 16, z: 0.2}
@@ -2058,8 +2067,13 @@ MonoBehaviour:
   box: {fileID: 1180432540}
   knifeBox: {fileID: 664051681}
   handTransform: {fileID: 1840746739}
-  timeBetweenWander: {x: 0.8, y: 1.5}
-  timesToWander: {x: 1, y: 4}
+  behaviourStructs:
+  - timeBetweenWander: {x: 1.25, y: 1.5}
+    timesToWander: {x: 2, y: 4}
+  - timeBetweenWander: {x: 1, y: 1.25}
+    timesToWander: {x: 3, y: 4}
+  - timeBetweenWander: {x: 0.33, y: 0.66}
+    timesToWander: {x: 6, y: 10}
   pools:
   - {fileID: 1069266834}
   - {fileID: 334917404}
@@ -2488,7 +2502,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556008111}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.975, y: 0.47, z: -0.96000004}
+  m_LocalPosition: {x: -3.975, y: 0.47, z: 0.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 61665952}
@@ -2543,67 +2557,6 @@ MonoBehaviour:
   blendDistance: 0
   weight: 0
   sharedProfile: {fileID: 11400000, guid: 6456ee81bd073f444a24137187157847, type: 2}
---- !u!1001 &1635097441
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_RootOrder
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.052
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.87
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 6.57
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385808, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385810, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_Name
-      value: UFO
-      objectReference: {fileID: 0}
-    - target: {fileID: 851426616380385810, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3d1085f18bea52d49bb87f60a537fe88, type: 3}
 --- !u!1001 &1692179072
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3014,7 +2967,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2089808183}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: -0.86, y: 1.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 122154565}
@@ -4034,7 +3987,6 @@ MonoBehaviour:
     setSizeRandom: {x: 0.09, y: 0.15}
     gravity: {x: 0, y: -3, z: 0}
   sakuya: {fileID: 1288670845}
-  currentPhase: 0
 --- !u!1001 &7582369077286574167
 PrefabInstance:
   m_ObjectHideFlags: 0

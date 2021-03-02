@@ -8,6 +8,13 @@ using JSAM;
 
 public class Sakuya : BaseEnemy
 {
+    [System.Serializable]
+    struct BehaviourStruct
+    {
+        public Vector2 timeBetweenWander;
+        public Vector2 timesToWander;
+    }
+
     [SerializeField] int[] healthPhases = new int[] { 75, 150, 200 };
     
     int currentPhase;
@@ -27,8 +34,7 @@ public class Sakuya : BaseEnemy
 
     [SerializeField] Transform handTransform = null;
 
-    [SerializeField] Vector2 timeBetweenWander = new Vector2(1.5f, 4);
-    [SerializeField] Vector2 timesToWander = new Vector2(3, 5);
+    [SerializeField] BehaviourStruct[] behaviourStructs = null;
 
     [SerializeField] ObjectPool[] pools = null;
 
@@ -40,12 +46,16 @@ public class Sakuya : BaseEnemy
 
     [SerializeField] Animator timeStopAnim;
 
-    public System.Action OnChangePhase;
+    public System.Action<int> OnChangePhase;
     public System.Action OnBossDefeat;
 
     Coroutine behaviourRoutine;
     Coroutine attackRoutine;
     bool changingPhase = false;
+    /// <summary>
+    /// Prevent Sakuya from stopping time consecutively
+    /// </summary>
+    bool canStopTime = false;
 
     // Start is called before the first frame update
     void Start()
@@ -237,7 +247,7 @@ public class Sakuya : BaseEnemy
 
             yield return new WaitForSeconds(1);
 
-            OnChangePhase?.Invoke();
+            OnChangePhase?.Invoke(currentPhase);
 
             maxHealth = healthPhases[currentPhase];
             health = maxHealth;
@@ -379,27 +389,37 @@ public class Sakuya : BaseEnemy
 
         while (true)
         {
-            int wanderNum = (int)Random.Range(timesToWander.x, timesToWander.y);
+            var behaviourStruct = behaviourStructs[currentPhase];
+            int wanderNum = (int)Random.Range(behaviourStruct.timesToWander.x, behaviourStruct.timesToWander.y);
             for (int i = 0; i < wanderNum; i++)
             {
                 Vector3 destination = GetRandomPosition();
                 photonView.RPC("WanderTo", RpcTarget.All, destination);
-                float wanderTime = Random.Range(timeBetweenWander.x, timeBetweenWander.y);
+                float wanderTime = Random.Range(behaviourStruct.timeBetweenWander.x, behaviourStruct.timeBetweenWander.y);
                 yield return new WaitForSeconds(wanderTime);
             }
 
-            //switch (/*Random.Range(0, currentPhase + 1)*/2)
-            switch (Random.Range(0, currentPhase + 1))
+            int attackIndex = 0;
+            do
+            {
+                //attackIndex = (/*Random.Range(0, currentPhase + 1)*/2);
+                attackIndex = Random.Range(0, currentPhase + 1);
+            } while (attackIndex == 2 && !canStopTime);
+
+            switch (attackIndex)
             {
                 case 0:
+                    canStopTime = true;
                     photonView.RPC("SakuyaVolley", RpcTarget.All);
                     yield return new WaitForSeconds(5);
                     break;
                 case 1:
+                    canStopTime = true;
                     photonView.RPC("ArrangeKnivesClockwise", RpcTarget.All);
                     yield return new WaitForSeconds(8);
                     break;
                 case 2:
+                    canStopTime = false;
                     photonView.RPC("TimeStopCombo", RpcTarget.All);
                     yield return new WaitForSeconds(5);
                     break;

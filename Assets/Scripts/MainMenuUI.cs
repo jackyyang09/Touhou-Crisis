@@ -108,22 +108,24 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     IEnumerator ShowSettingsRoutine()
     {
-        (controlPanel.transform as RectTransform).DOAnchorPosX(1400, uiMoveSpeed).SetEase(easeType);
+        (controlPanel.transform as RectTransform).DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
+        title.Hide();
 
         yield return new WaitForSeconds(uiMoveSpeed);
 
-        settingsPanel.DOAnchorPosX(290, uiMoveSpeed).SetEase(easeType);
+        settingsPanel.DOAnchorPosX(0, uiMoveSpeed).SetEase(easeType);
 
         settingsRoutine = null;
     }
 
     IEnumerator HideSettingsRoutine()
     {
-        settingsPanel.DOAnchorPosX(1600, uiMoveSpeed).SetEase(easeType);
+        settingsPanel.DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
 
         yield return new WaitForSeconds(uiMoveSpeed);
 
         (controlPanel.transform as RectTransform).DOAnchorPosX(0, uiMoveSpeed).SetEase(easeType);
+        title.Show();
 
         settingsRoutine = null;
     }
@@ -145,8 +147,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     IEnumerator LeaveLobby()
     {
-        singleplayerButton.DOAnchorPosX(-1360, uiMoveSpeed).SetEase(easeType);
-        multiplayerButton.DOAnchorPosX(1360, uiMoveSpeed).SetEase(easeType);
+        singleplayerButton.DOAnchorPosX(-1800, uiMoveSpeed).SetEase(easeType);
+        multiplayerButton.DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
 
         yield return new WaitForSeconds(uiMoveSpeed);
 

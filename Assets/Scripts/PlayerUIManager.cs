@@ -54,6 +54,8 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI p2ScoreText = null;
     [SerializeField] OptimizedCanvas gameOverButtonCanvas = null;
     [SerializeField] Button retryButton = null;
+    [SerializeField] Canvas reimuPortrait = null;
+    [SerializeField] Canvas marisaPortrait = null;
 
     private void Awake()
     {
@@ -298,7 +300,7 @@ public class PlayerUIManager : MonoBehaviour
         }
     }
 
-    void RefillBossHealth()
+    void RefillBossHealth(int currentPhase)
     {
         enemyHealthBar.DOFillAmount(1, 0.5f);
     }
@@ -326,11 +328,15 @@ public class PlayerUIManager : MonoBehaviour
         if (isHost)
         {
             p1ScoreText.text = scoreText.text;
+            reimuPortrait.enabled = true;
+            marisaPortrait.enabled = false;
         }
         else
         {
             p1ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
             p2ScoreText.text = scoreText.text;
+            reimuPortrait.enabled = false;
+            marisaPortrait.enabled = true;
             UpdateTimeCounter();
         }
 
@@ -353,7 +359,7 @@ public class PlayerUIManager : MonoBehaviour
         gameOverText.enabled = true;
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
 
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.8f);
 
         UpdateTimeCounter();
         cachedTime = GameManager.Instance.GameTimeElapsed;
@@ -365,18 +371,18 @@ public class PlayerUIManager : MonoBehaviour
         gameOverTimeCanvas.Show();
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.15f);
 
         p1ScoreCanvas.Show();
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.15f);
 
         if (!isHost || otherPlayer != null)
         {
             p2ScoreCanvas.Show();
             JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.15f);
         }
 
         retryButton.interactable = isHost;

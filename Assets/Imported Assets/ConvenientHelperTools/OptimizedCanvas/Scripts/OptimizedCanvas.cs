@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))]
 public class OptimizedCanvas : MonoBehaviour
 {
     [SerializeField] bool hideOnAwake = false;
 
-    [SerializeField]
-    Canvas canvas = null;
+    [SerializeField] Canvas canvas = null;
 
     public RectTransform rectTransform
     {
@@ -18,14 +18,16 @@ public class OptimizedCanvas : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    UnityEngine.UI.GraphicRaycaster caster;
+    [SerializeField] GraphicRaycaster caster;
 
-    [SerializeField]
-    OptimizedCanvas[] children = new OptimizedCanvas[0];
+    [SerializeField] OptimizedCanvas[] children = new OptimizedCanvas[0];
+    [SerializeField] List<LayoutGroup> layoutGroups = null;
+    [SerializeField] List<LayoutElement> layoutElements = null;
 
     [SerializeField] public UnityEngine.Events.UnityEvent onCanvasShow;
     [SerializeField] public UnityEngine.Events.UnityEvent onCanvasHide;
+
+    Coroutine layoutRoutine = null;
 
     public bool IsVisible
     {
@@ -47,12 +49,13 @@ public class OptimizedCanvas : MonoBehaviour
     private void OnValidate()
     {
         if (canvas != GetComponent<Canvas>()) canvas = GetComponent<Canvas>();
-        if (caster != GetComponent<UnityEngine.UI.GraphicRaycaster>()) caster = GetComponent<UnityEngine.UI.GraphicRaycaster>();
+        if (caster != GetComponent<GraphicRaycaster>()) caster = GetComponent<GraphicRaycaster>();
 
         if (transform.childCount > 0)
         {
             LocateChildCanvases();
         }
+        LocateLayoutComponents();
     }
 
 #if UNITY_EDITOR
@@ -90,8 +93,9 @@ public class OptimizedCanvas : MonoBehaviour
     public void LocateChildCanvases()
     {
         var childCanvases = GetComponentsInChildren<OptimizedCanvas>();
-        bool differentSize = childCanvases.Length - 1 != children.Length;
+
         bool containsNull = false;
+
         for (int i = 0; i < children.Length; i++)
         {
             if (children[i] == null)
@@ -101,12 +105,42 @@ public class OptimizedCanvas : MonoBehaviour
             }
         }
         
-        if (differentSize || containsNull)
+        if (containsNull)
         {
             children = new OptimizedCanvas[childCanvases.Length - 1];
             for (int i = 1; i < childCanvases.Length; i++)
             {
                 children[i - 1] = childCanvases[i];
+            }
+        }
+    }
+
+    public void LocateLayoutComponents()
+    {
+        layoutElements = new List<LayoutElement>(GetComponentsInChildren<LayoutElement>());
+        layoutGroups = new List<LayoutGroup>(GetComponentsInChildren<LayoutGroup>());
+
+        for (int i = layoutElements.Count - 1; i >= 0; i--)
+        {
+            for (int j = 0; j < children.Length; j++)
+            {
+                if (layoutElements[i].transform.IsChildOf(children[j].transform))
+                {
+                    layoutElements.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+
+        for (int i = layoutGroups.Count - 1; i >= 0; i--)
+        {
+            for (int j = 0; j < children.Length; j++)
+            {
+                if (layoutGroups[i].transform.IsChildOf(children[j].transform))
+                {
+                    layoutGroups.RemoveAt(i);
+                    break;
+                }
             }
         }
     }
@@ -149,6 +183,13 @@ public class OptimizedCanvas : MonoBehaviour
                 }
             }
         }
+
+        if (Application.isPlaying)
+        {
+            if (layoutRoutine != null) StopCoroutine(layoutRoutine);
+            layoutRoutine = StartCoroutine(FlashLayoutComponents(active));
+        }
+
         if (canvas.enabled) onCanvasShow.Invoke();
         else onCanvasHide.Invoke();
     }
@@ -171,5 +212,35 @@ public class OptimizedCanvas : MonoBehaviour
         {
             caster.enabled = false;
         }
+    }
+
+    IEnumerator FlashLayoutComponents(bool showForOneFrame)
+    {
+        if (showForOneFrame)
+        {
+            for (int i = 0; i < layoutElements.Count; i++)
+            {
+                layoutElements[i].enabled = true;
+            }
+
+            for (int i = 0; i < layoutGroups.Count; i++)
+            {
+                layoutGroups[i].enabled = true;
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+        
+        for (int i = 0; i < layoutElements.Count; i++)
+        {
+            layoutElements[i].enabled = false;
+        }
+
+        for (int i = 0; i < layoutGroups.Count; i++)
+        {
+            layoutGroups[i].enabled = false;
+        }
+
+        layoutRoutine = null;
     }
 }

@@ -4,35 +4,44 @@ using UnityEngine;
 
 public class UFOSpawner : MonoBehaviour
 {
-    [SerializeField] GameObject ufoPrefab;
-    [SerializeField] ModularBox areaBox;
+    [SerializeField] GameObject ufoPrefab = null;
+    [SerializeField] ModularBox areaBox = null;
+
+    [SerializeField] Sakuya sakuya = null;
+
+    [SerializeField] float[] spawnDelay = new float[3];
 
     [Range(0, 8)]
-    [SerializeField] int maximumUFOs;
+    [SerializeField] int maximumUfos = 0;
 
-    [SerializeField] Transform[] spawnPositions;
+    [SerializeField] Transform[] spawnPositions = null;
 
-    ComboPuck puck;
+    int activeUfos = 0;
+
+    //ComboPuck puck = null;
 
     void OnEnable()
     {
         GameManager.OnSpawnLocalPlayer += Initialize;
+        sakuya.OnChangePhase += UpdateSpawnBehaviour;
+        UpdateSpawnBehaviour(0);
     }
 
     void OnDisable()
     {
-        if (puck != null)
-        {
-            puck.OnPassPuck -= SpawnUFO;
-        }
+        sakuya.OnChangePhase -= UpdateSpawnBehaviour;
+        //if (puck != null)
+        //{
+        //    puck.OnPassPuck -= SpawnUFO;
+        //}
     }
 
     void Initialize(PlayerBehaviour player)
     {
         GameManager.OnSpawnLocalPlayer -= Initialize;
 
-        puck = PlayerManager.Instance.LocalPlayer.GetComponent<ComboPuck>();
-        puck.OnPassPuck += SpawnUFO;
+        //puck = PlayerManager.Instance.LocalPlayer.GetComponent<ComboPuck>();
+        //puck.OnPassPuck += SpawnUFO;
     }
 
     // Start is called before the first frame update
@@ -47,13 +56,29 @@ public class UFOSpawner : MonoBehaviour
     //    
     //}
 
+    void UpdateSpawnBehaviour(int currentPhase)
+    {
+        if (IsInvoking("SpawnUFO")) CancelInvoke("SpawnUFO");
+
+        InvokeRepeating("SpawnUFO", spawnDelay[currentPhase], spawnDelay[currentPhase]);
+    }
+
+    [ContextMenu("Spawn UFO Now")]
     void SpawnUFO()
     {
-        Debug.Log("UFO SPAWNED");
+        if (activeUfos < maximumUfos)
+        {
+            activeUfos++;
+            Transform spawnPos = spawnPositions[Random.Range(0, spawnPositions.Length)];
+            var newFO = Instantiate(ufoPrefab, spawnPos.position, Quaternion.identity);
+            UFOBehaviour ufo = newFO.GetComponent<UFOBehaviour>();
+            ufo.OnUFOExpire += ReportUFODeath;
+            ufo.Init(areaBox);
+        }
+    }
 
-        Transform spawnPos = spawnPositions[Random.Range(0, spawnPositions.Length)];
-        var newFO = Instantiate(ufoPrefab, spawnPos.position, Quaternion.identity);
-        UFOBehaviour ufo = newFO.GetComponent<UFOBehaviour>();
-        ufo.Init(areaBox);
+    void ReportUFODeath()
+    {
+        activeUfos--;
     }
 }

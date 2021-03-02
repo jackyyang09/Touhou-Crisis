@@ -20,8 +20,6 @@ public class EnvironmentChanger : MonoBehaviour
 
     [SerializeField] Sakuya sakuya = null;
 
-    [SerializeField] int currentPhase = 0;
-
     int constantSpawnRateID;
     int setRandomVelocityID;
     int setLifetimeRandomID;
@@ -47,10 +45,8 @@ public class EnvironmentChanger : MonoBehaviour
         sakuya.OnChangePhase -= ChangePhase;
     }
 
-    void ChangePhase()
+    void ChangePhase(int currentPhase)
     {
-        currentPhase++;
-
         var preset = presets[currentPhase];
 
         environmentEffect.SetInt(constantSpawnRateID, preset.constantSpawnRate);
