@@ -19,8 +19,6 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
     [SerializeField] protected Rigidbody rBody;
     [SerializeField] protected Animator animator;
 
-    [SerializeField] protected PlayerBehaviour player;
-
     [SerializeField] protected PhotonView photonView;
 
     [SerializeField] protected bool canTakeDamage = true;

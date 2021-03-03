@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: Time Stop - Intro Fade-In
+  m_Name: Intro Fade-In
   m_EditorClassIdentifier: 
-  components:
-  - {fileID: 6397401379534019187}
+  components: []
 --- !u!114 &6397401379534019187
 MonoBehaviour:
   m_ObjectHideFlags: 3

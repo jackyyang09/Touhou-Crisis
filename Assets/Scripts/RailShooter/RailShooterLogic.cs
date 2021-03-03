@@ -56,10 +56,14 @@ public class RailShooterLogic : MonoBehaviour
             if (!photonView.IsMine) return;
         }
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+
+#else
         if (Input.GetKeyDown(fireKey))
         {
             ShootBehaviour();
         }
+#endif
     }
 
     void ShootBehaviour()

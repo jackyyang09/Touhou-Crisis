@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Vegetation
-  m_Shader: {fileID: -6465566751694194690, guid: 303a60b26a4b54d4fa3bee4ed882f56d, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: eaf72437725cc27478881786c6e615b8, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1

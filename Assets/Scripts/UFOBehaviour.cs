@@ -57,6 +57,15 @@ public class UFOBehaviour : BaseEnemy
         int wanderNum = Random.Range((int)timesToWander.x, (int)timesToWander.y + 1);
         for (int i = 0; i < wanderNum; i++)
         {
+            switch (ufoType)
+            {
+                case UFOType.Green:
+                    break;
+                case UFOType.Blue:
+                    break;
+                case UFOType.Red:
+                    break;
+            }
             Vector3 destination = box.GetRandomPointInBox();
             transform.DOMove(destination, Random.Range(wanderTime.x, wanderTime.y));
             yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
