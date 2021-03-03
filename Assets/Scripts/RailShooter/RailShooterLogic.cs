@@ -57,7 +57,10 @@ public class RailShooterLogic : MonoBehaviour
         }
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            ShootBehaviour();
+        }
 #else
         if (Input.GetKeyDown(fireKey))
         {

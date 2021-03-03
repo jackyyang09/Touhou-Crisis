@@ -135,6 +135,16 @@ public class PlayerBehaviour : MonoBehaviour
         }
         if (inTransit) return;
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+        if (Input.touchCount > 0 && currentLives > 0)
+        {
+            StepOnPedal();
+        }
+        else
+        {
+            ReleasePedal();
+        }
+#else
         if (Input.GetKey(coverKey) && currentLives > 0)
         {
             StepOnPedal();
@@ -143,6 +153,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             ReleasePedal();
         }
+#endif
     }
 
     void HandleShooting(Ray ray)
