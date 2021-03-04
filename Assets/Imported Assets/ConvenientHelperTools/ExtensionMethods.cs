@@ -50,9 +50,16 @@ public static class ExtensionMethods
         return new Vector2(Random.value, Random.value);
     }
 
-    public static Vector2 NewRandomVector3(this Vector3 vec)
+    public static Vector3 NewRandomVector3(this Vector3 vec)
     {
         return new Vector3(Random.value, Random.value, Random.value);
+    }
+
+    public static Vector3 ScaleBetter(this Vector3 vec, Vector3 scale)
+    {
+        var newVec = new Vector3(vec.x, vec.y, vec.z);
+        newVec.Scale(scale);
+        return newVec;
     }
 
     /// <summary>

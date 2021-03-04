@@ -104,7 +104,7 @@ public class UFOBehaviour : BaseEnemy
 
         collider.isTrigger = false;
         rBody.useGravity = true;
-        rBody.AddExplosionForce(explosionForce, explosionOrigin.position, upwardsModifier);
+        rBody.AddExplosionForce(explosionForce, explosionOrigin.position, 1, upwardsModifier);
         Destroy(gameObject, timeToDestroy);
     }
 }

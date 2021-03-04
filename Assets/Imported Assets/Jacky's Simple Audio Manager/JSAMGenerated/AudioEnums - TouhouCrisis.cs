@@ -12,7 +12,8 @@
         KnifePlace,
         SpellcardBreak,
         TimeStop,
-        TimeResumes
+        TimeResumes,
+        BulletCasings
     }
     public enum TouhouCrisisMusic {
         FloweringNight,

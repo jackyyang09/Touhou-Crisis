@@ -39,6 +39,7 @@ public class AudioHelper : MonoBehaviour
     private void PlayFire(bool miss, Vector2 hitPosition)
     {
         AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
+        AudioManager.PlaySound(TouhouCrisisSounds.BulletCasings);
     }
 
     bool shoutReloadOnce = false;

@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerUIManager : MonoBehaviour
 {
+    [SerializeField] Camera screenSpaceCamera = null;
+    [SerializeField] Canvas overlayCanvas = null;
+
     [Header("Object References")]
     [SerializeField] PlayerBehaviour player = null;
     [SerializeField] ComboPuck puck = null;
@@ -75,13 +79,16 @@ public class PlayerUIManager : MonoBehaviour
     void Start()
     {
         transform.SetParent(null, false);
+
+        var cameraData = Camera.main.GetUniversalAdditionalCameraData();
+        cameraData.cameraStack.Add(screenSpaceCamera);
     }
 
     private void OnEnable()
     {
         player.OnBulletFired += SpawnMuzzleFlash;
         player.OnReload += HideReloadGraphic;
-        player.OnReload += ReloadAmmo;
+        player.OnReload += UpdateAmmoCount;
         player.OnTakeDamage += FadeDamageEffect;
         player.OnTakeDamage += ShakePuck;
         player.OnTakeDamage += UpdateLivesDisplay;
@@ -108,7 +115,7 @@ public class PlayerUIManager : MonoBehaviour
     {
         player.OnBulletFired -= SpawnMuzzleFlash;
         player.OnReload -= HideReloadGraphic;
-        player.OnReload -= ReloadAmmo;
+        player.OnReload -= UpdateAmmoCount;
         player.OnTakeDamage -= FadeDamageEffect;
         player.OnTakeDamage -= ShakePuck;
         player.OnTakeDamage -= UpdateLivesDisplay;
@@ -152,14 +159,15 @@ public class PlayerUIManager : MonoBehaviour
         }
 
         //Spawn bullet on the canvas
-        var bullet = Instantiate(muzzleFlash, transform).transform as RectTransform;
+        var bullet = Instantiate(muzzleFlash, overlayCanvas.transform).transform as RectTransform;
 
         bullet.position = Input.mousePosition;
 
         UpdateAmmoCount();
-        ExpendAmmo();
+        //ExpendAmmo();
     }
 
+    #region Deprecated Ammo Code
     void ExpendAmmo()
     {
         bulletImages[player.CurrentAmmo].Hide();
@@ -177,6 +185,7 @@ public class PlayerUIManager : MonoBehaviour
         }
         UpdateAmmoCount();
     }
+    #endregion
 
     void UpdateAmmoCount()
     {
