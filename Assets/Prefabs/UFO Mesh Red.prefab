@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 8710525466195991356}
   - component: {fileID: 6768041195819444017}
   - component: {fileID: 4031495159962072928}
-  m_Layer: 0
-  m_Name: UFO Red
+  m_Layer: 14
+  m_Name: UFO Mesh Red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4174139062129351203}
   - component: {fileID: 1396526900903699730}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Top Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2140342937189714845}
   - component: {fileID: 605775422373728096}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Bot Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -5759,9 +5759,7 @@ MonoBehaviour:
     sway.
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661615375}
-      inputSlot: {fileID: 0}
+    linkedSlots: []
     position: {x: 314, y: 2184}
     expandedSlots: []
     expanded: 0
@@ -6829,9 +6827,7 @@ MonoBehaviour:
     alpha vs. additive'
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661615492}
-      inputSlot: {fileID: 0}
+    linkedSlots: []
     position: {x: 187, y: 1355}
     expandedSlots: []
     expanded: 0
@@ -6907,9 +6903,7 @@ MonoBehaviour:
   m_Tooltip: Lower = Less Fade Effect, Higher = More Fading Effect.
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661615656}
-      inputSlot: {fileID: 0}
+    linkedSlots: []
     position: {x: 187, y: 1212}
     expandedSlots: []
     expanded: 0
@@ -6985,9 +6979,7 @@ MonoBehaviour:
   m_Tooltip: Determines particle's smoothness.
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661615668}
-      inputSlot: {fileID: 0}
+    linkedSlots: []
     position: {x: 188, y: 1299}
     expandedSlots: []
     expanded: 0
@@ -7241,9 +7233,7 @@ MonoBehaviour:
   m_Tooltip: 
   m_Nodes:
   - m_Id: 0
-    linkedSlots:
-    - outputSlot: {fileID: 8926484042661615720}
-      inputSlot: {fileID: 0}
+    linkedSlots: []
     position: {x: 568, y: 1448}
     expandedSlots: []
     expanded: 0
