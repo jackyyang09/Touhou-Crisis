@@ -4097,7 +4097,7 @@ MonoBehaviour:
   activeWeaponIndex: 0
   shootableLayers:
     serializedVersion: 2
-    m_Bits: 4608
+    m_Bits: 20992
   railShooter: {fileID: -8420764247617239034}
   comboPuck: {fileID: 811481477370429726}
   head: {fileID: 109522752353041395}

@@ -1,5 +1,81 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!64 &7481105158015671472
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2405144626370763959}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 332403386950823936, guid: df715cf45a94b764584726fc61a63b5e, type: 3}
+--- !u!1001 &5762190360521087148
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8346801249733758583}
+    m_Modifications:
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000081460335
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4385943838216778909, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7969018183955694619, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+      propertyPath: m_Name
+      value: UFO Mesh
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+--- !u!1 &2405144626370763959 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7969018183955694619, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+  m_PrefabInstance: {fileID: 5762190360521087148}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7256199225214897597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11,6 +87,26 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 332403386950823936, guid: df715cf45a94b764584726fc61a63b5e, type: 3}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: collider
+      value: 
+      objectReference: {fileID: 7481105158015671472}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: waitTime.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: waitTime.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: wanderTime.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: wanderTime.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235389, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_Name
       value: UFO (Blue) Variant
@@ -21,15 +117,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235391, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.198
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235391, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.87
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235391, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.57
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235391, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_LocalRotation.w
@@ -61,3 +157,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+--- !u!4 &8346801249733758583 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1686309178723582922, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+  m_PrefabInstance: {fileID: 7256199225214897597}
+  m_PrefabAsset: {fileID: 0}

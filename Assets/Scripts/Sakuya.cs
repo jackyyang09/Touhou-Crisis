@@ -159,7 +159,7 @@ public class Sakuya : BaseEnemy
         AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
         EnemyBullet newKnife = pools[0].GetObject().GetComponent<EnemyBullet>();
         newKnife.transform.position = handTransform.position;
-        target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+        target.position = AreaLogic.Instance.Player1FireTransform.position;
 
         target.position += targetOffset;
         newKnife.Init(target);
@@ -200,7 +200,7 @@ public class Sakuya : BaseEnemy
             newKnife.transform.Translate(Vector3.forward * 1);
             newKnife.gameObject.SetActive(true);
 
-            target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+            target.position = AreaLogic.Instance.Player1FireTransform.position;
             target.position += targetOffset;
             newKnife.SpecialInit(target);
             AudioManager.PlaySound(TouhouCrisisSounds.KnifePlace);
@@ -314,7 +314,7 @@ public class Sakuya : BaseEnemy
             newKnife.transform.SetParent(null);
             newKnife.moveDelay = moveDelay;
 
-            target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+            target.position = AreaLogic.Instance.Player1FireTransform.position;
             target.position += targetOffset;
 
             newKnife.transform.LookAt(target.position);

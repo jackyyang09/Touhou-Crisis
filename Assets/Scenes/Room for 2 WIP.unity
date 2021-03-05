@@ -8197,6 +8197,39 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6947769822803621962, guid: ab9f5320f744da4488a9539ca7648522, type: 3}
   m_PrefabInstance: {fileID: 833570378}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &856911513
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 856911514}
+  m_Layer: 0
+  m_Name: Green SpawnPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &856911514
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856911513}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1111402770}
+  - {fileID: 1741167450}
+  - {fileID: 1499517855}
+  m_Father: {fileID: 881441670}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &863651835
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8763,17 +8796,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43db8c0ac9072641a2e9eeea0362f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ufoPrefab: {fileID: 7707117479210563684, guid: 4bd9e2c5a20c9bc408030321b2f80f42, type: 3}
+  redUfoPrefab: {fileID: 7707117479210563684, guid: 4bd9e2c5a20c9bc408030321b2f80f42, type: 3}
+  greenUfoPrefab: {fileID: 8014922328139720080, guid: da8a232d20108ab4a973e2f82c8e51fb, type: 3}
+  blueUfoPrefab: {fileID: 2212548495489370112, guid: f54672e3122a8a5419c3f814e07b692e, type: 3}
   areaBox: {fileID: 881441667}
   sakuya: {fileID: 1288670845}
   spawnDelay:
-  - 15
-  - 12.5
   - 10
+  - 8
+  - 5
   maximumUfos: 4
-  spawnPositions:
-  - {fileID: 2080703419}
+  redSpawnPoints:
   - {fileID: 614479873}
+  - {fileID: 2080703419}
+  greenSpawnPoints:
+  - {fileID: 1111402770}
+  - {fileID: 1741167450}
+  - {fileID: 1499517855}
+  blueSpawnPoints: []
 --- !u!65 &881441669
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8783,7 +8823,7 @@ BoxCollider:
   m_GameObject: {fileID: 881441666}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 9.869187, y: 4.793038, z: 1}
   m_Center: {x: -1.0333929, y: 2.4432442, z: 0}
@@ -8800,6 +8840,7 @@ Transform:
   m_Children:
   - {fileID: 614479873}
   - {fileID: 2080703419}
+  - {fileID: 856911514}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11982,6 +12023,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6947769822803621962, guid: ab9f5320f744da4488a9539ca7648522, type: 3}
   m_PrefabInstance: {fileID: 1101840581}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1111402769
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1111402770}
+  m_Layer: 0
+  m_Name: UFO Spawnpos (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1111402770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111402769}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -18.5, y: 1, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 856911514}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1129366646
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12717,7 +12788,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43db8c0ac9072641a2e9eeea0362f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ufoPrefab: {fileID: 0}
+  redUfoPrefab: {fileID: 0}
+  greenUfoPrefab: {fileID: 0}
+  blueUfoPrefab: {fileID: 0}
   areaBox: {fileID: 0}
   sakuya: {fileID: 0}
   spawnDelay:
@@ -12725,7 +12798,9 @@ MonoBehaviour:
   - 0
   - 0
   maximumUfos: 0
-  spawnPositions: []
+  redSpawnPoints: []
+  greenSpawnPoints: []
+  blueSpawnPoints: []
 --- !u!4 &1180432539
 Transform:
   m_ObjectHideFlags: 0
@@ -13024,8 +13099,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 16, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 6.60646, y: 14.533275, z: 0.2}
+  m_Center: {x: 0, y: -0.73336244, z: 0}
 --- !u!1001 &1240545122
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16007,6 +16082,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7621778954037354255, guid: c9ec0ab95927166429bbedbb6d59fb8b, type: 3}
   m_PrefabInstance: {fileID: 1466682815}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1499517854
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1499517855}
+  m_Layer: 0
+  m_Name: UFO Spawnpos (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1499517855
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499517854}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -18.5, y: 5.5, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 856911514}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1508365280
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20218,6 +20323,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7638728112182592804, guid: 36543a5f47bb92749b2d756585690d89, type: 3}
   m_PrefabInstance: {fileID: 1734837527}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1741167449
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1741167450}
+  m_Layer: 0
+  m_Name: UFO Spawnpos (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1741167450
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741167449}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -18.5, y: 3.25, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 856911514}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1750678627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24162,7 +24297,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 7991
+    m_Bits: 24375
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -24206,7 +24341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
+  m_ShowCameraFrustum: 0
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 2

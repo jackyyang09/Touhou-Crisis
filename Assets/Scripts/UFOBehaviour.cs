@@ -26,6 +26,15 @@ public class UFOBehaviour : BaseEnemy
     [SerializeField] float upwardsModifier = 1.5f;
     [SerializeField] Transform explosionOrigin = null;
 
+    [SerializeField] float scoreValue = 100;
+
+    [Header("Green Properties")]
+    [SerializeField] float greenTravelTime = 8;
+
+    [Header("Red Properties")]
+    [SerializeField] float redChargeTime = 2;
+    [SerializeField] float redRotateTime = 0.5f;
+
     Coroutine behaviourRoutine;
 
     public System.Action OnUFOExpire;
@@ -54,27 +63,46 @@ public class UFOBehaviour : BaseEnemy
 
     IEnumerator BehaviourTree()
     {
-        int wanderNum = Random.Range((int)timesToWander.x, (int)timesToWander.y + 1);
-        for (int i = 0; i < wanderNum; i++)
+        switch (ufoType)
         {
-            switch (ufoType)
-            {
-                case UFOType.Green:
-                    break;
-                case UFOType.Blue:
-                    break;
-                case UFOType.Red:
-                    break;
-            }
-            Vector3 destination = box.GetRandomPointInBox();
-            transform.DOMove(destination, Random.Range(wanderTime.x, wanderTime.y));
-            yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
+            case UFOType.Green:
+                {
+                    Vector3 destination = transform.position.ScaleBetter(new Vector3(-1, 1, 1));
+                    transform.DOMove(destination, greenTravelTime).SetEase(Ease.Linear);
+                    yield return new WaitForSeconds(greenTravelTime);
+                    Destroy(gameObject);
+                }
+                break;
+            case UFOType.Blue:
+                {
+                    int wanderNum = Random.Range((int)timesToWander.x, (int)timesToWander.y + 1);
+                    while (true)
+                    {
+                        Vector3 destination = box.GetRandomPointInBox();
+                        float moveTime = Random.Range(wanderTime.x, wanderTime.y);
+                        transform.DOMove(destination, moveTime);
+                        yield return new WaitForSeconds(moveTime);
+                        yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
+                    }
+                }
+            case UFOType.Red:
+                {
+                    int wanderNum = Random.Range((int)timesToWander.x, (int)timesToWander.y + 1);
+                    for (int i = 0; i < wanderNum; i++)
+                    {
+                        Vector3 destination = box.GetRandomPointInBox();
+                        transform.DOMove(destination, Random.Range(wanderTime.x, wanderTime.y));
+                        yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
+                    }
+                    Vector3 target = AreaLogic.Instance.Player1FireTransform.position;
+                    transform.DOMove(target, redChargeTime).SetEase(Ease.InSine);
+                    transform.DOLookAt(target, redRotateTime).SetEase(Ease.Linear);
+                    Destroy(gameObject, redChargeTime);
+                    yield return new WaitForSeconds(redRotateTime);
+                    transform.DOLocalRotate(new Vector3(30, 0, 0), redRotateTime, RotateMode.LocalAxisAdd).SetEase(Ease.Linear);
+                }
+                break;
         }
-
-        transform.DOMoveY(10, 1);
-
-        Destroy(gameObject, 1);
-        //behaviourRoutine = null;
     }
 
     // Start is called before the first frame update
@@ -89,6 +117,15 @@ public class UFOBehaviour : BaseEnemy
     //    
     //}
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.root.CompareTag("Player"))
+        {
+            PlayerManager.Instance.LocalPlayer.TakeDamage(DamageType.Slash);
+            Destroy(gameObject);
+        }
+    }
+
     protected override void DamageFlash()
     {
         animator.SetTrigger("Hit");
@@ -102,6 +139,7 @@ public class UFOBehaviour : BaseEnemy
             transform.DOKill();
         }
 
+        PlayerManager.Instance.LocalPlayer.GetComponent<ScoreSystem>().AddArbitraryScore(scoreValue);
         collider.isTrigger = false;
         rBody.useGravity = true;
         rBody.AddExplosionForce(explosionForce, explosionOrigin.position, 1, upwardsModifier);

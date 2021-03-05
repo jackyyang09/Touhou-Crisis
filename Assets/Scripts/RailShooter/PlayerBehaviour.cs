@@ -201,8 +201,8 @@ public class PlayerBehaviour : MonoBehaviour
             inCover = false;
         }
 
-        Transform coverTransform = AreaLogic.Instance.GetPlayer1Cover;
-        Transform fireTransform = AreaLogic.Instance.GetPlayer1Fire;
+        Transform coverTransform = AreaLogic.Instance.Player1CoverTransform;
+        Transform fireTransform = AreaLogic.Instance.Player1FireTransform;
         float lerpValue = coverEnterTimer / coverEnterTime;
         head.transform.position = Vector3.Lerp(coverTransform.position, fireTransform.position, lerpValue);
         head.transform.rotation = Quaternion.Lerp(coverTransform.rotation, fireTransform.rotation, lerpValue);
@@ -218,8 +218,8 @@ public class PlayerBehaviour : MonoBehaviour
             OnReload?.Invoke();
         }
 
-        Transform coverTransform = AreaLogic.Instance.GetPlayer1Cover;
-        Transform fireTransform = AreaLogic.Instance.GetPlayer1Fire;
+        Transform coverTransform = AreaLogic.Instance.Player1CoverTransform;
+        Transform fireTransform = AreaLogic.Instance.Player1FireTransform;
         float lerpValue = coverEnterTimer / coverEnterTime;
         head.transform.position = Vector3.Lerp(coverTransform.position, fireTransform.position, lerpValue);
         head.transform.rotation = Quaternion.Lerp(coverTransform.rotation, fireTransform.rotation, lerpValue);
