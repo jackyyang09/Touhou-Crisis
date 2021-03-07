@@ -49,6 +49,18 @@ PrefabInstance:
       propertyPath: timesToWander.y
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: lights.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: lights.Array.data[0]
+      value: 
+      objectReference: {fileID: 6375734199836640353}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: lights.Array.data[1]
+      value: 
+      objectReference: {fileID: 4860079031888473619}
     - target: {fileID: 8793207776049235389, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_Name
       value: UFO (Red) Variant
@@ -164,5 +176,15 @@ PrefabInstance:
 --- !u!1 &8270677247383486873 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4169493821874512106, guid: 50954c074e43ad645bf33a4c601138d7, type: 3}
+  m_PrefabInstance: {fileID: 5411740881398456691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &6375734199836640353 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 1396526900903699730, guid: 50954c074e43ad645bf33a4c601138d7, type: 3}
+  m_PrefabInstance: {fileID: 5411740881398456691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &4860079031888473619 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 605775422373728096, guid: 50954c074e43ad645bf33a4c601138d7, type: 3}
   m_PrefabInstance: {fileID: 5411740881398456691}
   m_PrefabAsset: {fileID: 0}

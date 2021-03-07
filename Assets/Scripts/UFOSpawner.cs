@@ -9,6 +9,13 @@ public class UFOSpawner : MonoBehaviour
     [SerializeField] GameObject blueUfoPrefab = null;
 
     [SerializeField] ModularBox areaBox = null;
+    public ModularBox AreaBox
+    {
+        get
+        {
+            return areaBox;
+        }
+    }
 
     [SerializeField] Sakuya sakuya = null;
 
@@ -20,6 +27,9 @@ public class UFOSpawner : MonoBehaviour
     [SerializeField] Transform[] redSpawnPoints = null;
     [SerializeField] Transform[] greenSpawnPoints = null;
     [SerializeField] Transform[] blueSpawnPoints = null;
+
+    [SerializeField] ObjectPool blueBulletPool = null;
+    [SerializeField] ObjectPool greenBulletPool = null;
 
     int activeUfos = 0;
 
@@ -73,12 +83,25 @@ public class UFOSpawner : MonoBehaviour
             }
 
             UFOBehaviour ufo = newFO.GetComponent<UFOBehaviour>();
-            ufo.OnUFOExpire += ReportUFODeath;
-            ufo.Init(areaBox);
+            ufo.Init(this);
         }
     }
 
-    void ReportUFODeath()
+    public GameObject GetUFOBullet(UFOBehaviour.UFOType ufoType)
+    {
+        switch (ufoType)
+        {
+            case UFOBehaviour.UFOType.Green:
+                return greenBulletPool.GetObject();
+            case UFOBehaviour.UFOType.Blue:
+                return blueBulletPool.GetObject();
+            case UFOBehaviour.UFOType.Red:
+            default:
+                return null;
+        }
+    }
+
+    public void ReportUFODeath()
     {
         activeUfos--;
     }

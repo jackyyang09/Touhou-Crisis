@@ -21,10 +21,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1552687496448926114, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5548431357414885957, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: -2934792437963218081, guid: df715cf45a94b764584726fc61a63b5e, type: 3}
+    - target: {fileID: 8357009798366045196, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8357009798366045196, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8357009798366045196, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: ufoType
       value: 0
@@ -33,6 +49,22 @@ PrefabInstance:
       propertyPath: collider
       value: 
       objectReference: {fileID: 6137695750372375476}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 8430930384365699323, guid: e829d97cb5aa68f479ed4ff1475d0f5f, type: 3}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: lights.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: lights.Array.data[0]
+      value: 
+      objectReference: {fileID: 8839643730155948439}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: lights.Array.data[1]
+      value: 
+      objectReference: {fileID: 4850913830960891127}
     - target: {fileID: 8793207776049235389, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: m_Name
       value: UFO (Green) Variant
@@ -148,5 +180,15 @@ PrefabInstance:
 --- !u!1 &9091411454776770784 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4315689125444757841, guid: 50ea5696cdcc7cb4fb7fe49dc6384ddd, type: 3}
+  m_PrefabInstance: {fileID: 5030317272649279921}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &4850913830960891127 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 477010500252708166, guid: 50ea5696cdcc7cb4fb7fe49dc6384ddd, type: 3}
+  m_PrefabInstance: {fileID: 5030317272649279921}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &8839643730155948439 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 4567775694480859174, guid: 50ea5696cdcc7cb4fb7fe49dc6384ddd, type: 3}
   m_PrefabInstance: {fileID: 5030317272649279921}
   m_PrefabAsset: {fileID: 0}

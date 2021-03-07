@@ -36,6 +36,7 @@ public class PlayerUIManager : MonoBehaviour
 
     [Header("Damage Effects")]
     [SerializeField] Image slashDamageImage = null;
+    [SerializeField] Image bulletDamageImage = null;
 
     [Header("Score System")]
     [SerializeField] TextMeshProUGUI scoreText = null;
@@ -244,6 +245,8 @@ public class PlayerUIManager : MonoBehaviour
                 slashDamageImage.DOColor(Color.clear, 0.5f).SetDelay(1);
                 break;
             case DamageType.Bullet:
+                bulletDamageImage.DOColor(Color.white, 0);
+                bulletDamageImage.DOColor(Color.clear, 0.5f).SetDelay(1);
                 break;
         }
     }

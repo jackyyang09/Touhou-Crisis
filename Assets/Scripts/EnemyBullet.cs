@@ -26,17 +26,33 @@ public class EnemyBullet : MonoBehaviour
     //{
     //}
 
-    public void Init(Transform target = null)
+    public void Init(Transform target)
     {
         if (target != null)
         {
             transform.LookAt(target);
+            targetPos = target.position;
+            ogPos = transform.position;
         }
 
-        targetPos = target.position;
+        Init();
+    }
+
+    public void Init(Vector3 target)
+    {
+        transform.LookAt(target);
+        targetPos = target;
         ogPos = transform.position;
 
-        effect.SetActive(true);
+        Init();
+    }
+
+    public void Init()
+    {
+        if (effect)
+        {
+            effect.SetActive(true);
+        }
 
         rb.velocity = transform.forward * speed;
 
@@ -50,7 +66,11 @@ public class EnemyBullet : MonoBehaviour
 
     private void OnDisable()
     {
-        effect.SetActive(false);
+        if (effect)
+        {
+            effect.SetActive(false);
+        }
+
         rb.velocity = Vector3.zero;
         if (IsInvoking("DisableSelf")) CancelInvoke("DisableSelf");
     }
@@ -62,6 +82,7 @@ public class EnemyBullet : MonoBehaviour
             HitTarget();
         }
         gameObject.SetActive(false);
+        Debug.Log(other.name);
     }
 
     public void HitTarget()
