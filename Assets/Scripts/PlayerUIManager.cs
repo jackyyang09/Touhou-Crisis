@@ -17,6 +17,7 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] ScoreSystem score = null;
     [SerializeField] Sakuya sakuya = null;
     [SerializeField] GameObject[] personalObjects = null;
+    [SerializeField] RailShooterEffects railShooterEffects = null;
 
     [Header("Ammo Count")]
     [SerializeField] TextMeshProUGUI ammoText = null;
@@ -62,6 +63,8 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] Canvas reimuPortrait = null;
     [SerializeField] Canvas marisaPortrait = null;
 
+    LoadingScreen loadingScreen = null;
+
     private void Awake()
     {
         if (!player.PhotonView.IsMine)
@@ -74,6 +77,7 @@ public class PlayerUIManager : MonoBehaviour
         }
 
         sakuya = FindObjectOfType<Sakuya>();
+        loadingScreen = FindObjectOfType<LoadingScreen>();
     }
 
     // Start is called before the first frame update
@@ -337,6 +341,11 @@ public class PlayerUIManager : MonoBehaviour
         
         var otherPlayer = PlayerManager.Instance.OtherPlayer;
 
+        PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
+        railShooterEffects.SetInMenu(true);
+        railShooterEffects.playSound = true;
+        railShooterEffects.spawnMuzzleFlash = true;
+
         if (isHost)
         {
             p1ScoreText.text = scoreText.text;
@@ -402,15 +411,31 @@ public class PlayerUIManager : MonoBehaviour
         gameOverButtonCanvas.Show();
     }
 
+    Coroutine delayRoutine = null;
+    System.Action delayedFunction = null;
     public void ReloadLevel()
     {
-        //GameManager.Instance.LoadArena();
-        GameManager.Instance.ReloadScene();
-        //GameManager.Instance.photonView.RPC("ReloadScene", Photon.Pun.RpcTarget.All);
+        if (delayRoutine != null) return;
+
+        delayedFunction += GameManager.Instance.ReloadScene;
+        delayRoutine = StartCoroutine(DelayedTransition());
     }
 
     public void ReturnToTitle()
     {
-        GameManager.Instance.LeaveRoom();
+        if (delayRoutine != null) return;
+
+        delayedFunction += GameManager.Instance.LeaveRoom;
+        delayRoutine = StartCoroutine(DelayedTransition());
+    }
+
+    IEnumerator DelayedTransition()
+    {
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.MenuButton);
+
+        yield return StartCoroutine(loadingScreen.ShowRoutine());
+
+        delayedFunction?.Invoke();
+        delayedFunction = null;
     }
 }

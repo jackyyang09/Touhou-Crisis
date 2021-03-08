@@ -13,7 +13,8 @@
         SpellcardBreak,
         TimeStop,
         TimeResumes,
-        BulletCasings
+        BulletCasings,
+        MenuButton
     }
     public enum TouhouCrisisMusic {
         FloweringNight,

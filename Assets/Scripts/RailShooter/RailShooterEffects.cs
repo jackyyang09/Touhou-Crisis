@@ -6,17 +6,19 @@ using DG.Tweening;
 
 public class RailShooterEffects : MonoBehaviour
 {
-    [SerializeField] bool playSound = false;
-    [SerializeField] RailShooterLogic railShooter;
-    [SerializeField] PlayerBehaviour player;
-    [SerializeField] AudioFileSoundObject shootSound;
+    public bool playSound = false;
+    [SerializeField] RailShooterLogic railShooter = null;
+    [SerializeField] PlayerBehaviour player = null;
+    [SerializeField] AudioFileSoundObject shootSound = null;
 
     [SerializeField] Color flashColor = new Color(0.7f, 0.7f, 0.7f);
-    [SerializeField] UnityEngine.UI.Image screenFlash;
+    [SerializeField] UnityEngine.UI.Image screenFlash = null;
     [SerializeField] float fadeEffectTime = 0.05f;
 
-    [SerializeField] GameObject muzzleFlashPrefab;
-    [SerializeField] bool spawnMuzzleFlash;
+    [SerializeField] GameObject muzzleFlashPrefab = null;
+    public bool spawnMuzzleFlash = false;
+
+    [SerializeField] bool inMenu = false;
 
     //private void Start()
     //{
@@ -24,11 +26,11 @@ public class RailShooterEffects : MonoBehaviour
 
     private void OnEnable()
     {
-        if (railShooter != null)
+        if (inMenu)
         {
             railShooter.OnShoot += PlayEffect;
         }
-        else if (player != null)
+        else if (player != null && !inMenu)
         {
             player.OnBulletFired += PlayEffect;
         }
@@ -36,13 +38,31 @@ public class RailShooterEffects : MonoBehaviour
 
     private void OnDisable()
     {
-        if (railShooter != null)
-        {
-            railShooter.OnShoot -= PlayEffect;
-        }
-        else if (player != null)
+        railShooter.OnShoot -= PlayEffect;
+        if (player != null)
         {
             player.OnBulletFired -= PlayEffect;
+        }
+    }
+
+    public void SetInMenu(bool isInMenu)
+    {
+        inMenu = isInMenu;
+        if (inMenu)
+        {
+            railShooter.OnShoot += PlayEffect;
+            if (player != null)
+            {
+                player.OnBulletFired -= PlayEffect;
+            }
+        }
+        else
+        {
+            railShooter.OnShoot -= PlayEffect;
+            if (player != null)
+            {
+                player.OnBulletFired += PlayEffect;
+            }
         }
     }
 

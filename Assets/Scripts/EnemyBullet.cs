@@ -82,7 +82,6 @@ public class EnemyBullet : MonoBehaviour
             HitTarget();
         }
         gameObject.SetActive(false);
-        Debug.Log(other.name);
     }
 
     public void HitTarget()

@@ -93,6 +93,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] Cinemachine.CinemachineImpulseSource impulse;
 
+    bool canPlay = true;
+
     public System.Action<bool, Vector2> OnBulletFired;
     public System.Action OnReload;
     public System.Action OnFireNoAmmo;
@@ -119,11 +121,13 @@ public class PlayerBehaviour : MonoBehaviour
     private void OnEnable()
     {
         railShooter.OnShoot += HandleShooting;
+        OnPlayerDeath += RemovePlayerControl;
     }
 
     private void OnDisable()
     {
         railShooter.OnShoot -= HandleShooting;
+        OnPlayerDeath -= RemovePlayerControl;
     }
 
     // Update is called once per frame
@@ -136,7 +140,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (inTransit) return;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        if (Input.touchCount > 0 && currentLives > 0)
+        if (Input.touchCount > 0 && canPlay)
         {
             StepOnPedal();
         }
@@ -145,7 +149,7 @@ public class PlayerBehaviour : MonoBehaviour
             ReleasePedal();
         }
 #else
-        if (Input.GetKey(coverKey) && currentLives > 0)
+        if (Input.GetKey(coverKey) && canPlay)
         {
             StepOnPedal();
         }
@@ -268,5 +272,15 @@ public class PlayerBehaviour : MonoBehaviour
         collider.enabled = false;
         yield return new WaitForSeconds(damageRecoveryTime);
         collider.enabled = true;
+    }
+
+    public void GetPlayerControl()
+    {
+        canPlay = true;
+    }
+
+    public void RemovePlayerControl()
+    {
+        canPlay = false;
     }
 }
