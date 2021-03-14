@@ -136,7 +136,7 @@ namespace JSAM
             railShooter.OnShoot -= DeselectEverything;
         }
 
-        private void DeselectEverything(Ray obj)
+        private void DeselectEverything(Ray obj, Vector2 vector2)
         {
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
         }
@@ -290,6 +290,7 @@ namespace JSAM
             inputEvents.enabled = true;
             lastKeyDown = KeyCode.None;
             rebindInterface.Show();
+            rebindInterface.rectTransform.DOScaleX(0, 0);
 
             rebindMask.enabled = true;
 

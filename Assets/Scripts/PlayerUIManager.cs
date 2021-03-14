@@ -166,7 +166,7 @@ public class PlayerUIManager : MonoBehaviour
         //Spawn bullet on the canvas
         var bullet = Instantiate(muzzleFlash, overlayCanvas.transform).transform as RectTransform;
 
-        bullet.position = Input.mousePosition;
+        bullet.position = hitPosition;
 
         UpdateAmmoCount();
         //ExpendAmmo();
@@ -323,6 +323,7 @@ public class PlayerUIManager : MonoBehaviour
 
     void WinSequence()
     {
+        PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
         JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin);
         gameOverText.text = "BOSS CLEAR";
         StartCoroutine(ShowGameOverScreen());
@@ -330,6 +331,7 @@ public class PlayerUIManager : MonoBehaviour
 
     void LoseSequence()
     {
+        PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
         JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
         gameOverText.text = "GAME OVER";
         StartCoroutine(ShowGameOverScreen());
@@ -341,7 +343,6 @@ public class PlayerUIManager : MonoBehaviour
         
         var otherPlayer = PlayerManager.Instance.OtherPlayer;
 
-        PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
         railShooterEffects.SetInMenu(true);
         railShooterEffects.playSound = true;
         railShooterEffects.spawnMuzzleFlash = true;

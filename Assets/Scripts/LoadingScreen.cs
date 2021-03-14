@@ -12,7 +12,6 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] bool ignoreStartup = true;
     bool startupIgnored = false;
 
-    [SerializeField] OptimizedCanvas canvas = null;
     [SerializeField] float fadeToBlackTime = 0.5f;
     [SerializeField] float fadeFromBlackTime = 1;
 
@@ -28,7 +27,10 @@ public class LoadingScreen : MonoBehaviour
 
     private void OnEnable()
     {
-        SceneManager.activeSceneChanged += HideLoadScreen;
+        if (hideOnSceneChange)
+        {
+            SceneManager.activeSceneChanged += HideLoadScreen;
+        }
     }
 
     private void OnDisable()

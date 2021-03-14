@@ -43,7 +43,7 @@ public class IntroEffect : MonoBehaviour
         railShooter.OnShoot -= SkipOpening;
     }
 
-    private void SkipOpening(Ray obj)
+    private void SkipOpening(Ray obj, Vector2 pos)
     {
         image.DOComplete();
         image.color = Color.clear;

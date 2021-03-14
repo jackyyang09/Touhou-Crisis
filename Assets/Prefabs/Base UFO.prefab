@@ -236,8 +236,8 @@ MonoBehaviour:
   explosionForce: 300
   upwardsModifier: 2
   explosionOrigin: {fileID: 6418088879709631404}
-  chargeupAnimTime: 0.75
-  chargeupTime: 0.75
+  chargeupAnimTime: 0.5
+  chargeupTime: 0.5
   magicCircleMaxScale: 1
   scoreValue: 100
   lights: []

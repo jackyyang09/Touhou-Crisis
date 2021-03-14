@@ -160,7 +160,7 @@ public class PlayerBehaviour : MonoBehaviour
 #endif
     }
 
-    void HandleShooting(Ray ray)
+    void HandleShooting(Ray ray, Vector2 screenPoint)
     {
         if (inCover || inTransit || Time.timeScale == 0) return;
 
@@ -185,7 +185,7 @@ public class PlayerBehaviour : MonoBehaviour
                 miss = false;
             }
 
-            Vector3 hitPosition = railShooter.Cam.ScreenToViewportPoint(Input.mousePosition);
+            Vector3 hitPosition = railShooter.Cam.ScreenToViewportPoint(screenPoint);
 
             ammoCount[activeWeaponIndex]--;
 
@@ -258,6 +258,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (currentLives == 0)
         {
+            RemovePlayerControl();
             Invoke("PlayerDeath", 1.5f);
         }
     }

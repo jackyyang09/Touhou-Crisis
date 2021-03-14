@@ -19,7 +19,6 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] Ease easeType = Ease.Linear;
     [SerializeField] float uiMoveSpeed = 0.15f;
     [SerializeField] float bgFadeTime = 0.5f;
-    [SerializeField] float fadeToBlackTime = 0.5f;
     [SerializeField] float gameStartDelay = 0.25f;
 
     [SerializeField] OptimizedCanvas title = null;
@@ -150,7 +149,13 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         }
     }
 
-    public void EnterGame()
+    public void SyncEnterGame()
+    {
+        photonView.RPC("EnterGame", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void EnterGame()
     {
         if (gameStartRoutine != null) return;
 

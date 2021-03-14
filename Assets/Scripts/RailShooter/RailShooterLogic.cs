@@ -27,7 +27,7 @@ public class RailShooterLogic : MonoBehaviour
 
     [SerializeField] public PhotonView photonView;
 
-    public System.Action<Ray> OnShoot;
+    public System.Action<Ray, Vector2> OnShoot;
 
     private void Awake()
     {
@@ -57,7 +57,7 @@ public class RailShooterLogic : MonoBehaviour
         }
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
             ShootBehaviour();
         }
@@ -72,9 +72,16 @@ public class RailShooterLogic : MonoBehaviour
     void ShootBehaviour()
     {
         Ray ray = new Ray();
-        ray = Cam.ScreenPointToRay(Input.mousePosition);
 
-        OnShoot?.Invoke(ray);
+        Vector2 screenPoint = Vector2.zero;
+#if UNITY_ANDROID && !UNITY_EDITOR
+        screenPoint = Input.touches[Input.touchCount - 1].position;
+#else
+        screenPoint = Input.mousePosition;
+#endif
+        ray = Cam.ScreenPointToRay(screenPoint);
+
+        OnShoot?.Invoke(ray, screenPoint);
     }
 
     public void RebindFireKey(KeyCode newKey)

@@ -66,7 +66,7 @@ public class RailShooterEffects : MonoBehaviour
         }
     }
 
-    void PlayEffect(Ray ray)
+    void PlayEffect(Ray ray, Vector2 screenPoint)
     {
         screenFlash.DOColor(flashColor, 0);
         screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime);
@@ -76,7 +76,7 @@ public class RailShooterEffects : MonoBehaviour
             //Spawn bullet on the canvas
             var bullet = Instantiate(muzzleFlashPrefab, transform.GetChild(1).transform as RectTransform).transform as RectTransform;
 
-            bullet.position = Input.mousePosition;
+            bullet.position = screenPoint;
         }
 
         if (playSound)
