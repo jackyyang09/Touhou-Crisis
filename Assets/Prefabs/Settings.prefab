@@ -1004,11 +1004,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fea0567c75d87164db8917d05bf56406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actOnWeb: 1
+  actOnMobile: 0
+  actOnStandalone: 1
+  actOnMultiplayer: 0
   destroyIfExclude: 0
-  excludeWeb: 1
-  excludeMobile: 0
-  excludeStandalone: 1
-  excludeMultiplayer: 0
 --- !u!1 &4419522427229784540
 GameObject:
   m_ObjectHideFlags: 0
@@ -1907,11 +1907,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fea0567c75d87164db8917d05bf56406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actOnWeb: 0
+  actOnMobile: 1
+  actOnStandalone: 0
+  actOnMultiplayer: 0
   destroyIfExclude: 0
-  excludeWeb: 0
-  excludeMobile: 1
-  excludeStandalone: 0
-  excludeMultiplayer: 0
 --- !u!1 &8436221279522995901
 GameObject:
   m_ObjectHideFlags: 0

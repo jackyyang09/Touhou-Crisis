@@ -16,6 +16,7 @@ public class RailShooterEffects : MonoBehaviour
     [SerializeField] float fadeEffectTime = 0.05f;
 
     [SerializeField] GameObject muzzleFlashPrefab = null;
+    [SerializeField] RectTransform muzzleFlashCanvas = null;
     public bool spawnMuzzleFlash = false;
 
     [SerializeField] bool inMenu = false;
@@ -74,7 +75,7 @@ public class RailShooterEffects : MonoBehaviour
         if (spawnMuzzleFlash)
         {
             //Spawn bullet on the canvas
-            var bullet = Instantiate(muzzleFlashPrefab, transform.GetChild(1).transform as RectTransform).transform as RectTransform;
+            var bullet = Instantiate(muzzleFlashPrefab, muzzleFlashCanvas).transform as RectTransform;
 
             bullet.position = screenPoint;
         }

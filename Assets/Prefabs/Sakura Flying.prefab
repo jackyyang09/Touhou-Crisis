@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2442331002450817353}
   - component: {fileID: 8050373385175266483}
   - component: {fileID: 7672878138642687356}
+  - component: {fileID: 2736992233060119132}
   m_Layer: 0
   m_Name: Sakura Flying
   m_TagString: Untagged
@@ -157,3 +158,20 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &2736992233060119132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7330566679918651644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea0567c75d87164db8917d05bf56406, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actOnWeb: 0
+  actOnMobile: 1
+  actOnStandalone: 0
+  actOnMultiplayer: 0
+  destroyIfExclude: 0

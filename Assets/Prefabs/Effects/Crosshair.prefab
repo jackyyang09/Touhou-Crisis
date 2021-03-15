@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5793093840045978011}
   - component: {fileID: 640486708232738056}
   - component: {fileID: 640486708232738057}
+  - component: {fileID: 4879014709329656979}
   m_Layer: 5
   m_Name: Crosshair
   m_TagString: Untagged
@@ -81,6 +82,23 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &4879014709329656979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793093840045978008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea0567c75d87164db8917d05bf56406, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actOnWeb: 0
+  actOnMobile: 1
+  actOnStandalone: 0
+  actOnMultiplayer: 0
+  destroyIfExclude: 0
 --- !u!1 &9133388933838301612
 GameObject:
   m_ObjectHideFlags: 0

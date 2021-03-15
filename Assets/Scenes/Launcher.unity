@@ -10689,6 +10689,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4034704608295890199, guid: 5e3f219e646f97240aab82207d6e02ce, type: 3}
+      propertyPath: muzzleFlashCanvas
+      value: 
+      objectReference: {fileID: 4745941487453213813}
+    - target: {fileID: 4034704608295890199, guid: 5e3f219e646f97240aab82207d6e02ce, type: 3}
       propertyPath: muzzleFlashPrefab
       value: 
       objectReference: {fileID: 5146475814407794022, guid: c358f2adcf8c7bd42b7018c2d380fe6c, type: 3}
@@ -10738,6 +10742,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e3f219e646f97240aab82207d6e02ce, type: 3}
+--- !u!224 &4745941487453213813 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1338586706132980626, guid: 5e3f219e646f97240aab82207d6e02ce, type: 3}
+  m_PrefabInstance: {fileID: 4034704607033364080}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5083254938020746359
 PrefabInstance:
   m_ObjectHideFlags: 0

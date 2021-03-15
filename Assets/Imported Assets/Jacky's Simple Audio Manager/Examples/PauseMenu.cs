@@ -40,7 +40,6 @@ namespace JSAM
         [SerializeField] OptimizedCanvas rebindInterface = null;
         [SerializeField] TMPro.TextMeshProUGUI rebindText = null;
 
-        Crosshair crosshair = null;
         GameObject flashEffect = null;
 
         [SerializeField] Image rebindMask;
@@ -50,24 +49,7 @@ namespace JSAM
 
         void Awake()
         {
-            var crossHairs = FindObjectsOfType<Crosshair>();
             var flashEffects = FindObjectsOfType<RailShooterEffects>();
-            if (crossHairs.Length > 1)
-            {
-                for (int i = 0; i < crossHairs.Length; i++)
-                {
-                    // Do these objects share the same root?
-                    if (crossHairs[i].transform.root == transform.root)
-                    {
-                        crosshair = crossHairs[i];
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                crosshair = crossHairs[0];
-            }
 
             if (flashEffects.Length > 1)
             {
@@ -187,9 +169,9 @@ namespace JSAM
 
         public void LoadMiscSettings()
         {
-            if (PlayerPrefs.HasKey(CrosshairKey))
+            if (PlayerPrefs.HasKey(CrosshairKey) && Crosshair.Instance != null)
             {
-                crosshair.enabled = PlayerPrefs.GetInt(CrosshairKey) == 1;
+                Crosshair.Instance.enabled = PlayerPrefs.GetInt(CrosshairKey) == 1;
             }
 
             if (PlayerPrefs.HasKey(ScreenFlashKey))
@@ -259,7 +241,7 @@ namespace JSAM
         {
             PlayerPrefs.SetInt(CrosshairKey, (int)Mathf.Repeat(PlayerPrefs.GetInt(CrosshairKey) + 1, 2f));
             PlayerPrefs.Save();
-            crosshair.enabled = PlayerPrefs.GetInt(CrosshairKey) == 1;
+            Crosshair.Instance.enabled = PlayerPrefs.GetInt(CrosshairKey) == 1;
             LoadToggleSettings();
         }
 

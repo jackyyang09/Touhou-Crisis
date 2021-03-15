@@ -166,7 +166,11 @@ public class PlayerUIManager : MonoBehaviour
         //Spawn bullet on the canvas
         var bullet = Instantiate(muzzleFlash, overlayCanvas.transform).transform as RectTransform;
 
-        bullet.position = hitPosition;
+#if UNITY_ANDROID && !UNITY_EDITOR
+        bullet.position = Input.touches[Input.touchCount - 1].position;
+#else
+        bullet.position = Input.mousePosition;
+#endif
 
         UpdateAmmoCount();
         //ExpendAmmo();

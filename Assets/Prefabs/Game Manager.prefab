@@ -227,11 +227,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fea0567c75d87164db8917d05bf56406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actOnWeb: 0
+  actOnMobile: 1
+  actOnStandalone: 0
+  actOnMultiplayer: 1
   destroyIfExclude: 0
-  excludeWeb: 0
-  excludeMobile: 1
-  excludeStandalone: 0
-  excludeMultiplayer: 1
 --- !u!1 &8305736188927030169
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,20 @@ public class Crosshair : MonoBehaviour
 {
     [SerializeField] UnityEngine.UI.Image image;
 
+    static Crosshair instance = null;
+    public static Crosshair Instance
+    { 
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<Crosshair>();
+            }
+            return instance;
+        }
+    }
+
+
     string HideCursorKey
     {
         get
@@ -14,11 +28,6 @@ public class Crosshair : MonoBehaviour
         }
     }
 
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-    //    
-    //}
 
     void OnEnable()
     {
