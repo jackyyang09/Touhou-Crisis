@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.Rendering.Universal;
+using System;
 
 public class PlayerUIManager : MonoBehaviour
 {
@@ -16,8 +17,9 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] ComboPuck puck = null;
     [SerializeField] ScoreSystem score = null;
     [SerializeField] Sakuya sakuya = null;
-    [SerializeField] GameObject[] personalObjects = null;
+    [SerializeField] RailShooterLogic railShooterLogic = null;
     [SerializeField] RailShooterEffects railShooterEffects = null;
+    [SerializeField] GameObject[] personalObjects = null;
 
     [Header("Ammo Count")]
     [SerializeField] TextMeshProUGUI ammoText = null;
@@ -28,6 +30,11 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] OptimizedCanvas reloadImage = null;
     [SerializeField] Image waitImage = null;
     [SerializeField] TextMeshProUGUI timeText = null;
+    [SerializeField] OptimizedCanvas coverTutorial = null;
+    [SerializeField] TextMeshProUGUI coverTutorialText = null;
+
+    [SerializeField] int shotsBeforeTutorial = 2;
+    int shotsFiredInCover = 0;
 
     [Header("Combo System")]
     [SerializeField] RectTransform puckImage = null;
@@ -91,6 +98,17 @@ public class PlayerUIManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (coverTutorial != null)
+        {
+            railShooterLogic.OnShoot += ShowCoverTutorial;
+            player.OnExitCover += HideCoverTutorial;
+
+            KeyCode newCoverKey = (KeyCode)PlayerPrefs.GetInt(PauseMenu.CoverInputKey);
+            coverTutorialText.text =
+                "PRESS THE PEDAL <" + newCoverKey.ToString() + ">\n" +
+                "TO RETURN FIRE!";
+        }
+        
         player.OnBulletFired += SpawnMuzzleFlash;
         player.OnReload += HideReloadGraphic;
         player.OnReload += UpdateAmmoCount;
@@ -113,11 +131,18 @@ public class PlayerUIManager : MonoBehaviour
             sakuya.OnShot += UpdateBossHealth;
             sakuya.OnChangePhase += RefillBossHealth;
             sakuya.OnBossDefeat += WinSequence;
+            sakuya.OnBossDefeat += HideCoverTutorial;
         }
     }
 
     private void OnDisable()
     {
+        if (coverTutorial != null)
+        {
+            railShooterLogic.OnShoot -= ShowCoverTutorial;
+            player.OnExitCover -= HideCoverTutorial;
+        }
+
         player.OnBulletFired -= SpawnMuzzleFlash;
         player.OnReload -= HideReloadGraphic;
         player.OnReload -= UpdateAmmoCount;
@@ -140,6 +165,7 @@ public class PlayerUIManager : MonoBehaviour
             sakuya.OnShot -= UpdateBossHealth;
             sakuya.OnChangePhase -= RefillBossHealth;
             sakuya.OnBossDefeat -= WinSequence;
+            sakuya.OnBossDefeat -= HideCoverTutorial;
         }
     }
 
@@ -148,6 +174,26 @@ public class PlayerUIManager : MonoBehaviour
     {
         UpdateTimeCounter();
         UpdateComboDecay();
+    }
+
+    private void ShowCoverTutorial(Ray arg1, Vector2 arg2)
+    {
+        if (!player.InCover || coverTutorial.IsVisible || !player.CanPlay) return;
+
+        shotsFiredInCover++;
+        if (shotsFiredInCover >= shotsBeforeTutorial)
+        {
+            coverTutorial.Show();
+        }
+    }
+
+    void HideCoverTutorial()
+    {
+        shotsFiredInCover = 0;
+        if (coverTutorial.IsVisible)
+        {
+            coverTutorial.Hide();
+        }
     }
 
     void SpawnMuzzleFlash(bool missed, Vector2 hitPosition)

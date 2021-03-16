@@ -143,6 +143,7 @@ public class UFOBehaviour : BaseEnemy
         enemyBullet.gameObject.SetActive(true);
 
         magicCircle.transform.DOScale(0, chargeupAnimTime);
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.UFOBullet);
         //magicCircle.DOFade(0, chargeupAnimTime);
     }
 
@@ -173,6 +174,7 @@ public class UFOBehaviour : BaseEnemy
             lights[i].enabled = false;
         }
         PlayerManager.Instance.LocalPlayer.GetComponent<ScoreSystem>().AddArbitraryScore(scoreValue);
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.EnemyDeath);
         collider.isTrigger = false;
         rBody.useGravity = true;
         rBody.AddExplosionForce(explosionForce, explosionOrigin.position, 1, upwardsModifier);

@@ -58,7 +58,7 @@ namespace JSAM.JSAMEditor
         {
             get
             {
-#if UNITY_2019_4_OR_NEWER
+#if UNITY_2019_3_OR_NEWER
                 return HasOpenInstances<AudioPlaybackToolEditor>();
 #else
                 return window != null;

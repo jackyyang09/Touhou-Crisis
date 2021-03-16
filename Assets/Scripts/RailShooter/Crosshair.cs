@@ -24,7 +24,7 @@ public class Crosshair : MonoBehaviour
     {
         get
         {
-            return JSAM.PauseMenu.HideCursorKey;
+            return PauseMenu.HideCursorKey;
         }
     }
 

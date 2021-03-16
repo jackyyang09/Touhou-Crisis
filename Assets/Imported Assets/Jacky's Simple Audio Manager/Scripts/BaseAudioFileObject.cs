@@ -115,7 +115,6 @@ namespace JSAM
 
     public abstract class BaseAudioFileObject : ScriptableObject
     {
-        [SerializeField, HideInInspector] protected string safeName = "";
         public string SafeName
         {
             get

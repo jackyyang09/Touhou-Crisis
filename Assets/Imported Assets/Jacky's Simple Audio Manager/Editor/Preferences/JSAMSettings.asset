@@ -18,7 +18,7 @@ MonoBehaviour:
   libraryPath: Assets/Imported Assets/Jacky's Simple Audio Manager/Libraries
   useNamespace: 0
   enumNamespace: JSAM
-  quickReferenceFontSize: 12
+  quickReferenceFontSize: 15
   hideStartupMessage: 0
-  selectedLibrary: Assets/Jacky's Simple Audio Manager/Libraries/FPS Example.asset
+  selectedLibrary: Assets/Imported Assets/Jacky's Simple Audio Manager/Libraries/TouhouCrisis.asset
   selectedSettings: Assets/Neo Settings.asset

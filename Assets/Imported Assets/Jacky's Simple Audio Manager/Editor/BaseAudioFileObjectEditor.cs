@@ -30,7 +30,6 @@ namespace JSAM.JSAMEditor
 
             isPreset = string.IsNullOrEmpty(AssetDatabase.GetAssetPath(asset as UnityEngine.Object));
 
-            safeName = FindProp("safeName");
             category = FindProp(nameof(asset.category));
             presetDescription = FindProp("presetDescription");
             file = FindProp(nameof(asset.file));
@@ -44,7 +43,6 @@ namespace JSAM.JSAMEditor
             bypassReverbZones = serializedObject.FindProperty(nameof(asset.bypassReverbZones));
         }
 
-        protected SerializedProperty safeName;
         protected SerializedProperty category;
         protected SerializedProperty presetDescription;
         protected SerializedProperty file;

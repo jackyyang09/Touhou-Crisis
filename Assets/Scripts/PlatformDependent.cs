@@ -13,9 +13,9 @@ public abstract class PlatformDependent : MonoBehaviour
     {
         bool act = false;
 #if UNITY_WEBGL
-        if (excludeWeb)
+        if (actOnWeb)
         {
-            exclude = true;
+            act = true;
         }
 #endif
 #if UNITY_ANDROID
@@ -25,9 +25,9 @@ public abstract class PlatformDependent : MonoBehaviour
         }
 #endif
 #if UNITY_STANDALONE
-        if (excludeStandalone)
+        if (actOnStandalone)
         {
-            exclude = true;
+            act = true;
         }
 #endif
         if (!Photon.Pun.PhotonNetwork.OfflineMode && actOnMultiplayer)

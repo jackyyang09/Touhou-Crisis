@@ -846,6 +846,16 @@ namespace JSAM.JSAMEditor
                         {
                             reorderableMusicLists[category].Draw();
                         }
+                        if (dragging)
+                        {
+                            GUIStyle style = JSAMEditorHelper.ApplyTextAnchorToStyle(GUI.skin.box, TextAnchor.MiddleCenter);
+                            style = JSAMEditorHelper.ApplyFontSizeToStyle(style, 15);
+                            style = JSAMEditorHelper.ApplyBoldTextToStyle(style);
+                            style = JSAMEditorHelper.ApplyTextColorToStyle(style, Color.white);
+                            JSAMEditorHelper.BeginColourChange(Color.white);
+                            GUI.Box(rect, "Drop to Add Audio File(s)", style);
+                            JSAMEditorHelper.EndColourChange();
+                        }
                         EditorCompatability.EndSpecialFoldoutGroup();
                         EditorGUILayout.EndVertical();
                     }

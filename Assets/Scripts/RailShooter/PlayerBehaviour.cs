@@ -94,8 +94,16 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] Cinemachine.CinemachineImpulseSource impulse;
 
     bool canPlay = true;
+    public bool CanPlay
+    {
+        get
+        {
+            return canPlay;
+        }
+    }
 
     public System.Action<bool, Vector2> OnBulletFired;
+    public System.Action OnExitCover;
     public System.Action OnReload;
     public System.Action OnFireNoAmmo;
     public System.Action<DamageType> OnTakeDamage;
@@ -115,7 +123,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
         EnterTransit();
 
-        coverKey = (KeyCode)PlayerPrefs.GetInt(JSAM.PauseMenu.CoverInputKey);
+        coverKey = (KeyCode)PlayerPrefs.GetInt(PauseMenu.CoverInputKey);
     }
 
     private void OnEnable()
@@ -203,6 +211,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (coverEnterTimer / coverEnterTime > coverThreshold)
         {
             inCover = false;
+            OnExitCover?.Invoke();
         }
 
         Transform coverTransform = AreaLogic.Instance.Player1CoverTransform;

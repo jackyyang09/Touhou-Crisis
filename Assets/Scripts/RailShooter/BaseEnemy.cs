@@ -38,10 +38,12 @@ public abstract class BaseEnemy : MonoBehaviour, IShootable
     public virtual void TakeDamage(float d = 1)
     {
         if (!canTakeDamage) return;
-        bool alreadyDead = health == 0;
+        // True if health was already below 0 before damage calculation
+        bool alreadyDead = health <= 0;
 
         health -= d;
 
+        // Check if we've only just died
         if (health <= 0 && !alreadyDead)
         {
             StopAllCoroutines();

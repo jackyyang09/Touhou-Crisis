@@ -35,6 +35,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e53451954c1e1a440ab1d61ded89eb0d, type: 2}
   - {fileID: 11400000, guid: 5c04115f2641ad94ca5a73c138ba9f1e, type: 2}
   - {fileID: 11400000, guid: 5d76a87901eaa134399a162344aa7f94, type: 2}
+  - {fileID: 11400000, guid: d63f9ffb2f72df540a9ebd7646e36b0c, type: 2}
+  - {fileID: 11400000, guid: 0fa155b3f0ed39740bf0ebb9fe9e4652, type: 2}
   music:
   - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
   - {fileID: 11400000, guid: 69b8c277c5601824da6e241f30abc917, type: 2}
@@ -56,6 +58,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: e53451954c1e1a440ab1d61ded89eb0d, type: 2}
     - {fileID: 11400000, guid: 5c04115f2641ad94ca5a73c138ba9f1e, type: 2}
     - {fileID: 11400000, guid: 5d76a87901eaa134399a162344aa7f94, type: 2}
+    - {fileID: 11400000, guid: d63f9ffb2f72df540a9ebd7646e36b0c, type: 2}
+    - {fileID: 11400000, guid: 0fa155b3f0ed39740bf0ebb9fe9e4652, type: 2}
     foldout: 1
   - name: UI Sounds
     files:

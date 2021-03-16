@@ -14,7 +14,9 @@
         TimeStop,
         TimeResumes,
         BulletCasings,
-        MenuButton
+        MenuButton,
+        EnemyDeath,
+        UFOBullet
     }
     public enum TouhouCrisisMusic {
         FloweringNight,
