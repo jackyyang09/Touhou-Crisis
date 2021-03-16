@@ -19,7 +19,7 @@ public class OptimizedCanvasEditor : Editor
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Show Canvas"))
         {
-            myScript.EditorShow();
+            myScript.EditorButtonShow();
         }
         else if (GUILayout.Button("Hide Canvas"))
         {

@@ -18,28 +18,28 @@ public class AreaLogic : MonoBehaviour
 
     [SerializeField] short currentSubArea = 0;
 
-    public Transform GetPlayer1Cover
+    public Transform Player1CoverTransform
     {
         get
         {
             return subAreas[currentSubArea].player1CoverTransform;
         }
     }
-    public Transform GetPlayer1Fire
+    public Transform Player1FireTransform
     {
         get
         {
             return subAreas[currentSubArea].player1FireTransform;
         }
     }
-    public Transform GetPlayer2Cover
+    public Transform GetPlayer2CoverTransform
     {
         get
         {
             return subAreas[currentSubArea].player2CoverTransform;
         }
     }
-    public Transform GetPlayer2Fire
+    public Transform GetPlayer2FireTransform
     {
         get
         {

@@ -6,15 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Prefabs/Scenes/Launcher.unity
+    path: Assets/Scenes/Launcher.unity
     guid: 95816e02da8656847852d8a18fedd2bf
   - enabled: 1
-    path: Assets/Prefabs/Scenes/TweenScene.unity
+    path: Assets/Scenes/TweenScene.unity
     guid: 3992f909d3dfd6b4db9a91234af125a7
   - enabled: 1
-    path: Assets/Prefabs/Scenes/Room for 2.unity
-    guid: 6a163e10e810c5c4ebd37447576d5296
-  - enabled: 1
-    path: Assets/Prefabs/Scenes/Room for 2 WIP.unity
+    path: Assets/Scenes/Room for 2 WIP.unity
     guid: ee95a1da1f45c7547afa7f90a810ece4
+  - enabled: 1
+    path: Assets/Scenes/Room for 2.unity
+    guid: 6a163e10e810c5c4ebd37447576d5296
   m_configObjects: {}

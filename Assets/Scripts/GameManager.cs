@@ -194,12 +194,16 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     public override void OnPlayerLeftRoom(Player other)
     {
         Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
-            //LoadArena();
-            PhotonNetwork.LoadLevel(0);
-            LeaveRoom();
-        }
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
+        //    //LoadArena();
+        //    PhotonNetwork.LoadLevel(0);
+        //    LeaveRoom();
+        //}
+
+        // lmao just leave dude
+        LeaveRoom();
+        SceneManager.LoadScene(0);
     }
 }

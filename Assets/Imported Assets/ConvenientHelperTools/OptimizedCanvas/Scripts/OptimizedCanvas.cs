@@ -59,26 +59,51 @@ public class OptimizedCanvas : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    [ContextMenu("Show Canvas")]
-    public void EditorShow()
+    public void RegisterUndo()
     {
         UnityEditor.Undo.RecordObject(canvas, "Modified canvas visibility");
         if (caster)
         {
             UnityEditor.Undo.RecordObject(caster, "Modified canvas visibility");
         }
+    }
+
+    [ContextMenu("Show Canvas")]
+    public void EditorButtonShow()
+    {
+        RegisterUndo();
         Show();
+
+        List<GameObject> selected = new List<GameObject>(UnityEditor.Selection.gameObjects);
+        for (int i = 0; i < selected.Count; i++)
+        {
+            if (selected[i] == gameObject) continue;
+            OptimizedCanvas selectedCanvas = null;
+            if (selected[i].TryGetComponent(out selectedCanvas))
+            {
+                selectedCanvas.RegisterUndo();
+                selectedCanvas.Show();
+            }
+        }
     }
 
     [ContextMenu("Hide Canvas")]
     public void EditorHide()
     {
-        UnityEditor.Undo.RecordObject(canvas, "Modified canvas visibility");
-        if (caster)
-        {
-            UnityEditor.Undo.RecordObject(caster, "Modified canvas visibility");
-        }
+        RegisterUndo();
         Hide();
+        
+        var selected = UnityEditor.Selection.gameObjects;
+        for (int i = 0; i < selected.Length; i++)
+        {
+            if (selected[i] == gameObject) continue;
+            OptimizedCanvas selectedCanvas = null;
+            if (selected[i].TryGetComponent(out selectedCanvas))
+            {
+                selectedCanvas.RegisterUndo();
+                selectedCanvas.Hide();
+            }
+        }
     }
 
     [ContextMenu("Get References to Children")]
@@ -192,7 +217,7 @@ public class OptimizedCanvas : MonoBehaviour
 
         if (canvas.enabled) onCanvasShow.Invoke();
         else onCanvasHide.Invoke();
-    }
+    }   
 
     public void ShowIfPreviouslyVisible()
     {

@@ -93,6 +93,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] Cinemachine.CinemachineImpulseSource impulse;
 
+    bool canPlay = true;
+
     public System.Action<bool, Vector2> OnBulletFired;
     public System.Action OnReload;
     public System.Action OnFireNoAmmo;
@@ -119,11 +121,13 @@ public class PlayerBehaviour : MonoBehaviour
     private void OnEnable()
     {
         railShooter.OnShoot += HandleShooting;
+        OnPlayerDeath += RemovePlayerControl;
     }
 
     private void OnDisable()
     {
         railShooter.OnShoot -= HandleShooting;
+        OnPlayerDeath -= RemovePlayerControl;
     }
 
     // Update is called once per frame
@@ -136,7 +140,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (inTransit) return;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-        if (Input.touchCount > 0 && currentLives > 0)
+        if (Input.touchCount > 0 && canPlay)
         {
             StepOnPedal();
         }
@@ -145,7 +149,7 @@ public class PlayerBehaviour : MonoBehaviour
             ReleasePedal();
         }
 #else
-        if (Input.GetKey(coverKey) && currentLives > 0)
+        if (Input.GetKey(coverKey) && canPlay)
         {
             StepOnPedal();
         }
@@ -156,7 +160,7 @@ public class PlayerBehaviour : MonoBehaviour
 #endif
     }
 
-    void HandleShooting(Ray ray)
+    void HandleShooting(Ray ray, Vector2 screenPoint)
     {
         if (inCover || inTransit || Time.timeScale == 0) return;
 
@@ -181,7 +185,7 @@ public class PlayerBehaviour : MonoBehaviour
                 miss = false;
             }
 
-            Vector3 hitPosition = railShooter.Cam.ScreenToViewportPoint(Input.mousePosition);
+            Vector3 hitPosition = railShooter.Cam.ScreenToViewportPoint(screenPoint);
 
             ammoCount[activeWeaponIndex]--;
 
@@ -201,8 +205,8 @@ public class PlayerBehaviour : MonoBehaviour
             inCover = false;
         }
 
-        Transform coverTransform = AreaLogic.Instance.GetPlayer1Cover;
-        Transform fireTransform = AreaLogic.Instance.GetPlayer1Fire;
+        Transform coverTransform = AreaLogic.Instance.Player1CoverTransform;
+        Transform fireTransform = AreaLogic.Instance.Player1FireTransform;
         float lerpValue = coverEnterTimer / coverEnterTime;
         head.transform.position = Vector3.Lerp(coverTransform.position, fireTransform.position, lerpValue);
         head.transform.rotation = Quaternion.Lerp(coverTransform.rotation, fireTransform.rotation, lerpValue);
@@ -218,8 +222,8 @@ public class PlayerBehaviour : MonoBehaviour
             OnReload?.Invoke();
         }
 
-        Transform coverTransform = AreaLogic.Instance.GetPlayer1Cover;
-        Transform fireTransform = AreaLogic.Instance.GetPlayer1Fire;
+        Transform coverTransform = AreaLogic.Instance.Player1CoverTransform;
+        Transform fireTransform = AreaLogic.Instance.Player1FireTransform;
         float lerpValue = coverEnterTimer / coverEnterTime;
         head.transform.position = Vector3.Lerp(coverTransform.position, fireTransform.position, lerpValue);
         head.transform.rotation = Quaternion.Lerp(coverTransform.rotation, fireTransform.rotation, lerpValue);
@@ -254,6 +258,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (currentLives == 0)
         {
+            RemovePlayerControl();
             Invoke("PlayerDeath", 1.5f);
         }
     }
@@ -268,5 +273,15 @@ public class PlayerBehaviour : MonoBehaviour
         collider.enabled = false;
         yield return new WaitForSeconds(damageRecoveryTime);
         collider.enabled = true;
+    }
+
+    public void GetPlayerControl()
+    {
+        canPlay = true;
+    }
+
+    public void RemovePlayerControl()
+    {
+        canPlay = false;
     }
 }

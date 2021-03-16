@@ -9,32 +9,36 @@ using JSAM;
 
 public class MainMenuUI : MonoBehaviourPunCallbacks
 {
-    [SerializeField]
-    public const string playerNamePrefKey = "PlayerName";
+    [SerializeField] public const string playerNamePrefKey = "PlayerName";
 
-    [SerializeField] AudioFileSoundObject buttonShoot;
+    [SerializeField] AudioFileSoundObject buttonShoot = null;
+    [SerializeField] RailShooterLogic railShooter = null;
 
-    [SerializeField] Launcher launcher;
+    [SerializeField] Launcher launcher = null;
 
     [SerializeField] Ease easeType = Ease.Linear;
     [SerializeField] float uiMoveSpeed = 0.15f;
     [SerializeField] float bgFadeTime = 0.5f;
+    [SerializeField] float gameStartDelay = 0.25f;
 
-    [SerializeField] OptimizedCanvas title;
-    [SerializeField] OptimizedCanvas controlPanel;
-    [SerializeField] RectTransform settingsPanel;
-    [SerializeField] OptimizedCanvas lobbyScreen;
+    [SerializeField] OptimizedCanvas title = null;
+    [SerializeField] OptimizedCanvas controlPanel = null;
+    [SerializeField] RectTransform settingsPanel = null;
+    [SerializeField] OptimizedCanvas lobbyScreen = null;
+    [SerializeField] OptimizedCanvas lobbyTopBar = null;
+    [SerializeField] LoadingScreen loadingScreen = null;
 
-    [SerializeField] RectTransform singleplayerButton;
-    [SerializeField] RectTransform multiplayerButton;
-    [SerializeField] OptimizedCanvas multiplayerMask;
-    [SerializeField] TMPro.TextMeshProUGUI remotePlayer1Name;
-    [SerializeField] TMPro.TextMeshProUGUI player2Name;
-    [SerializeField] OptimizedCanvas hostPrivilegeMask;
+    [SerializeField] RectTransform singleplayerButton = null;
+    [SerializeField] RectTransform multiplayerButton = null;
+    [SerializeField] OptimizedCanvas multiplayerMask = null;
+    [SerializeField] TMPro.TextMeshProUGUI remotePlayer1Name = null;
+    [SerializeField] TMPro.TextMeshProUGUI player2Name = null;
+    [SerializeField] OptimizedCanvas hostPrivilegeMask = null;
 
-    [SerializeField] UnityEngine.UI.RawImage reimuBG;
-    [SerializeField] UnityEngine.UI.RawImage marisaBG;
+    [SerializeField] UnityEngine.UI.RawImage reimuBG = null;
+    [SerializeField] UnityEngine.UI.RawImage marisaBG = null;
 
+    Coroutine gameStartRoutine = null;
     Coroutine settingsRoutine = null;
 
     // Start is called before the first frame update
@@ -145,6 +149,38 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         }
     }
 
+    public void SyncEnterGame()
+    {
+        photonView.RPC("EnterGame", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void EnterGame()
+    {
+        if (gameStartRoutine != null) return;
+
+        PlayButtonSound();
+        singleplayerButton.DOAnchorPosX(-1800, uiMoveSpeed).SetEase(easeType);
+        multiplayerButton.DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
+
+        lobbyTopBar.Hide();
+
+        gameStartRoutine = StartCoroutine(LoadGame());
+    }
+
+    IEnumerator LoadGame()
+    {
+        yield return new WaitForSeconds(uiMoveSpeed);
+
+        railShooter.enabled = false;
+
+        yield return StartCoroutine(loadingScreen.ShowRoutine());
+
+        yield return new WaitForSeconds(gameStartDelay);
+
+        launcher.Load2PlayerMode();
+    }
+
     IEnumerator LeaveLobby()
     {
         singleplayerButton.DOAnchorPosX(-1800, uiMoveSpeed).SetEase(easeType);
@@ -152,8 +188,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(uiMoveSpeed);
 
-        launcher.Disconnect();
         lobbyScreen.Hide();
+        launcher.Disconnect();
         (controlPanel.transform as RectTransform).DOAnchorPosX(0, uiMoveSpeed).SetEase(easeType);
         title.Show();
 

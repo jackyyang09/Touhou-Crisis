@@ -36,6 +36,8 @@ public class Sakuya : BaseEnemy
 
     [SerializeField] BehaviourStruct[] behaviourStructs = null;
 
+    [SerializeField] Vector2 timeStopKnifeThrows = Vector2.zero;
+
     [SerializeField] ObjectPool[] pools = null;
 
     [SerializeField] Vector3 targetOffset = Vector3.zero;
@@ -151,7 +153,21 @@ public class Sakuya : BaseEnemy
     [PunRPC]
     void SakuyaVolley()
     {
-        animator.Play("Sakuya Volley");
+        switch (currentPhase)
+        {
+            case 0:
+                animator.Play("Sakuya Volley");
+                break;
+            case 1:
+                if (Random.value > 0.5f)
+                    animator.Play("Sakuya Volley");
+                else
+                    animator.Play("Sakuya Volley 2");
+                break;
+            case 2:
+                animator.Play("Sakuya Volley 2");
+                break;
+        }
     }
 
     public void ThrowAccurateKnife()
@@ -159,7 +175,7 @@ public class Sakuya : BaseEnemy
         AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
         EnemyBullet newKnife = pools[0].GetObject().GetComponent<EnemyBullet>();
         newKnife.transform.position = handTransform.position;
-        target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+        target.position = AreaLogic.Instance.Player1FireTransform.position;
 
         target.position += targetOffset;
         newKnife.Init(target);
@@ -179,7 +195,17 @@ public class Sakuya : BaseEnemy
     IEnumerator ArrangeKnifeRoutine()
     {
         GoToCenter();
-        animator.Play("Sakuya 4 Combo");
+
+        switch (currentPhase)
+        {
+            case 1:
+                animator.Play("Sakuya 4 Combo");
+                break;
+            case 2:
+                animator.Play("Sakuya 4 Combo 2");
+                break;
+        }
+
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < 12; i++)
         {
@@ -200,7 +226,7 @@ public class Sakuya : BaseEnemy
             newKnife.transform.Translate(Vector3.forward * 1);
             newKnife.gameObject.SetActive(true);
 
-            target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+            target.position = AreaLogic.Instance.Player1FireTransform.position;
             target.position += targetOffset;
             newKnife.SpecialInit(target);
             AudioManager.PlaySound(TouhouCrisisSounds.KnifePlace);
@@ -314,7 +340,7 @@ public class Sakuya : BaseEnemy
             newKnife.transform.SetParent(null);
             newKnife.moveDelay = moveDelay;
 
-            target.position = AreaLogic.Instance.GetPlayer1Fire.position;
+            target.position = AreaLogic.Instance.Player1FireTransform.position;
             target.position += targetOffset;
 
             newKnife.transform.LookAt(target.position);
@@ -334,19 +360,13 @@ public class Sakuya : BaseEnemy
         timeStopAnim.Play("Time Stop");
     }
 
-    public void TimeResumes()
-    {
-        //Time.timeScale = 1;
-        //AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 0.1f, true);
-    }
-
     [PunRPC]
-    void TimeStopCombo()
+    void TimeStopCombo(int knifeThrows)
     {
-        StartCoroutine(TimeStop());
+        StartCoroutine(TimeStop(knifeThrows));
     }
 
-    IEnumerator TimeStop()
+    IEnumerator TimeStop(int knifeThrows)
     {
         GoToCenter();
 
@@ -354,15 +374,13 @@ public class Sakuya : BaseEnemy
 
         yield return new WaitForSecondsRealtime(4.5f);
 
-        SpawnKnifeBundle(0.01f);
-
-        yield return new WaitForSecondsRealtime(0.5f);
-
-        SpawnKnifeBundle(0.5f);
-
-        yield return new WaitForSecondsRealtime(0.5f);
-
-        SpawnKnifeBundle(1.25f);
+        for (int i = 0; i < knifeThrows; i++)
+        {
+            float delay = i * 0.5f;
+            SpawnKnifeBundle(delay);
+            yield return new WaitForSecondsRealtime(0.5f);
+        }
+        animator.Play("Sakuya Time Resumes");
 
         yield return new WaitForSecondsRealtime(1.5f);
 
@@ -420,12 +438,30 @@ public class Sakuya : BaseEnemy
                     break;
                 case 2:
                     canStopTime = false;
-                    photonView.RPC("TimeStopCombo", RpcTarget.All);
+                    int knifeThrows = (int)Random.Range(timeStopKnifeThrows.x, timeStopKnifeThrows.y + 1);
+                    photonView.RPC("TimeStopCombo", RpcTarget.All, knifeThrows);
                     yield return new WaitForSeconds(5);
                     break;
             }
 
             photonView.RPC("PlayIdle", RpcTarget.All);
+        }
+    }
+
+    [CommandTerminal.RegisterCommand(Help = "Reduces bosses health and subsequent health bars to 1", MaxArgCount = 0)]
+    static void CrippleBoss(CommandTerminal.CommandArg[] args)
+    {
+        Sakuya sakuya = FindObjectOfType<Sakuya>();
+        if (sakuya)
+        {
+            sakuya.healthPhases = new int[] { 1, 1, 1 };
+            sakuya.health = 2;
+            sakuya.TakeDamage();
+            CommandTerminal.Terminal.Log("Sakuya has been punished!");
+        }
+        else
+        {
+            CommandTerminal.Terminal.Log("Sakuya was not found in this scene!");
         }
     }
 }

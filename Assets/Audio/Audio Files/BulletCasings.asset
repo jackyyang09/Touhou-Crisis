@@ -28,7 +28,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5f85a23ae74fe2945b24621cfc54e2a7, type: 3}
   - {fileID: 8300000, guid: ca0cbce929d45714793014bca1598d72, type: 3}
   useLibrary: 1
-  relativeVolume: 0.4
+  relativeVolume: 0.3
   spatialize: 0
   maxDistance: 0
   priority: 128

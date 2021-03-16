@@ -306,17 +306,20 @@ namespace JSAM
             {
                 if (enableLoopPoints)
                 {
-                    if (musicSources[0].isPlaying)
+                    if (musicSources[0].clip != null)
                     {
-                        if (musicSources[0].timeSamples >= loopEndTime)
+                        if (musicSources[0].isPlaying)
+                        {
+                            if (musicSources[0].timeSamples >= loopEndTime)
+                            {
+                                musicSources[0].timeSamples = (int)loopStartTime;
+                            }
+                        }
+                        else if (loopTrackAfterStopping && fadeInRoutine == null)
                         {
                             musicSources[0].timeSamples = (int)loopStartTime;
+                            musicSources[0].Play();
                         }
-                    }
-                    else if (loopTrackAfterStopping && fadeInRoutine == null)
-                    {
-                        musicSources[0].timeSamples = (int)loopStartTime;
-                        musicSources[0].Play();
                     }
 #if UNITY_EDITOR
                     if (Mathf.Abs((float)(loopStartTime - loopEndTime)) < 1)

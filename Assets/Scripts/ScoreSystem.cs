@@ -54,6 +54,18 @@ public class ScoreSystem : MonoBehaviour, IPunObservable
         OnScoreChanged?.Invoke((int)score);
     }
 
+    public void AddArbitraryScore(float scoreToAdd)
+    {
+        player.PhotonView.RPC("AddScore", RpcTarget.All, scoreToAdd);
+    }
+
+    [PunRPC]
+    void AddScore(float scoreToAdd)
+    {
+        score += scoreToAdd * comboPuck.Multliplier;
+        OnScoreChanged?.Invoke((int)score);
+    }
+
     // Update is called once per frame
     //void Update()
     //{

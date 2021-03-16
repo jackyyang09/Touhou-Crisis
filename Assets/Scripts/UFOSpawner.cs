@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class UFOSpawner : MonoBehaviour
 {
-    [SerializeField] GameObject ufoPrefab = null;
+    [SerializeField] GameObject redUfoPrefab = null;
+    [SerializeField] GameObject greenUfoPrefab = null;
+    [SerializeField] GameObject blueUfoPrefab = null;
+
     [SerializeField] ModularBox areaBox = null;
+    public ModularBox AreaBox
+    {
+        get
+        {
+            return areaBox;
+        }
+    }
 
     [SerializeField] Sakuya sakuya = null;
 
@@ -14,11 +24,14 @@ public class UFOSpawner : MonoBehaviour
     [Range(0, 8)]
     [SerializeField] int maximumUfos = 0;
 
-    [SerializeField] Transform[] spawnPositions = null;
+    [SerializeField] Transform[] redSpawnPoints = null;
+    [SerializeField] Transform[] greenSpawnPoints = null;
+    [SerializeField] Transform[] blueSpawnPoints = null;
+
+    [SerializeField] ObjectPool blueBulletPool = null;
+    [SerializeField] ObjectPool greenBulletPool = null;
 
     int activeUfos = 0;
-
-    //ComboPuck puck = null;
 
     void OnEnable()
     {
@@ -30,31 +43,12 @@ public class UFOSpawner : MonoBehaviour
     void OnDisable()
     {
         sakuya.OnChangePhase -= UpdateSpawnBehaviour;
-        //if (puck != null)
-        //{
-        //    puck.OnPassPuck -= SpawnUFO;
-        //}
     }
 
     void Initialize(PlayerBehaviour player)
     {
         GameManager.OnSpawnLocalPlayer -= Initialize;
-
-        //puck = PlayerManager.Instance.LocalPlayer.GetComponent<ComboPuck>();
-        //puck.OnPassPuck += SpawnUFO;
     }
-
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //    
-    //}
-
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    
-    //}
 
     void UpdateSpawnBehaviour(int currentPhase)
     {
@@ -69,15 +63,45 @@ public class UFOSpawner : MonoBehaviour
         if (activeUfos < maximumUfos)
         {
             activeUfos++;
-            Transform spawnPos = spawnPositions[Random.Range(0, spawnPositions.Length)];
-            var newFO = Instantiate(ufoPrefab, spawnPos.position, Quaternion.identity);
+
+            int ufoType = Random.Range(0, 3);
+
+            // Temporary allocation
+            GameObject newFO = gameObject;
+            switch ((UFOBehaviour.UFOType)ufoType)
+            //switch (UFOBehaviour.UFOType.Red)
+            {
+                case UFOBehaviour.UFOType.Green:
+                    newFO = Instantiate(greenUfoPrefab, greenSpawnPoints[Random.Range(0, greenSpawnPoints.Length)].position, Quaternion.identity);
+                    break;
+                case UFOBehaviour.UFOType.Blue:
+                    newFO = Instantiate(blueUfoPrefab, blueSpawnPoints[Random.Range(0, blueSpawnPoints.Length)].position, Quaternion.identity);
+                    break;
+                case UFOBehaviour.UFOType.Red:
+                    newFO = Instantiate(redUfoPrefab, redSpawnPoints[Random.Range(0, redSpawnPoints.Length)].position, Quaternion.identity);
+                    break;
+            }
+
             UFOBehaviour ufo = newFO.GetComponent<UFOBehaviour>();
-            ufo.OnUFOExpire += ReportUFODeath;
-            ufo.Init(areaBox);
+            ufo.Init(this);
         }
     }
 
-    void ReportUFODeath()
+    public GameObject GetUFOBullet(UFOBehaviour.UFOType ufoType)
+    {
+        switch (ufoType)
+        {
+            case UFOBehaviour.UFOType.Green:
+                return greenBulletPool.GetObject();
+            case UFOBehaviour.UFOType.Blue:
+                return blueBulletPool.GetObject();
+            case UFOBehaviour.UFOType.Red:
+            default:
+                return null;
+        }
+    }
+
+    public void ReportUFODeath()
     {
         activeUfos--;
     }

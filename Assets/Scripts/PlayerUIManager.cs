@@ -17,6 +17,7 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] ScoreSystem score = null;
     [SerializeField] Sakuya sakuya = null;
     [SerializeField] GameObject[] personalObjects = null;
+    [SerializeField] RailShooterEffects railShooterEffects = null;
 
     [Header("Ammo Count")]
     [SerializeField] TextMeshProUGUI ammoText = null;
@@ -36,6 +37,7 @@ public class PlayerUIManager : MonoBehaviour
 
     [Header("Damage Effects")]
     [SerializeField] Image slashDamageImage = null;
+    [SerializeField] Image bulletDamageImage = null;
 
     [Header("Score System")]
     [SerializeField] TextMeshProUGUI scoreText = null;
@@ -61,6 +63,8 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] Canvas reimuPortrait = null;
     [SerializeField] Canvas marisaPortrait = null;
 
+    LoadingScreen loadingScreen = null;
+
     private void Awake()
     {
         if (!player.PhotonView.IsMine)
@@ -73,6 +77,7 @@ public class PlayerUIManager : MonoBehaviour
         }
 
         sakuya = FindObjectOfType<Sakuya>();
+        loadingScreen = FindObjectOfType<LoadingScreen>();
     }
 
     // Start is called before the first frame update
@@ -161,7 +166,11 @@ public class PlayerUIManager : MonoBehaviour
         //Spawn bullet on the canvas
         var bullet = Instantiate(muzzleFlash, overlayCanvas.transform).transform as RectTransform;
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+        bullet.position = Input.touches[Input.touchCount - 1].position;
+#else
         bullet.position = Input.mousePosition;
+#endif
 
         UpdateAmmoCount();
         //ExpendAmmo();
@@ -244,6 +253,8 @@ public class PlayerUIManager : MonoBehaviour
                 slashDamageImage.DOColor(Color.clear, 0.5f).SetDelay(1);
                 break;
             case DamageType.Bullet:
+                bulletDamageImage.DOColor(Color.white, 0);
+                bulletDamageImage.DOColor(Color.clear, 0.5f).SetDelay(1);
                 break;
         }
     }
@@ -316,6 +327,7 @@ public class PlayerUIManager : MonoBehaviour
 
     void WinSequence()
     {
+        PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
         JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin);
         gameOverText.text = "BOSS CLEAR";
         StartCoroutine(ShowGameOverScreen());
@@ -323,6 +335,7 @@ public class PlayerUIManager : MonoBehaviour
 
     void LoseSequence()
     {
+        PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
         JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
         gameOverText.text = "GAME OVER";
         StartCoroutine(ShowGameOverScreen());
@@ -333,6 +346,10 @@ public class PlayerUIManager : MonoBehaviour
         bool isHost = Photon.Pun.PhotonNetwork.IsMasterClient;
         
         var otherPlayer = PlayerManager.Instance.OtherPlayer;
+
+        railShooterEffects.SetInMenu(true);
+        railShooterEffects.playSound = true;
+        railShooterEffects.spawnMuzzleFlash = true;
 
         if (isHost)
         {
@@ -399,15 +416,31 @@ public class PlayerUIManager : MonoBehaviour
         gameOverButtonCanvas.Show();
     }
 
+    Coroutine delayRoutine = null;
+    System.Action delayedFunction = null;
     public void ReloadLevel()
     {
-        //GameManager.Instance.LoadArena();
-        GameManager.Instance.ReloadScene();
-        //GameManager.Instance.photonView.RPC("ReloadScene", Photon.Pun.RpcTarget.All);
+        if (delayRoutine != null) return;
+
+        delayedFunction += GameManager.Instance.ReloadScene;
+        delayRoutine = StartCoroutine(DelayedTransition());
     }
 
     public void ReturnToTitle()
     {
-        GameManager.Instance.LeaveRoom();
+        if (delayRoutine != null) return;
+
+        delayedFunction += GameManager.Instance.LeaveRoom;
+        delayRoutine = StartCoroutine(DelayedTransition());
+    }
+
+    IEnumerator DelayedTransition()
+    {
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.MenuButton);
+
+        yield return StartCoroutine(loadingScreen.ShowRoutine());
+
+        delayedFunction?.Invoke();
+        delayedFunction = null;
     }
 }
