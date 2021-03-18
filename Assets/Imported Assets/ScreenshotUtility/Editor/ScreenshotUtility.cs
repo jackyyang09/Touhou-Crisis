@@ -350,7 +350,14 @@ public sealed class ScreenshotUtility : EditorWindow, IHasCustomMenu
                 {
                     if (GUILayout.Button(new GUIContent("- Capture -"), GUILayout.ExpandHeight(false), GUILayout.Height(25f)))
                     {
-                        RenderScreenshot();
+                        //RenderScreenshot();
+                        string filename = FormatFileName(Resolution, DateFormats[DateFormat]) + (OutputPNG || transparency == true ? ".png" : ".jpg");
+
+                        CheckFolderValidity(SavePath);
+
+                        string path = SavePath + "/" + filename;
+
+                        ScreenCapture.CaptureScreenshot(path, 1);
                     }
                 }
             }
