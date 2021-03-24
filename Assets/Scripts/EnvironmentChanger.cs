@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using DG.Tweening;
 
 public class EnvironmentChanger : MonoBehaviour
 {
@@ -16,7 +17,20 @@ public class EnvironmentChanger : MonoBehaviour
     }
 
     [SerializeField] VisualEffect environmentEffect = null;
-    [SerializeField] SakuraPetals[] presets;
+    [SerializeField] SakuraPetals[] presets = null;
+
+    [SerializeField] float environmentChangeTime = 3;
+
+    [Header("Post-Processing Effects")]
+    [SerializeField] UnityEngine.Rendering.Volume normalVolume = null;
+    [SerializeField] UnityEngine.Rendering.Volume finalVolume = null;
+
+    [Header("Skybox")]
+    [SerializeField] Material[] skyboxes = null;
+    Material activeSkybox = null;
+
+    [SerializeField] Light mainLight = null;
+    [SerializeField] Light[] referenceLights = null;
 
     [SerializeField] Sakuya sakuya = null;
 
@@ -28,13 +42,27 @@ public class EnvironmentChanger : MonoBehaviour
     int setSizeRandomID;
     int gravityID;
 
-    private void Start()
+    int exposureID;
+    int tintColorID;
+
+    private void Awake()
     {
         constantSpawnRateID = Shader.PropertyToID("Constant Spawn Rate");
         setRandomVelocityID = Shader.PropertyToID("Set Random Velocity");
         setLifetimeRandomID = Shader.PropertyToID("Set Lifetime Random");
         setSizeRandomID = Shader.PropertyToID("Set Size Random");
         gravityID = Shader.PropertyToID("Gravity");
+
+        exposureID = Shader.PropertyToID("_Exposure");
+        tintColorID = Shader.PropertyToID("_Tint");
+
+        activeSkybox = RenderSettings.skybox;
+    }
+
+    private void Start()
+    {
+        activeSkybox.SetColor(tintColorID, skyboxes[0].GetColor(tintColorID));
+        activeSkybox.SetFloat(exposureID, skyboxes[0].GetFloat(exposureID));
     }
 
     private void OnEnable()
@@ -62,5 +90,23 @@ public class EnvironmentChanger : MonoBehaviour
             environments[i].SetActive(false);
         }
         environments[currentPhase].SetActive(true);
+
+        mainLight.DOIntensity(referenceLights[currentPhase].intensity, environmentChangeTime);
+
+        if (currentPhase == 2)
+        {
+            DOTween.To(() => normalVolume.weight, x => normalVolume.weight = x, 0f, environmentChangeTime);
+            DOTween.To(() => finalVolume.weight, x => finalVolume.weight = x, 1, environmentChangeTime);
+
+            DOTween.To(() => activeSkybox.GetColor(tintColorID), 
+                x => activeSkybox.SetColor(tintColorID, x), 
+                skyboxes[currentPhase].GetColor(tintColorID), 
+                environmentChangeTime);
+
+            DOTween.To(() => activeSkybox.GetFloat(exposureID),
+                x => activeSkybox.SetFloat(exposureID, x),
+                skyboxes[currentPhase].GetFloat(exposureID),
+                environmentChangeTime);
+        }
     }
 }

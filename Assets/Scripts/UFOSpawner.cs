@@ -37,13 +37,20 @@ public class UFOSpawner : MonoBehaviour
     {
         GameManager.OnSpawnLocalPlayer += Initialize;
         sakuya.OnChangePhase += UpdateSpawnBehaviour;
+        sakuya.OnBossDefeat += DisableSpawner;
         UpdateSpawnBehaviour(0);
     }
 
     void OnDisable()
     {
         sakuya.OnChangePhase -= UpdateSpawnBehaviour;
+        sakuya.OnBossDefeat -= DisableSpawner;
     }
+
+    void DisableSpawner()
+    {
+        if (IsInvoking("SpawnUFO")) CancelInvoke("SpawnUFO");
+    } 
 
     void Initialize(PlayerBehaviour player)
     {

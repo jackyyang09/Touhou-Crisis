@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 1419dc35354403b4881556e4b35f8d73, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 55383149068466c4fab49a019eeaa682, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1098,6 +1098,18 @@ MonoBehaviour:
     setLifetimeRandom: {x: 1, y: 2}
     setSizeRandom: {x: 0.09, y: 0.15}
     gravity: {x: 0, y: -3, z: 0}
+  environmentChangeTime: 3
+  normalVolume: {fileID: 1540818799}
+  finalVolume: {fileID: 91250639}
+  skyboxes:
+  - {fileID: 2100000, guid: 55383149068466c4fab49a019eeaa682, type: 2}
+  - {fileID: 2100000, guid: 55383149068466c4fab49a019eeaa682, type: 2}
+  - {fileID: 2100000, guid: 5948a172f9d3b1c4f8cd5bca3a029543, type: 2}
+  mainLight: {fileID: 2040523497}
+  referenceLights:
+  - {fileID: 2058533364013721275, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+  - {fileID: 7932214952566555605, guid: 120dea0e63ec4f743b0a51892c27afd5, type: 3}
+  - {fileID: 1694619146371572179, guid: c62c6ab39e32bef45a9b7a52b5f84fe3, type: 3}
   sakuya: {fileID: 1288670845}
   environments:
   - {fileID: 2073551895}
@@ -1118,6 +1130,7 @@ Transform:
   - {fileID: 2139791132}
   - {fileID: 1655376598}
   - {fileID: 962638295}
+  - {fileID: 2040523496}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2185,6 +2198,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4254743638850006283, guid: aba4f1c51270daf4680c79d88a23caf2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aba4f1c51270daf4680c79d88a23caf2, type: 3}
 --- !u!4 &1655376598 stripped
@@ -2363,6 +2380,73 @@ Transform:
   m_Father: {fileID: 1323966669}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2040523495
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 863348758}
+    m_Modifications:
+    - target: {fileID: 2783434000774558451, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_Name
+      value: Directional Light
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.4729674
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4.52045
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70514244
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.19716957
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.6764875
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0791398
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 22.652
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -179.567
+      objectReference: {fileID: 0}
+    - target: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -9.679
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+--- !u!4 &2040523496 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4303160387422999491, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+  m_PrefabInstance: {fileID: 2040523495}
+  m_PrefabAsset: {fileID: 0}
+--- !u!108 &2040523497 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 2058533364013721275, guid: 43b281cede7f45246a733bc3507bedfa, type: 3}
+  m_PrefabInstance: {fileID: 2040523495}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2073551893
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2370,6 +2454,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 863348758}
     m_Modifications:
+    - target: {fileID: 600066005917081079, guid: 0850c14b866535548939fc794cfc3168, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2435734976058059368, guid: 0850c14b866535548939fc794cfc3168, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -2725,6 +2813,10 @@ PrefabInstance:
     - target: {fileID: 2464856382344387628, guid: 68226150492f40e4baf6805213260970, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2778104077678567393, guid: 68226150492f40e4baf6805213260970, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3311272037796286892, guid: 68226150492f40e4baf6805213260970, type: 3}
       propertyPath: m_IsActive

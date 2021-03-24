@@ -2044,6 +2044,7 @@ MonoBehaviour:
   lights: []
   magicCircle: {fileID: 0}
   bulletSpawnPoint: {fileID: 0}
+  destructionParticle: {fileID: 0}
   greenTravelTime: 8
   redChargeTime: 2
   redRotateTime: 0.5
@@ -3218,21 +3219,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &433507906491193558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 433507906491193559}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9972b21dd5d1d3b40a7a158363440d4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  environmentEffect: {fileID: 0}
-  presets: []
-  sakuya: {fileID: 0}
 --- !u!1 &433507906491193559
 GameObject:
   m_ObjectHideFlags: 0
@@ -3242,7 +3228,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 433507906491193556}
-  - component: {fileID: 433507906491193558}
   m_Layer: 0
   m_Name: Environment Phase 3
   m_TagString: Untagged
