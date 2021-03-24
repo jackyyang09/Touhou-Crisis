@@ -20,6 +20,8 @@ public class EnvironmentChanger : MonoBehaviour
 
     [SerializeField] Sakuya sakuya = null;
 
+    [SerializeField] GameObject[] environments = null;
+
     int constantSpawnRateID;
     int setRandomVelocityID;
     int setLifetimeRandomID;
@@ -54,5 +56,11 @@ public class EnvironmentChanger : MonoBehaviour
         environmentEffect.SetVector2(setLifetimeRandomID, preset.setLifetimeRandom);
         environmentEffect.SetVector2(setSizeRandomID, preset.setSizeRandom);
         environmentEffect.SetVector3(gravityID, preset.gravity);
+
+        for (int i = 0; i < environments.Length; i++)
+        {
+            environments[i].SetActive(false);
+        }
+        environments[currentPhase].SetActive(true);
     }
 }

@@ -148,6 +148,30 @@ namespace JSAM.JSAMEditor
             SmartBrowseButton(folderProp);
             EditorGUILayout.EndHorizontal();
         }
+		
+		public static T OpenSmartSaveFileDialog<T>(bool highlightAfterCreation = true, string defaultName = "New Object", string startingPath = "Assets") where T : ScriptableObject
+        {
+            string savePath = EditorUtility.SaveFilePanel("Designate save path", startingPath, defaultName, "asset");
+            if (savePath != "") // Make sure user didn't press "Cancel"
+            {
+                var asset = ScriptableObject.CreateInstance<T>();
+                savePath = savePath.Remove(0, savePath.IndexOf("Assets/"));
+                CreateAssetSafe(asset, savePath);
+                if (highlightAfterCreation)
+                {
+                    EditorUtility.FocusProjectWindow();
+                    Selection.activeObject = asset;
+                }
+                else
+                {
+                    EditorGUIUtility.PingObject(asset);
+                }
+
+                return asset;
+            }
+
+            return null;
+        }
 
         public static void SmartBrowseButton(SerializedProperty folderProp)
         {
@@ -155,7 +179,7 @@ namespace JSAM.JSAMEditor
             if (GUILayout.Button(buttonContent, new GUILayoutOption[] { GUILayout.ExpandWidth(true), GUILayout.MaxWidth(55) }))
             {
                 string filePath = folderProp.stringValue;
-                filePath = EditorUtility.OpenFolderPanel("Specify folder a new folder", filePath, string.Empty);
+                filePath = EditorUtility.OpenFolderPanel("Specify a new folder", filePath, string.Empty);
 
                 // If the user presses "cancel"
                 if (filePath.Equals(string.Empty))

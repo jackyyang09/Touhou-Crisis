@@ -58,6 +58,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: destructionParticle
+      value: 
+      objectReference: {fileID: 3665395783357523869, guid: 914e2bdde15bcc44b8443033450faea5, type: 3}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: lights.Array.data[0]
       value: 
       objectReference: {fileID: 8839643730155948439}

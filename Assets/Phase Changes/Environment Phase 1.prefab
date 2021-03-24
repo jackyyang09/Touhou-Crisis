@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2435734976058059368}
-  - component: {fileID: 2435734976058059370}
   m_Layer: 0
   m_Name: Environment Phase 1
   m_TagString: Untagged
@@ -44,36 +43,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &2435734976058059370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2435734976058059371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9972b21dd5d1d3b40a7a158363440d4c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  environmentEffect: {fileID: 2831690484897074428}
-  presets:
-  - constantSpawnRate: 10
-    setRandomVelocity: {x: -10, y: -5}
-    setLifetimeRandom: {x: 2, y: 3}
-    setSizeRandom: {x: 0.1, y: 0.2}
-    gravity: {x: 0, y: -2, z: 0}
-  - constantSpawnRate: 50
-    setRandomVelocity: {x: -20, y: -5}
-    setLifetimeRandom: {x: 1, y: 2}
-    setSizeRandom: {x: 0.1, y: 0.2}
-    gravity: {x: 0, y: -2, z: 0}
-  - constantSpawnRate: 300
-    setRandomVelocity: {x: -25, y: -10}
-    setLifetimeRandom: {x: 1, y: 2}
-    setSizeRandom: {x: 0.09, y: 0.15}
-    gravity: {x: 0, y: -3, z: 0}
-  sakuya: {fileID: 0}
 --- !u!1 &2435734976110289887
 GameObject:
   m_ObjectHideFlags: 0
@@ -24031,11 +24000,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
---- !u!2083052967 &2831690484897074428 stripped
-VisualEffect:
-  m_CorrespondingSourceObject: {fileID: 8050373385175266483, guid: 0a9361016edea5645aaa468034f61c61, type: 3}
-  m_PrefabInstance: {fileID: 5256972414067521615}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7570660467484690694 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2442331002450817353, guid: 0a9361016edea5645aaa468034f61c61, type: 3}

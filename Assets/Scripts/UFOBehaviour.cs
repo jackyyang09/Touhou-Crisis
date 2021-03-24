@@ -37,6 +37,8 @@ public class UFOBehaviour : BaseEnemy
 
     [SerializeField] Transform bulletSpawnPoint = null;
 
+    [SerializeField] GameObject destructionParticle = null;
+
     [Header("Green Properties")]
     [SerializeField] float greenTravelTime = 8;
 
@@ -178,6 +180,7 @@ public class UFOBehaviour : BaseEnemy
         collider.isTrigger = false;
         rBody.useGravity = true;
         rBody.AddExplosionForce(explosionForce, explosionOrigin.position, 1, upwardsModifier);
+        Instantiate(destructionParticle, transform.position, Quaternion.identity);
         Destroy(gameObject, timeToDestroy);
     }
 }
