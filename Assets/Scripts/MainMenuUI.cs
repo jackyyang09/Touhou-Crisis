@@ -21,15 +21,13 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] float bgFadeTime = 0.5f;
     [SerializeField] float gameStartDelay = 0.25f;
 
-    [SerializeField] OptimizedCanvas title = null;
-    [SerializeField] OptimizedCanvas controlPanel = null;
-    [SerializeField] RectTransform settingsPanel = null;
-    [SerializeField] OptimizedCanvas lobbyScreen = null;
     [SerializeField] OptimizedCanvas lobbyTopBar = null;
     [SerializeField] LoadingScreen loadingScreen = null;
 
-    [SerializeField] RectTransform singleplayerButton = null;
-    [SerializeField] RectTransform multiplayerButton = null;
+    [SerializeField] OptimizedCanvas roomSetupScreen = null;
+    [SerializeField] OptimizedCanvas lobbyScreen = null;
+    [SerializeField] OptimizedCanvas gameSetup = null;
+
     [SerializeField] OptimizedCanvas multiplayerMask = null;
     [SerializeField] TMPro.TextMeshProUGUI remotePlayer1Name = null;
     [SerializeField] TMPro.TextMeshProUGUI player2Name = null;
@@ -37,6 +35,10 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     [SerializeField] UnityEngine.UI.RawImage reimuBG = null;
     [SerializeField] UnityEngine.UI.RawImage marisaBG = null;
+
+    [SerializeField] GameplayModifiers modifiers = null;
+
+    [SerializeField] GameObject onlineCrosshair = null;
 
     Coroutine gameStartRoutine = null;
     Coroutine settingsRoutine = null;
@@ -52,116 +54,67 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         AudioManager.instance.PlaySoundInternal(buttonShoot);
     }
 
-    public void JoinOrCreateGame()
+    public void JoinOrCreateGame(float delay)
     {
         PlayButtonSound();
-        RectTransform rect = controlPanel.transform as RectTransform;
-        rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
-        Invoke("DelayedConnect", uiMoveSpeed);
+        Invoke("DelayedConnect", delay);
     }
-
-    //public void QuickPlay()
-    //{
-    //    PlayButtonSound();
-    //    RectTransform rect = controlPanel.transform as RectTransform;
-    //    rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
-    //    Invoke("DelayedQuickplay", uiMoveSpeed);
-    //}
 
     public void DelayedConnect()
     {
-        title.Hide();
-        controlPanel.Hide();
         launcher.Connect();
     }
-
-    //public void DelayedQuickplay()
-    //{
-    //    title.Hide();
-    //    controlPanel.Hide();
-    //    launcher.QuickPlay();
-    //}
 
     public void OfflinePlay()
     {
         PlayButtonSound();
-        RectTransform rect = controlPanel.transform as RectTransform;
-        rect.DOAnchorPosX(1000, uiMoveSpeed).SetEase(easeType);
-        title.Hide();
-        controlPanel.Hide();
         launcher.EnterSinglePlayerMode();
     }
 
-    public void OpenSettings()
+    public void LeaveLobby()
     {
-        if (settingsRoutine == null)
-        {
-            PlayButtonSound();
-            settingsRoutine = StartCoroutine(ShowSettingsRoutine());
-        }
+        PlayButtonSound();
+        launcher.Disconnect();
     }
 
-    public void HideSettings()
+    public void SyncEnterGameSetup()
     {
-        if (settingsRoutine == null)
-        {
-            PlayButtonSound();
-            settingsRoutine = StartCoroutine(HideSettingsRoutine());
-        }
+        photonView.RPC("EnterGameSetup", RpcTarget.All);
     }
 
-    IEnumerator ShowSettingsRoutine()
+    [PunRPC]
+    void EnterGameSetup()
     {
-        (controlPanel.transform as RectTransform).DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
-        title.Hide();
-
-        yield return new WaitForSeconds(uiMoveSpeed);
-
-        settingsPanel.DOAnchorPosX(0, uiMoveSpeed).SetEase(easeType);
-
-        settingsRoutine = null;
-    }
-
-    IEnumerator HideSettingsRoutine()
-    {
-        settingsPanel.DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
-
-        yield return new WaitForSeconds(uiMoveSpeed);
-
-        (controlPanel.transform as RectTransform).DOAnchorPosX(0, uiMoveSpeed).SetEase(easeType);
-        title.Show();
-
-        settingsRoutine = null;
-    }
-
-    public void EnterLobby()
-    {
-        singleplayerButton.DOAnchorPosX(-444, uiMoveSpeed).SetEase(easeType);
-        multiplayerButton.DOAnchorPosX(436, uiMoveSpeed).SetEase(easeType);
-    }
-
-    public void ReturnToMainScreen()
-    {
-        if (settingsRoutine == null)
-        {
-            PlayButtonSound();
-            settingsRoutine = StartCoroutine(LeaveLobby());
-        }
+        PlayButtonSound();
+        lobbyScreen.Hide();
+        gameSetup.ShowDelayed(0.1f);
+        PhotonNetwork.Instantiate(onlineCrosshair.name, transform.position, Quaternion.identity);
     }
 
     public void SyncEnterGame()
     {
-        photonView.RPC("EnterGame", RpcTarget.All);
+        photonView.RPC("EnterGame", RpcTarget.All, new object[] 
+        {
+            modifiers.StartingLives,
+            modifiers.UFOSpawnRate,
+            modifiers.BossActionSpeed,
+            modifiers.BossMoveSpeed
+        });
     }
 
     [PunRPC]
-    void EnterGame()
+    void EnterGame(object[] data)
     {
         if (gameStartRoutine != null) return;
 
+        modifiers.ApplyAllProperties(
+            (GameplayModifiers.LiveCounts)data[0],
+            (GameplayModifiers.UFOSpawnRates)data[1],
+            (GameplayModifiers.BossActionSpeeds)data[2],
+            (GameplayModifiers.BossMoveSpeeds)data[3]
+            );
+
         PlayButtonSound();
-        singleplayerButton.DOAnchorPosX(-1800, uiMoveSpeed).SetEase(easeType);
-        multiplayerButton.DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
 
         lobbyTopBar.Hide();
 
@@ -179,21 +132,6 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(gameStartDelay);
 
         launcher.Load2PlayerMode();
-    }
-
-    IEnumerator LeaveLobby()
-    {
-        singleplayerButton.DOAnchorPosX(-1800, uiMoveSpeed).SetEase(easeType);
-        multiplayerButton.DOAnchorPosX(1800, uiMoveSpeed).SetEase(easeType);
-
-        yield return new WaitForSeconds(uiMoveSpeed);
-
-        lobbyScreen.Hide();
-        launcher.Disconnect();
-        (controlPanel.transform as RectTransform).DOAnchorPosX(0, uiMoveSpeed).SetEase(easeType);
-        title.Show();
-
-        settingsRoutine = null;
     }
 
     public override void OnJoinedRoom()
@@ -228,6 +166,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         marisaBG.DOKill();
         marisaBG.DOFade(0, bgFadeTime);
         hostPrivilegeMask.Hide();
+
+        roomSetupScreen.ShowDelayed(0.1f);
     }
 
     public override void OnPlayerLeftRoom(Player other)
@@ -262,6 +202,15 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         reimuBG.DOFade(1, bgFadeTime);
         marisaBG.DOKill();
         marisaBG.DOFade(0, bgFadeTime);
+
+        if (gameSetup.IsVisible)
+        {
+            gameSetup.Hide();
+        }
+        if (!lobbyScreen.IsVisible)
+        {
+            lobbyScreen.ShowDelayed(0.1f);
+        }
     }
 
     public void QuitGame()

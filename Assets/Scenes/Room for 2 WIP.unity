@@ -1821,6 +1821,9 @@ MonoBehaviour:
     timesToWander: {x: 3, y: 4}
   - timeBetweenWander: {x: 0.5, y: 1}
     timesToWander: {x: 6, y: 10}
+  designateStruct:
+    timeBetweenWander: {x: 0, y: 0}
+    timesToWander: {x: 0, y: 0}
   timeStopKnifeThrows: {x: 3, y: 6}
   pools:
   - {fileID: 1069266834}
@@ -2652,7 +2655,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2089808183}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 122154565}

@@ -273,6 +273,8 @@ public class PauseMenu : MonoBehaviour
 
         rebindMask.enabled = true;
 
+        bool isEnglish = Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English");
+
         #region Rebind Cover Key
         KeyCode newCoverKey = (KeyCode)PlayerPrefs.GetInt(CoverInputKey);
 
@@ -281,9 +283,18 @@ public class PauseMenu : MonoBehaviour
         if (!cancel)
         {
             AudioManager.PlaySound(MainMenuSounds.MenuButton);
-            rebindText.text =
-            "PRESS COVER BUTTON, \"ESC\" TO CANCEL\n" +
-            "(CURRENTLY " + "\"" + newCoverKey + "\"" + ")";
+            if (isEnglish)
+            {
+                rebindText.text =
+                    "PRESS COVER BUTTON, \"ESC\" TO CANCEL\n" +
+                    "(CURRENTLY " + "\"" + newCoverKey + "\"" + ")";
+            }
+            else
+            {
+                rebindText.text =
+                    "隠れのボタンを入力してください、\n" +
+                    "（現在）" + "\"" + newCoverKey + "\"ESCでキャンセル";
+            }
             rebindInterface.rectTransform.DOScaleX(1, 0.125f);
             yield return new WaitForSeconds(0.25f);
         }
@@ -318,9 +329,20 @@ public class PauseMenu : MonoBehaviour
         {
             AudioManager.PlaySound(MainMenuSounds.MenuButton);
             rebindInterface.rectTransform.DOScaleX(0, 0.125f);
-            rebindText.text =
-            "NEW COVER BUTTON: " + newCoverKey + "\n" +
-            "PRESS " + "\"" + newCoverKey + "\"" + " TO CONFIRM, PRESS \"ESC\" TO CANCEL";
+            if (isEnglish)
+            {
+                rebindText.text =
+                    "NEW COVER BUTTON: " + newCoverKey + "\n" +
+                    "PRESS " + "\"" + newCoverKey + "\"" + " TO CONFIRM, PRESS \"ESC\" TO CANCEL";
+            }
+            else
+            {
+                rebindText.text =
+                    "隠れは" + newCoverKey + "\n" +
+                    "に設定しました" + newCoverKey + "で適用、ESCでキャンセル";
+                 
+            }
+            
             rebindInterface.rectTransform.DOScaleX(1, 0.125f).SetDelay(0.125f);
             yield return new WaitForSeconds(0.25f);
         }

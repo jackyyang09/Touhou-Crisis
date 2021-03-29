@@ -21,8 +21,11 @@ public class OptimizedCanvas : MonoBehaviour
     [SerializeField] GraphicRaycaster caster;
 
     [SerializeField] OptimizedCanvas[] children = new OptimizedCanvas[0];
+    [SerializeField] bool flashLayoutGroups = true;
     [SerializeField] List<LayoutGroup> layoutGroups = null;
     [SerializeField] List<LayoutElement> layoutElements = null;
+
+    [SerializeField] OptimizedTransitionBase transition = null;
 
     [SerializeField] public UnityEngine.Events.UnityEvent onCanvasShow;
     [SerializeField] public UnityEngine.Events.UnityEvent onCanvasHide;
@@ -175,6 +178,11 @@ public class OptimizedCanvas : MonoBehaviour
         SetActive(true);
     }
 
+    public void ShowDelayed(float time)
+    {
+        Invoke("Show", time);
+    }
+
     public void Hide()
     {
         SetActive(false);
@@ -183,11 +191,38 @@ public class OptimizedCanvas : MonoBehaviour
     public void SetActive(bool active)
     {
         if (canvas == null) return;
-        canvas.enabled = active;
+
+        // Disable GraphicRaycaster first to ensure buttons don't get pressed during transition
         if (caster)
         {
             caster.enabled = active;
         }
+
+        if (transition)
+        {
+            if (Application.isPlaying)
+            {
+                StartCoroutine(DoTransition(active));
+            }
+            // Can't run a coroutine during editor time
+            else
+            {
+                if (active)
+                {
+                    transition.EditorTransitionIn();
+                }
+                else
+                {
+                    transition.EditorTransitionOut();
+                }
+                canvas.enabled = active;
+            }
+        }
+        else
+        {
+            canvas.enabled = active;
+        }
+
         if (children != null)
         {
             if (active)
@@ -209,7 +244,7 @@ public class OptimizedCanvas : MonoBehaviour
             }
         }
 
-        if (Application.isPlaying)
+        if (Application.isPlaying && flashLayoutGroups)
         {
             if (layoutRoutine != null) StopCoroutine(layoutRoutine);
             layoutRoutine = StartCoroutine(FlashLayoutComponents(active));
@@ -236,6 +271,20 @@ public class OptimizedCanvas : MonoBehaviour
         if (caster)
         {
             caster.enabled = false;
+        }
+    }
+
+    IEnumerator DoTransition(bool active)
+    {
+        if (active)
+        {
+            canvas.enabled = active;
+            yield return transition.TransitionIn();
+        }
+        else
+        {
+            yield return transition.TransitionOut();
+            canvas.enabled = active;
         }
     }
 

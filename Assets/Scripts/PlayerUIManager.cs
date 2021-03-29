@@ -14,7 +14,6 @@ public class PlayerUIManager : MonoBehaviour
 
     [Header("Object References")]
     [SerializeField] PlayerBehaviour player = null;
-    [SerializeField] ComboPuck puck = null;
     [SerializeField] ScoreSystem score = null;
     [SerializeField] Sakuya sakuya = null;
     [SerializeField] RailShooterLogic railShooterLogic = null;
@@ -37,10 +36,8 @@ public class PlayerUIManager : MonoBehaviour
     int shotsFiredInCover = 0;
 
     [Header("Combo System")]
-    [SerializeField] RectTransform puckImage = null;
-    [SerializeField] Image puckFill = null;
-    [SerializeField] Color puckFlashColour = Color.white;
-    [SerializeField] TextMeshProUGUI comboText = null;
+    [SerializeField] PuckUI player1Puck = null;
+    [SerializeField] PuckUI player2Puck = null;
 
     [Header("Damage Effects")]
     [SerializeField] Image slashDamageImage = null;
@@ -51,6 +48,7 @@ public class PlayerUIManager : MonoBehaviour
 
     [Header("Lives Display")]
     [SerializeField] Image[] livesImages = null;
+    [SerializeField] Image infiniteLifeImage = null;
 
     [Header("Enemy UI")]
     [SerializeField] Image enemyHealthBar = null;
@@ -94,6 +92,18 @@ public class PlayerUIManager : MonoBehaviour
 
         var cameraData = Camera.main.GetUniversalAdditionalCameraData();
         cameraData.cameraStack.Add(screenSpaceCamera);
+
+        if (Photon.Pun.PhotonNetwork.IsMasterClient)
+        {
+            player2Puck.enabled = false;
+        }
+        else
+        {
+            player1Puck.enabled = false;
+        }
+
+        // Initialize lives
+        UpdateLivesDisplay(DamageType.Bullet);
     }
 
     private void OnEnable()
@@ -104,25 +114,29 @@ public class PlayerUIManager : MonoBehaviour
             player.OnExitCover += HideCoverTutorial;
 
             KeyCode newCoverKey = (KeyCode)PlayerPrefs.GetInt(PauseMenu.CoverInputKey);
-            coverTutorialText.text =
+            if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
+            {
+                coverTutorialText.text =
                 "PRESS THE PEDAL <" + newCoverKey.ToString() + ">\n" +
                 "TO RETURN FIRE!";
+            }
+            else
+            {
+                coverTutorialText.text =
+                "ペダル <" + newCoverKey.ToString() + ">\n" +
+                "を踏んで撃ち返せ！";
+            }
         }
         
         player.OnBulletFired += SpawnMuzzleFlash;
         player.OnReload += HideReloadGraphic;
         player.OnReload += UpdateAmmoCount;
         player.OnTakeDamage += FadeDamageEffect;
-        player.OnTakeDamage += ShakePuck;
         player.OnTakeDamage += UpdateLivesDisplay;
         player.OnFireNoAmmo += ShowReloadGraphic;
         player.OnEnterTransit += FlashWaitGraphic;
         player.OnExitTransit += FlashActionGraphic;
         player.OnPlayerDeath += LoseSequence;
-
-        puck.OnPassPuck += PassPuckEffect;
-        puck.OnReceivePuck += ReceivePuckEffect;
-        puck.OnUpdateMultiplier += UpdateComboMultiplier;
 
         score.OnScoreChanged += UpdateScore;
 
@@ -147,16 +161,11 @@ public class PlayerUIManager : MonoBehaviour
         player.OnReload -= HideReloadGraphic;
         player.OnReload -= UpdateAmmoCount;
         player.OnTakeDamage -= FadeDamageEffect;
-        player.OnTakeDamage -= ShakePuck;
         player.OnTakeDamage -= UpdateLivesDisplay;
         player.OnFireNoAmmo -= ShowReloadGraphic;
         player.OnEnterTransit -= FlashWaitGraphic;
         player.OnExitTransit -= FlashActionGraphic;
         player.OnPlayerDeath -= LoseSequence;
-
-        puck.OnPassPuck -= PassPuckEffect;
-        puck.OnReceivePuck -= ReceivePuckEffect;
-        puck.OnUpdateMultiplier -= UpdateComboMultiplier;
 
         score.OnScoreChanged -= UpdateScore;
 
@@ -173,7 +182,6 @@ public class PlayerUIManager : MonoBehaviour
     void Update()
     {
         UpdateTimeCounter();
-        UpdateComboDecay();
     }
 
     private void ShowCoverTutorial(Ray arg1, Vector2 arg2)
@@ -305,39 +313,6 @@ public class PlayerUIManager : MonoBehaviour
         }
     }
 
-    void PassPuckEffect()
-    {
-        puckImage.localEulerAngles = Vector3.zero;
-        puckImage.DOComplete();
-        puckImage.DORotate(new Vector3(0, 0, -180), 0.5f, RotateMode.LocalAxisAdd);
-    }
-
-    void ReceivePuckEffect()
-    {
-        puckImage.localEulerAngles = new Vector3(0, 0, -180);
-        puckImage.DOComplete();
-        puckImage.DORotate(new Vector3(0, 0, 180), 0.25f, RotateMode.LocalAxisAdd);
-        puckFill.DOColor(puckFlashColour, 0).SetDelay(0.25f);
-        puckFill.DOColor(Color.white, 0.5f).SetDelay(0.5f);
-    }
-
-    void ShakePuck(DamageType type)
-    {
-        // Prevent the shakes from overlapping
-        puckImage.DOComplete();
-        puckImage.DOShakeAnchorPos(1, 50, 50, 80);
-    }
-
-    void UpdateComboDecay()
-    {
-        puckFill.fillAmount = puck.ComboDecayPercentage;
-    }
-
-    void UpdateComboMultiplier(float comboCount)
-    {
-        comboText.text = comboCount.ToString("0.0") + "x";
-    }
-
     void UpdateScore(int newScore)
     {
         scoreText.text = newScore.ToString();
@@ -345,14 +320,25 @@ public class PlayerUIManager : MonoBehaviour
 
     void UpdateLivesDisplay(DamageType type)
     {
-        int i = 0;
-        for (; i < player.CurrentLives; i++)
+        if (player.BuddhaMode)
         {
-            livesImages[i].enabled = true;
+            for (int i = 0; i < livesImages.Length; i++)
+            {
+                livesImages[i].enabled = false;
+            }
+            infiniteLifeImage.enabled = true;
         }
-        for (; i < livesImages.Length; i++)
+        else
         {
-            livesImages[i].enabled = false;
+            int i = 0;
+            for (; i < player.CurrentLives; i++)
+            {
+                livesImages[i].enabled = true;
+            }
+            for (; i < livesImages.Length; i++)
+            {
+                livesImages[i].enabled = false;
+            }
         }
     }
 

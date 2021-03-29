@@ -16,16 +16,13 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField]
     private byte maxPlayersPerRoom = 4;
 
-    [Tooltip("The UI Panel to let the user enter name, connect and play")]
-    [SerializeField] OptimizedCanvas controlPanel;
-
     [SerializeField] TMPro.TextMeshProUGUI progressLabel;
 
     [SerializeField] OptimizedCanvas lobbyScreen;
     [SerializeField] Image multiplayerButtonImage;
     [SerializeField] Button multiplayerButton;
 
-    [SerializeField] TMPro.TMP_InputField inputField;
+    [SerializeField] TMPro.TMP_InputField roomCodeField;
     [SerializeField] TMPro.TextMeshProUGUI roomCode;
 
     [SerializeField] TMPro.TextMeshProUGUI player1NameText;
@@ -61,7 +58,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void RandomizeRoomCode()
     {
-        inputField.text = Random.Range(0, 9999).ToString("0000");
+        roomCodeField.text = Random.Range(0, 9999).ToString("0000");
     }
 
     public void EnterSinglePlayerMode()
@@ -87,7 +84,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             PhotonNetwork.GameVersion = gameVersion;
         }
         Debug.Log("Trying to connect...");
-        quickPlay = inputField.text == string.Empty;
+        quickPlay = roomCodeField.text == string.Empty;
     }
 
     public override void OnConnectedToMaster()
@@ -108,12 +105,12 @@ public class Launcher : MonoBehaviourPunCallbacks
             }
             else
             {
-                if (inputField.text == string.Empty)
+                if (roomCodeField.text == string.Empty)
                 {
                     RandomizeRoomCode();
                 }
 
-                PhotonNetwork.JoinOrCreateRoom(inputField.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, TypedLobby.Default);
+                PhotonNetwork.JoinOrCreateRoom(roomCodeField.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, TypedLobby.Default);
             }
 
             isConnecting = false;
@@ -123,7 +120,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         HideConnectingText();
-        controlPanel.Show();
         isConnecting = false;
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
     }
@@ -133,7 +129,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
         RandomizeRoomCode();
-        string name = inputField.text;
+        string name = roomCodeField.text;
         PhotonNetwork.CreateRoom(name, new RoomOptions { MaxPlayers = maxPlayersPerRoom, IsOpen = true });
     }
 
@@ -235,7 +231,14 @@ public class Launcher : MonoBehaviourPunCallbacks
         int maxDots = 4;
         while (progressLabel.enabled)
         {
-            progressLabel.text = "Connecting";
+            if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
+            {
+                progressLabel.text = "Connecting";
+            }
+            else
+            {
+                progressLabel.text = "接続中";
+            }
             for (int i = 0; i < ellipsesCount; i++)
             {
                 progressLabel.text += ".";

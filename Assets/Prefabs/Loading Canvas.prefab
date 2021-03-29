@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3356693243944867441}
   - component: {fileID: 1335248954982471570}
   - component: {fileID: 4102227948159002593}
+  - component: {fileID: 9194091139613648872}
   m_Layer: 0
   m_Name: Loading Text
   m_TagString: Untagged
@@ -175,8 +176,10 @@ MonoBehaviour:
   canvas: {fileID: 3356693243944867441}
   caster: {fileID: 0}
   children: []
+  flashLayoutGroups: 1
   layoutGroups: []
   layoutElements: []
+  transition: {fileID: 0}
   onCanvasShow:
     m_PersistentCalls:
       m_Calls:
@@ -219,6 +222,20 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &9194091139613648872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402807162949401837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d52b33a5902e643bced0385fa6840b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Objects/Font
+  FallbackFont: {fileID: 11400000, guid: 92f9c5792f4474448aa67b45caa184da, type: 2}
 --- !u!1 &649745411105314869
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,9 +500,9 @@ MonoBehaviour:
   scenesToIgnore:
   - TweenScene
   ignoreStartup: 1
-  canvas: {fileID: 3362746826676048177}
   fadeToBlackTime: 0.5
   fadeFromBlackTime: 0.5
+  loadingText: {fileID: 7272965387608279856}
   blackImage: {fileID: 5152318120247772400}
   loadingAnimation: {fileID: 1335248954982471570}
   loadingAnimationGroup: {fileID: 4102227948159002593}
@@ -505,8 +522,10 @@ MonoBehaviour:
   canvas: {fileID: 8628272239978822328}
   caster: {fileID: 0}
   children: []
+  flashLayoutGroups: 1
   layoutGroups: []
   layoutElements: []
+  transition: {fileID: 0}
   onCanvasShow:
     m_PersistentCalls:
       m_Calls: []

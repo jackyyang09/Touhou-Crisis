@@ -15,6 +15,7 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] float fadeToBlackTime = 0.5f;
     [SerializeField] float fadeFromBlackTime = 1;
 
+    [SerializeField] TMPro.TextMeshProUGUI loadingText = null;
     [SerializeField] Image blackImage = null;
     [SerializeField] OptimizedCanvas loadingAnimation = null;
     [SerializeField] CanvasGroup loadingAnimationGroup = null;
@@ -58,6 +59,15 @@ public class LoadingScreen : MonoBehaviour
     /// <returns></returns>
     public IEnumerator ShowRoutine()
     {
+        if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
+        {
+            loadingText.text = "Loading...";
+        }
+        else
+        {
+            loadingText.text = "少女祈祷中…";
+        }
+
         blackImage.DOFade(1, fadeToBlackTime);
 
         loadingAnimation.Show();

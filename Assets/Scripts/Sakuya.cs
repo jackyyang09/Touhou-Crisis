@@ -35,6 +35,7 @@ public class Sakuya : BaseEnemy
     [SerializeField] Transform handTransform = null;
 
     [SerializeField] BehaviourStruct[] behaviourStructs = null;
+    [SerializeField] BehaviourStruct designateStruct = new BehaviourStruct();
 
     [SerializeField] Vector2 timeStopKnifeThrows = Vector2.zero;
 
@@ -59,6 +60,8 @@ public class Sakuya : BaseEnemy
     /// </summary>
     bool canStopTime = false;
 
+    GameplayModifiers modifiers = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,6 +72,24 @@ public class Sakuya : BaseEnemy
 
         maxHealth = healthPhases[currentPhase];
         health = maxHealth;
+
+        modifiers = FindObjectOfType<GameplayModifiers>();
+        if (modifiers)
+        {
+            switch (modifiers.BossActionSpeed)
+            {
+                case GameplayModifiers.BossActionSpeeds.Slow:
+                    break;
+                case GameplayModifiers.BossActionSpeeds.Normal:
+                    break;
+                case GameplayModifiers.BossActionSpeeds.Fast:
+                    break;
+                case GameplayModifiers.BossActionSpeeds.Length:
+                    break;
+            }
+            designateStruct.timeBetweenWander = behaviourStructs[(int)modifiers.BossMoveSpeed].timeBetweenWander;
+            designateStruct.timesToWander = behaviourStructs[(int)GameplayModifiers.BossActionSpeeds.Fast - (int)modifiers.BossActionSpeed].timesToWander;
+        }
     }
 
     // Update is called once per frame
@@ -407,7 +428,9 @@ public class Sakuya : BaseEnemy
 
         while (true)
         {
-            var behaviourStruct = behaviourStructs[currentPhase];
+            // If no modifiers found, fallback to debug system
+            BehaviourStruct behaviourStruct = modifiers ? designateStruct : behaviourStructs[currentPhase];
+
             int wanderNum = (int)Random.Range(behaviourStruct.timesToWander.x, behaviourStruct.timesToWander.y);
             for (int i = 0; i < wanderNum; i++)
             {

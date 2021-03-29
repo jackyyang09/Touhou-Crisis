@@ -11,6 +11,8 @@ public enum DamageType
 
 public class PlayerBehaviour : MonoBehaviour
 {
+    [SerializeField] bool infiniteLives = false;
+    public bool BuddhaMode { get { return infiniteLives; } }
     [SerializeField] int maxLives = 5;
     int currentLives;
     public int CurrentLives
@@ -116,6 +118,24 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        var modifiers = FindObjectOfType<GameplayModifiers>();
+        if (modifiers)
+        {
+            switch (modifiers.StartingLives)
+            {
+                case GameplayModifiers.LiveCounts.One:
+                case GameplayModifiers.LiveCounts.Two:
+                case GameplayModifiers.LiveCounts.Three:
+                case GameplayModifiers.LiveCounts.Four:
+                case GameplayModifiers.LiveCounts.Five:
+                    maxLives = (int)modifiers.StartingLives + 1;
+                    break;
+                case GameplayModifiers.LiveCounts.Infinite:
+                    infiniteLives = true;
+                    break;
+            }
+        }
+
         currentLives = maxLives;
         for (int i = 0; i < weapons.Count; i++)
         {
@@ -265,7 +285,7 @@ public class PlayerBehaviour : MonoBehaviour
         currentLives--;
         OnTakeDamage?.Invoke(damageType);
 
-        if (currentLives == 0)
+        if (currentLives == 0 && !infiniteLives)
         {
             RemovePlayerControl();
             Invoke("PlayerDeath", 1.5f);
@@ -292,5 +312,12 @@ public class PlayerBehaviour : MonoBehaviour
     public void RemovePlayerControl()
     {
         canPlay = false;
+    }
+
+    [CommandTerminal.RegisterCommand(Help = "Give player infinite lives", MaxArgCount = 0)]
+    static void Buddha(CommandTerminal.CommandArg[] args)
+    {
+        var player = FindObjectOfType<PlayerBehaviour>();
+        player.infiniteLives = true;
     }
 }

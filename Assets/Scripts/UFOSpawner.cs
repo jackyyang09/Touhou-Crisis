@@ -33,17 +33,37 @@ public class UFOSpawner : MonoBehaviour
 
     int activeUfos = 0;
 
+    private void Start()
+    {
+        var modifiers = FindObjectOfType<GameplayModifiers>();
+        if (modifiers)
+        {
+            switch (modifiers.UFOSpawnRate)
+            {
+                case GameplayModifiers.UFOSpawnRates.Disabled:
+                    enabled = false;
+                    return;
+                case GameplayModifiers.UFOSpawnRates.Low:
+                case GameplayModifiers.UFOSpawnRates.Normal:
+                case GameplayModifiers.UFOSpawnRates.High:
+                    int spawnRate = (int)modifiers.UFOSpawnRate - 1;
+                    InvokeRepeating("SpawnUFO", spawnDelay[spawnRate], spawnDelay[spawnRate]);
+                    break;
+            }
+        }
+    }
+
     void OnEnable()
     {
         GameManager.OnSpawnLocalPlayer += Initialize;
-        sakuya.OnChangePhase += UpdateSpawnBehaviour;
+        //sakuya.OnChangePhase += UpdateSpawnBehaviour;
         sakuya.OnBossDefeat += DisableSpawner;
-        UpdateSpawnBehaviour(0);
+        //UpdateSpawnBehaviour(0);
     }
 
     void OnDisable()
     {
-        sakuya.OnChangePhase -= UpdateSpawnBehaviour;
+        //sakuya.OnChangePhase -= UpdateSpawnBehaviour;
         sakuya.OnBossDefeat -= DisableSpawner;
     }
 
@@ -57,12 +77,12 @@ public class UFOSpawner : MonoBehaviour
         GameManager.OnSpawnLocalPlayer -= Initialize;
     }
 
-    void UpdateSpawnBehaviour(int currentPhase)
-    {
-        if (IsInvoking("SpawnUFO")) CancelInvoke("SpawnUFO");
-
-        InvokeRepeating("SpawnUFO", spawnDelay[currentPhase], spawnDelay[currentPhase]);
-    }
+    //void UpdateSpawnBehaviour(int currentPhase)
+    //{
+    //    if (IsInvoking("SpawnUFO")) CancelInvoke("SpawnUFO");
+    //
+    //    InvokeRepeating("SpawnUFO", spawnDelay[currentPhase], spawnDelay[currentPhase]);
+    //}
 
     [ContextMenu("Spawn UFO Now")]
     void SpawnUFO()

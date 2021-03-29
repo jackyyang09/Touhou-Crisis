@@ -15,22 +15,31 @@ public class IntroEffect : MonoBehaviour
     [SerializeField] float musicDelay = 0.5f;
     [SerializeField] float holdBlackTime = 1;
     [SerializeField] float fadeToWhiteTime = 0.5f;
+    [SerializeField] float holdWhiteTime = 2;
     [SerializeField] float fadeToClearTime;
 
-    [SerializeField] PhotonView view;
+    [SerializeField] OptimizedCanvas titleCanvas = null;
+    [SerializeField] OptimizedCanvas menuCanvas = null;
+
+    [SerializeField] TMPro.TextMeshProUGUI shootToStart = null;
+    [SerializeField] float textFlashTime = 1;
 
     private void Awake()
     {
         image.DOColor(Color.black, 0);
-        image.DOColor(Color.white, fadeToWhiteTime).SetDelay(holdBlackTime);
-        image.DOColor(Color.clear, fadeToClearTime).SetDelay(holdBlackTime + fadeToWhiteTime);
-        Invoke("PlayMusic", musicDelay);
+        image.DOColor(Color.clear, fadeToClearTime);
+        Invoke("UnsubscribeSkipOpening", fadeToClearTime);
+
+        StartCoroutine(FlashShootToStart());
     }
 
-    void PlayMusic()
+    IEnumerator FlashShootToStart()
     {
-        AudioManager.PlayMusic(MainMenuMusic.MenuMusic);
-        railShooter.OnShoot -= SkipOpening;
+        while (titleCanvas.IsVisible)
+        {
+            shootToStart.enabled = !shootToStart.enabled;
+            yield return new WaitForSeconds(textFlashTime);
+        }
     }
 
     private void OnEnable()
@@ -43,10 +52,39 @@ public class IntroEffect : MonoBehaviour
         railShooter.OnShoot -= SkipOpening;
     }
 
+    void UnsubscribeSkipOpening()
+    {
+        railShooter.OnShoot -= SkipOpening;
+        railShooter.OnShoot += ShootToStart;
+    }
+
     private void SkipOpening(Ray obj, Vector2 pos)
     {
+        if (IsInvoking("UnsubscribeSkipOpening")) CancelInvoke("UnsubscribeSkipOpening");
         image.DOComplete();
         image.color = Color.clear;
         railShooter.OnShoot -= SkipOpening;
+        railShooter.OnShoot += ShootToStart;
+    }
+
+    void ShootToStart(Ray obj, Vector2 pos)
+    {
+        railShooter.OnShoot -= ShootToStart;
+        AudioManager.PlaySound(MainMenuSounds.MenuButton);
+
+        StartCoroutine(StartTransition());
+    }
+
+    IEnumerator StartTransition()
+    {
+        image.DOColor(Color.white, fadeToWhiteTime);
+
+        yield return new WaitForSeconds(fadeToWhiteTime + holdWhiteTime);
+
+        image.DOColor(Color.clear, fadeToClearTime);
+
+        AudioManager.PlayMusic(MainMenuMusic.MenuMusic);
+        titleCanvas.Hide();
+        menuCanvas.Show();
     }
 }
