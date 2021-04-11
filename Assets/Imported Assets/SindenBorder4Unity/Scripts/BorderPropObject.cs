@@ -4,27 +4,27 @@ using UnityEngine;
 
 namespace SindenUnity
 {
+    [System.Serializable]
+    public struct BorderProperties
+    {
+        public float width;
+        public float height;
+        public bool uniformSize;
+        public Color color;
+    }
+
     [CreateAssetMenu(fileName = "New Border Properties Object", menuName = "SindenBorder4Unity/Border Properties Object", order = 1)]
     public class BorderPropObject : ScriptableObject
     {
-        [System.Serializable]
-        public struct BorderProperties
-        {
-            public float widths;
-            public float height;
-            public bool uniformSize;
-            public Color color;
-        }
-
         public float width
         {
             get
             {
-                return borderProperties.widths;
+                return borderProperties.width;
             }
             set
             {
-                borderProperties.widths = value;
+                borderProperties.width = value;
             }
         }
         public float height
@@ -63,6 +63,13 @@ namespace SindenUnity
         }
 
         [SerializeField] [HideInInspector] BorderProperties borderProperties;
+        public BorderProperties Properties
+        {
+            get
+            {
+                return borderProperties;
+            }
+        }
 
         public void Reset()
         {

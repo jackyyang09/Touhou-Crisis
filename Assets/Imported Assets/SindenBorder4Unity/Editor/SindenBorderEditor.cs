@@ -145,9 +145,9 @@ namespace SindenUnity
                 }
 
                 GameObject temp = new GameObject();
-                string path = AssetDatabase.GetAssetPath(MonoScript.FromMonoBehaviour(temp.AddComponent<BorderListener>()));
+                string path = AssetDatabase.GetAssetPath(MonoScript.FromMonoBehaviour(temp.AddComponent<DynamicBorder>()));
                 DestroyImmediate(temp);
-                path = path.Remove(path.IndexOf("Scripts/BorderListener.cs"));
+                path = path.Remove(path.IndexOf("Scripts/DynamicBorder.cs"));
                 path += "Prefabs/SindenBorder.prefab";
                 GameObject newObject = (GameObject)Instantiate(AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)));
                 newObject.name = newObject.name.Remove(newObject.name.IndexOf("(Clone)"));

@@ -28,20 +28,26 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] OptimizedCanvas lobbyScreen = null;
     [SerializeField] OptimizedCanvas gameSetup = null;
 
+    [SerializeField] GameObject onePlayerButton = null;
+    [SerializeField] GameObject twoPlayerCoopButton = null;
+    [SerializeField] GameObject twoPlayerVersusButton = null;
+
     [SerializeField] OptimizedCanvas multiplayerMask = null;
     [SerializeField] TMPro.TextMeshProUGUI remotePlayer1Name = null;
     [SerializeField] TMPro.TextMeshProUGUI player2Name = null;
     [SerializeField] OptimizedCanvas hostPrivilegeMask = null;
 
+    [SerializeField] GameObject startGameClientBlock = null;
+
     [SerializeField] UnityEngine.UI.RawImage reimuBG = null;
     [SerializeField] UnityEngine.UI.RawImage marisaBG = null;
 
-    [SerializeField] GameplayModifiers modifiers = null;
+    [SerializeField] GameObject gameplayModifiers = null;
+    GameplayModifiers modifiers = null;
 
     [SerializeField] GameObject onlineCrosshair = null;
 
     Coroutine gameStartRoutine = null;
-    Coroutine settingsRoutine = null;
 
     // Start is called before the first frame update
     //void Start()
@@ -57,6 +63,10 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     public void JoinOrCreateGame(float delay)
     {
         PlayButtonSound();
+        onePlayerButton.SetActive(false);
+        twoPlayerCoopButton.SetActive(true);
+        // Enable me in 0.6
+        //twoPlayerVersusButton.SetActive(true);
         Invoke("DelayedConnect", delay);
     }
 
@@ -68,6 +78,10 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     public void OfflinePlay()
     {
         PlayButtonSound();
+        onePlayerButton.SetActive(true);
+        twoPlayerCoopButton.SetActive(false);
+        twoPlayerVersusButton.SetActive(false);
+        
         launcher.EnterSinglePlayerMode();
     }
 
@@ -107,6 +121,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         if (gameStartRoutine != null) return;
 
+        modifiers = FindObjectOfType<GameplayModifiers>();
         modifiers.ApplyAllProperties(
             (GameplayModifiers.LiveCounts)data[0],
             (GameplayModifiers.UFOSpawnRates)data[1],
@@ -123,6 +138,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     IEnumerator LoadGame()
     {
+        gameSetup.Hide();
+
         yield return new WaitForSeconds(uiMoveSpeed);
 
         railShooter.enabled = false;
@@ -146,10 +163,18 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
                 reimuBG.DOFade(0, bgFadeTime);
                 marisaBG.DOKill();
                 marisaBG.DOFade(1, bgFadeTime);
+
+                startGameClientBlock.SetActive(true);
             }
         }
 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            modifiers = PhotonNetwork.Instantiate(gameplayModifiers.name, Vector3.zero, Quaternion.identity)
+            .GetComponentInChildren<GameplayModifiers>();
+        }
     }
+
     public override void OnPlayerEnteredRoom(Player other)
     {
         if (PhotonNetwork.IsMasterClient)
@@ -166,8 +191,15 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         marisaBG.DOKill();
         marisaBG.DOFade(0, bgFadeTime);
         hostPrivilegeMask.Hide();
+        startGameClientBlock.SetActive(false);
 
         roomSetupScreen.ShowDelayed(0.1f);
+        var crosshairs = FindObjectsOfType<CrosshairOnline>();
+        for (int i = 0; i < crosshairs.Length; i++)
+        {
+            Destroy(crosshairs[i].transform.parent.gameObject);
+        }
+        Destroy(modifiers);
     }
 
     public override void OnPlayerLeftRoom(Player other)

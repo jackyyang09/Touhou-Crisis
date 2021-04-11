@@ -7,7 +7,7 @@ using Photon.Realtime;
 
 public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 {
-    [SerializeField] GameObject playerPrefab;
+    [SerializeField] GameObject playerPrefab = null;
 
     [SerializeField] float gameTimer = 0;
     float remoteGameTimer = 0;
@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] int shotsFired = 0;
     [SerializeField] int shotsHit = 0;
 
+    [SerializeField] GameObject crosshairPrefab = null;
+
+    Sakuya sakuya;
+    PlayerBehaviour player;
+
     static GameManager instance;
     public static GameManager Instance
     {
@@ -36,9 +41,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             return instance;
         }
     }
-
-    Sakuya sakuya;
-    PlayerBehaviour player;
 
     public static Action<PlayerBehaviour> OnSpawnLocalPlayer;
 
@@ -64,6 +66,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
 
+        PhotonNetwork.Instantiate(crosshairPrefab.name, Vector3.zero, Quaternion.identity);
+        player.OnTakeDamage += DamageRemotePlayer;
+        player.OnPlayerDeath += SyncLoseSequence;
         player.OnPlayerDeath += StopGameTimer;
         player.OnBulletFired += CountPlayerShot;
     }
@@ -90,6 +95,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             sakuya.OnBossDefeat -= StopGameTimer;
         }
 
+        player.OnPlayerDeath -= SyncLoseSequence;
         player.OnPlayerDeath -= StopGameTimer;
         player.OnBulletFired -= CountPlayerShot;
     }
@@ -149,6 +155,35 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         gameTimer = remoteGameTimer;
     }
 
+    Coroutine loseRoutine = null;
+    void SyncLoseSequence()
+    {
+        loseRoutine = StartCoroutine(SyncLoseRoutine());
+    }
+
+    IEnumerator SyncLoseRoutine()
+    {
+        yield return new WaitForSecondsRealtime(1.5f);
+        photonView.RPC("InitiateLoseSequence", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void InitiateLoseSequence()
+    {
+        FindObjectOfType<PlayerUIManager>().LoseSequence();
+    }
+
+    private void DamageRemotePlayer(DamageType obj)
+    {
+        photonView.RPC("RPCDamageRemotePlayer", RpcTarget.Others);
+    }
+    
+    [PunRPC]
+    void RPCDamageRemotePlayer()
+    {
+        player.TakeDamageRemote();
+    }
+
     /// <summary>
     /// Called when the local player left the room. We need to load the launcher scene.
     /// </summary>
@@ -178,6 +213,25 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public void ReloadScene()
     {
+        photonView.RPC("RemoteReloadScene", RpcTarget.All);
+    }
+
+    Coroutine reloadSceneRoutine;
+    [PunRPC]
+    void RemoteReloadScene()
+    {
+        if (reloadSceneRoutine != null) return;
+        reloadSceneRoutine = StartCoroutine(ReloadSceneRoutine());
+    }
+
+    IEnumerator ReloadSceneRoutine()
+    {
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.MenuButton);
+
+        LoadingScreen loadScreen = FindObjectOfType<LoadingScreen>();
+
+        yield return StartCoroutine(loadScreen.ShowRoutine());
+
         PhotonNetwork.LoadLevel(1);
     }
 

@@ -67,10 +67,10 @@ public class RailShooterEffects : MonoBehaviour
         }
     }
 
-    void PlayEffect(Ray ray, Vector2 screenPoint)
+    public void PlayEffect(Ray ray, Vector2 screenPoint)
     {
-        screenFlash.DOColor(flashColor, 0);
-        screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime);
+        //screenFlash.DOColor(flashColor, 0).SetUpdate(UpdateType.Normal, true);
+        //screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime).SetUpdate(UpdateType.Normal, true);
 
         if (spawnMuzzleFlash)
         {

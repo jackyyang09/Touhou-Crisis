@@ -1147,6 +1147,7 @@ GameObject:
   - component: {fileID: 881441668}
   - component: {fileID: 881441667}
   - component: {fileID: 881441671}
+  - component: {fileID: 881441672}
   m_Layer: 0
   m_Name: UFO Spawner
   m_TagString: Untagged
@@ -1247,6 +1248,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 3151239378276317734, guid: fe548b47e99d78a4083c491ed79eb066, type: 3}
   objectsToSpawn: 10
+--- !u!114 &881441672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881441666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 3
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &962638293
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2906,7 +2929,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6870226736576177673, guid: 21a9f59a389f49945a96a9372af450cc, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6870226736576177673, guid: 21a9f59a389f49945a96a9372af450cc, type: 3}
       propertyPath: m_Materials.Array.size
@@ -2950,7 +2973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8222486450925238257, guid: 21a9f59a389f49945a96a9372af450cc, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21a9f59a389f49945a96a9372af450cc, type: 3}

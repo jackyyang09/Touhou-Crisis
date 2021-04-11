@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Photon.Pun;
 
 public class UFOBehaviour : BaseEnemy
 {
@@ -50,7 +51,6 @@ public class UFOBehaviour : BaseEnemy
     [SerializeField] int movesPerShot = 4;
 
     Coroutine behaviourRoutine;
-    UFOSpawner parentSpawner = null;
 
     public System.Action OnUFOExpire;
 
@@ -61,19 +61,40 @@ public class UFOBehaviour : BaseEnemy
 
     private void OnDisable()
     {
-        parentSpawner.ReportUFODeath();
+        if (!photonView.IsMine) return;
+        UFOSpawner.Instance.ReportUFODeath();
         OnUFOExpire?.Invoke();
         OnUFOExpire = null;
     }
 
-    public void Init(UFOSpawner spawner)
+    public void Init()
     {
-        parentSpawner = spawner;
-
         if (behaviourRoutine == null)
         {
             behaviourRoutine = StartCoroutine(BehaviourTree());
         }
+    }
+
+    [PunRPC]
+    public void GreenSyncFlyTo(Vector3 destination)
+    {
+        transform.DOMove(destination, greenTravelTime).SetEase(Ease.Linear);
+    }
+
+    [PunRPC]
+    public void SyncFlyTo(Vector3 destination, float moveTime)
+    {
+        transform.DOMove(destination, moveTime);
+    }
+
+    [PunRPC]
+    public void SyncRedFlyTo(Vector3 target)
+    {
+        transform.DOMove(target, redChargeTime).SetEase(Ease.InSine);
+        transform.DOLookAt(target, redRotateTime).SetEase(Ease.Linear);
+        transform.DOLocalRotate(new Vector3(30, 0, 0), redRotateTime, RotateMode.LocalAxisAdd)
+            .SetEase(Ease.Linear)
+            .SetDelay(redRotateTime);
     }
 
     IEnumerator BehaviourTree()
@@ -83,9 +104,9 @@ public class UFOBehaviour : BaseEnemy
             case UFOType.Green:
                 {
                     Vector3 destination = transform.position.ScaleBetter(new Vector3(-1, 1, 1));
-                    transform.DOMove(destination, greenTravelTime).SetEase(Ease.Linear);
+                    photonView.RPC("GreenSyncFlyTo", RpcTarget.All, destination);
                     yield return new WaitForSeconds(greenTravelTime / 2);
-                    StartCoroutine(Shoot());
+                    photonView.RPC("SyncShoot", RpcTarget.All);
                     yield return new WaitForSeconds(greenTravelTime / 2);
                     Destroy(gameObject);
                 }
@@ -96,13 +117,13 @@ public class UFOBehaviour : BaseEnemy
                     int moves = 1;
                     while (true)
                     {
-                        Vector3 destination = parentSpawner.AreaBox.GetRandomPointInBox();
+                        Vector3 destination = UFOSpawner.Instance.AreaBox.GetRandomPointInBox();
                         float moveTime = Random.Range(wanderTime.x, wanderTime.y);
-                        transform.DOMove(destination, moveTime);
+                        photonView.RPC("SyncFlyTo", RpcTarget.All, new object[] { destination, moveTime} );
                         yield return new WaitForSeconds(moveTime);
                         if (moves % movesPerShot == 0)
                         {
-                            StartCoroutine(Shoot());
+                            photonView.RPC("SyncShoot", RpcTarget.All);
                         }
                         moves++;
                         yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
@@ -113,19 +134,27 @@ public class UFOBehaviour : BaseEnemy
                     int wanderNum = Random.Range((int)timesToWander.x, (int)timesToWander.y + 1);
                     for (int i = 0; i < wanderNum; i++)
                     {
-                        Vector3 destination = parentSpawner.AreaBox.GetRandomPointInBox();
-                        transform.DOMove(destination, Random.Range(wanderTime.x, wanderTime.y));
+                        Vector3 destination = UFOSpawner.Instance.AreaBox.GetRandomPointInBox();
+                        float moveTime = Random.Range(wanderTime.x, wanderTime.y);
+
+                        photonView.RPC("SyncFlyTo", RpcTarget.All, new object[] { destination, moveTime} );
+
                         yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
                     }
                     Vector3 target = AreaLogic.Instance.Player1FireTransform.position;
-                    transform.DOMove(target, redChargeTime).SetEase(Ease.InSine);
-                    transform.DOLookAt(target, redRotateTime).SetEase(Ease.Linear);
+
+                    photonView.RPC("SyncRedFlyTo", RpcTarget.All, new object[] { target });
+
                     Destroy(gameObject, redChargeTime);
-                    yield return new WaitForSeconds(redRotateTime);
-                    transform.DOLocalRotate(new Vector3(30, 0, 0), redRotateTime, RotateMode.LocalAxisAdd).SetEase(Ease.Linear);
                 }
                 break;
         }
+    }
+
+    [PunRPC]
+    void SyncShoot()
+    {
+        StartCoroutine(Shoot());
     }
 
     IEnumerator Shoot()
@@ -137,7 +166,7 @@ public class UFOBehaviour : BaseEnemy
 
         yield return new WaitForSeconds(chargeupTime);
 
-        EnemyBullet enemyBullet = parentSpawner.GetUFOBullet(ufoType).GetComponent<EnemyBullet>();
+        EnemyBullet enemyBullet = UFOSpawner.Instance.GetUFOBullet(ufoType).GetComponent<EnemyBullet>();
         enemyBullet.transform.position = bulletSpawnPoint.position;
 
         enemyBullet.Init(AreaLogic.Instance.Player1FireTransform);
@@ -168,8 +197,8 @@ public class UFOBehaviour : BaseEnemy
         if (behaviourRoutine != null)
         {
             StopCoroutine(behaviourRoutine);
-            transform.DOKill();
         }
+        transform.DOKill();
 
         for (int i = 0; i < lights.Length; i++)
         {
