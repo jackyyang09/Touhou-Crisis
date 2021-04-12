@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: vegGrass Phase 1
+  m_Name: vegGrass Phase 3
   m_Shader: {fileID: -6465566751694194690, guid: 303a60b26a4b54d4fa3bee4ed882f56d, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 2
@@ -26,17 +26,17 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_29E62213: 10
+    - Vector1_29E62213: 20
     - Vector1_6B87C3B8: 0.1
     - Vector1_7A2C96CC: 0.5
-    - Vector1_85D86B50: 5
+    - Vector1_85D86B50: 10.5
     - Vector1_9630C3A2: 0.2
-    - Vector1_97B7AD1F: 0.3
+    - Vector1_97B7AD1F: 1.5
     - Vector1_99B8D6EF: 0
-    - Vector1_CC0C5AC7: 1.55
+    - Vector1_CC0C5AC7: 2
     m_Colors:
-    - Color_4933F009: {r: 0, g: 0.78039217, b: 0, a: 0}
-    - Color_591DAD43: {r: 0, g: 0.23584908, b: 0.042115916, a: 0}
+    - Color_4933F009: {r: 0, g: 0.39215687, b: 0, a: 0}
+    - Color_591DAD43: {r: 0, g: 0.09803922, b: 0.042115916, a: 0}
     - Color_B8FFD6A1: {r: 1, g: 1, b: 1, a: 0}
     - Vector2_71443394: {r: -2, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
