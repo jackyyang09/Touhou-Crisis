@@ -27,8 +27,10 @@ public class IntroEffect : MonoBehaviour
     private void Awake()
     {
         image.DOColor(Color.black, 0);
-        image.DOColor(Color.clear, fadeToClearTime);
-        Invoke("UnsubscribeSkipOpening", fadeToClearTime);
+
+        image.DOColor(Color.clear, fadeToClearTime).SetDelay(holdBlackTime);
+
+        Invoke("UnsubscribeSkipOpening", fadeToClearTime + holdBlackTime);
 
         StartCoroutine(FlashShootToStart());
     }

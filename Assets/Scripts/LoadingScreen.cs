@@ -36,7 +36,7 @@ public class LoadingScreen : MonoBehaviour
 
     private void OnDisable()
     {
-        SceneManager.activeSceneChanged += HideLoadScreen;
+        SceneManager.activeSceneChanged -= HideLoadScreen;
     }
 
     public void HideLoadScreen(Scene oldScene, Scene newScene)
@@ -89,6 +89,12 @@ public class LoadingScreen : MonoBehaviour
 
         loadingAnimationGroup.enabled = false;
         loadingAnimation.Hide();
+
+        // Self destruct if OG LoadingScreen is in this scene
+        if (FindObjectsOfType<LoadingScreen>().Length > 1)
+        {
+            Destroy(gameObject);
+        }
 
         yield return null;
     }

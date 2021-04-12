@@ -209,7 +209,7 @@ MonoBehaviour:
   screenFlash: {fileID: 4034704607541840793}
   fadeEffectTime: 0.02
   muzzleFlashPrefab: {fileID: 5146475814407794022, guid: c358f2adcf8c7bd42b7018c2d380fe6c, type: 3}
-  muzzleFlashCanvas: {fileID: 0}
+  muzzleFlashCanvas: {fileID: 1338586706132980626}
   spawnMuzzleFlash: 0
   inMenu: 0
 --- !u!1 &4034704608433091432

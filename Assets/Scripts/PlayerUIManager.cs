@@ -42,6 +42,7 @@ public class PlayerUIManager : MonoBehaviour
     [Header("Damage Effects")]
     [SerializeField] Image slashDamageImage = null;
     [SerializeField] Image bulletDamageImage = null;
+    [SerializeField] Image remoteDamageImage = null;
 
     [Header("Score System")]
     [SerializeField] TextMeshProUGUI scoreText = null;
@@ -64,7 +65,8 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] OptimizedCanvas p2ScoreCanvas = null;
     [SerializeField] TextMeshProUGUI p2ScoreText = null;
     [SerializeField] OptimizedCanvas gameOverButtonCanvas = null;
-    [SerializeField] Button retryButton = null;
+    [SerializeField] GameObject retryButton = null;
+    [SerializeField] GameObject retryBlock = null;
     [SerializeField] Canvas reimuPortrait = null;
     [SerializeField] Canvas marisaPortrait = null;
 
@@ -100,6 +102,7 @@ public class PlayerUIManager : MonoBehaviour
         else
         {
             player1Puck.enabled = false;
+            remoteDamageImage.transform.localScale = new Vector3(-1, 1, 1);
         }
 
         // Initialize lives
@@ -133,10 +136,10 @@ public class PlayerUIManager : MonoBehaviour
         player.OnReload += UpdateAmmoCount;
         player.OnTakeDamage += FadeDamageEffect;
         player.OnTakeDamage += UpdateLivesDisplay;
+        player.OnTakeDamageRemote += FadeDamageRemote;
         player.OnFireNoAmmo += ShowReloadGraphic;
         player.OnEnterTransit += FlashWaitGraphic;
         player.OnExitTransit += FlashActionGraphic;
-        player.OnPlayerDeath += LoseSequence;
 
         score.OnScoreChanged += UpdateScore;
 
@@ -162,10 +165,10 @@ public class PlayerUIManager : MonoBehaviour
         player.OnReload -= UpdateAmmoCount;
         player.OnTakeDamage -= FadeDamageEffect;
         player.OnTakeDamage -= UpdateLivesDisplay;
+        player.OnTakeDamageRemote -= FadeDamageRemote;
         player.OnFireNoAmmo -= ShowReloadGraphic;
         player.OnEnterTransit -= FlashWaitGraphic;
         player.OnExitTransit -= FlashActionGraphic;
-        player.OnPlayerDeath -= LoseSequence;
 
         score.OnScoreChanged -= UpdateScore;
 
@@ -204,7 +207,7 @@ public class PlayerUIManager : MonoBehaviour
         }
     }
 
-    void SpawnMuzzleFlash(bool missed, Vector2 hitPosition)
+    public void SpawnMuzzleFlash(bool missed, Vector2 hitPosition)
     {
         // Get muzzle flash prefab
         GameObject muzzleFlash = gameObject; // Temp allocation
@@ -220,11 +223,7 @@ public class PlayerUIManager : MonoBehaviour
         //Spawn bullet on the canvas
         var bullet = Instantiate(muzzleFlash, overlayCanvas.transform).transform as RectTransform;
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-        bullet.position = Input.touches[Input.touchCount - 1].position;
-#else
-        bullet.position = Input.mousePosition;
-#endif
+        bullet.position = hitPosition;
 
         UpdateAmmoCount();
         //ExpendAmmo();
@@ -313,6 +312,14 @@ public class PlayerUIManager : MonoBehaviour
         }
     }
 
+    void FadeDamageRemote()
+    {
+        UpdateLivesDisplay(new DamageType());
+        remoteDamageImage.DOColor(Color.white, 0);
+        remoteDamageImage.DOColor(Color.clear, 0.5f).SetDelay(1);
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.PlayerHurtRemote);
+    }
+
     void UpdateScore(int newScore)
     {
         scoreText.text = newScore.ToString();
@@ -348,7 +355,7 @@ public class PlayerUIManager : MonoBehaviour
 
         if (enemyHealthBar.fillAmount <= 0)
         {
-            enemySpellcards[enemySpellcards.Length - sakuya.CurrentPhase].enabled = false;
+            enemySpellcards[Mathf.Clamp(enemySpellcards.Length - sakuya.CurrentPhase, 0, enemySpellcards.Length)].enabled = false;
         }
     }
 
@@ -365,7 +372,7 @@ public class PlayerUIManager : MonoBehaviour
         StartCoroutine(ShowGameOverScreen());
     }
 
-    void LoseSequence()
+    public void LoseSequence()
     {
         PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
         JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
@@ -443,36 +450,32 @@ public class PlayerUIManager : MonoBehaviour
             yield return new WaitForSeconds(0.15f);
         }
 
-        retryButton.interactable = isHost;
+        retryBlock.SetActive(!isHost);
+        retryButton.SetActive(isHost);
+
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
         gameOverButtonCanvas.Show();
     }
 
     Coroutine delayRoutine = null;
-    System.Action delayedFunction = null;
     public void ReloadLevel()
     {
-        if (delayRoutine != null) return;
-
-        delayedFunction += GameManager.Instance.ReloadScene;
-        delayRoutine = StartCoroutine(DelayedTransition());
+        GameManager.Instance.ReloadScene();
     }
 
     public void ReturnToTitle()
     {
         if (delayRoutine != null) return;
 
-        delayedFunction += GameManager.Instance.LeaveRoom;
-        delayRoutine = StartCoroutine(DelayedTransition());
+        delayRoutine = StartCoroutine(DelayedReturnToTitle());
     }
 
-    IEnumerator DelayedTransition()
+    IEnumerator DelayedReturnToTitle()
     {
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.MenuButton);
 
         yield return StartCoroutine(loadingScreen.ShowRoutine());
 
-        delayedFunction?.Invoke();
-        delayedFunction = null;
+        GameManager.Instance.LeaveRoom();
     }
 }

@@ -16,17 +16,17 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField]
     private byte maxPlayersPerRoom = 4;
 
-    [SerializeField] TMPro.TextMeshProUGUI progressLabel;
+    [SerializeField] TMPro.TextMeshProUGUI progressLabel = null;
 
-    [SerializeField] OptimizedCanvas lobbyScreen;
-    [SerializeField] Image multiplayerButtonImage;
-    [SerializeField] Button multiplayerButton;
+    [SerializeField] OptimizedCanvas lobbyScreen = null;
+    [SerializeField] Image multiplayerButtonImage = null;
+    [SerializeField] Button multiplayerButton = null;
 
-    [SerializeField] TMPro.TMP_InputField roomCodeField;
-    [SerializeField] TMPro.TextMeshProUGUI roomCode;
+    [SerializeField] TMPro.TMP_InputField roomCodeField = null;
+    [SerializeField] TMPro.TextMeshProUGUI roomCode = null;
 
-    [SerializeField] TMPro.TextMeshProUGUI player1NameText;
-    [SerializeField] TMPro.TextMeshProUGUI player2NameText;
+    [SerializeField] TMPro.TextMeshProUGUI player1NameText = null;
+    [SerializeField] TMPro.TextMeshProUGUI player2NameText = null;
 
     public bool quickPlay = false;
 
@@ -143,13 +143,21 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             Debug.Log("Loading Game Room");
             player1NameText.text = PhotonNetwork.LocalPlayer.NickName;
-            roomCode.text = PhotonNetwork.CurrentRoom.Name;
         }
         else
         {
             player1NameText.text = PhotonNetwork.MasterClient.NickName;
+        }
+
+        if (PhotonNetwork.OfflineMode)
+        {
+            roomCode.text = "----";
+        }
+        else
+        {
             roomCode.text = PhotonNetwork.CurrentRoom.Name;
         }
+
         HideConnectingText();
         lobbyScreen.Show();
     }

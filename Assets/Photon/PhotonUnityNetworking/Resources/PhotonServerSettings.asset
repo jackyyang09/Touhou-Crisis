@@ -33,19 +33,35 @@ MonoBehaviour:
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - AddScore
+  - AddScoreOnSuccessfulHit
   - ArrangeKnivesClockwise
-  - ChangePhaseEffect
   - ClickRpc
+  - CycleBossActionSpeed
+  - CycleBossMoveSpeed
+  - CycleStartingLives
+  - CycleUFOSpawnRate
   - DashTo
   - DestroyRpc
   - DestroySpaceship
+  - EnterGame
+  - EnterGameSetup
   - Fire
   - GoToCenter
+  - GreenSyncFlyTo
   - OnShotBehaviour
+  - PlayerDeath
   - PlayIdle
   - QueuePuck
   - RespawnSpaceship
   - SakuyaVolley
+  - SpawnEffect
+  - SpawnEffectGame
+  - StartPhaseChange
+  - SyncFlyTo
+  - SyncRedFlyTo
+  - SyncShoot
+  - SyncSpawnUFO
   - TimeStopCombo
   - WanderTo
   DisableAutoOpenWizard: 1

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class UFOSpawner : MonoBehaviour
+public class UFOSpawner : MonoBehaviourPun
 {
     [SerializeField] GameObject redUfoPrefab = null;
     [SerializeField] GameObject greenUfoPrefab = null;
@@ -33,7 +34,20 @@ public class UFOSpawner : MonoBehaviour
 
     int activeUfos = 0;
 
-    private void Start()
+    static UFOSpawner instance;
+    public static UFOSpawner Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<UFOSpawner>();
+            }
+            return instance;
+        }
+    }
+
+    void Start()
     {
         var modifiers = FindObjectOfType<GameplayModifiers>();
         if (modifiers)
@@ -47,7 +61,8 @@ public class UFOSpawner : MonoBehaviour
                 case GameplayModifiers.UFOSpawnRates.Normal:
                 case GameplayModifiers.UFOSpawnRates.High:
                     int spawnRate = (int)modifiers.UFOSpawnRate - 1;
-                    InvokeRepeating("SpawnUFO", spawnDelay[spawnRate], spawnDelay[spawnRate]);
+                    if (PhotonNetwork.IsMasterClient)
+                        InvokeRepeating("SpawnUFO", spawnDelay[spawnRate], spawnDelay[spawnRate]);
                     break;
             }
         }
@@ -77,13 +92,6 @@ public class UFOSpawner : MonoBehaviour
         GameManager.OnSpawnLocalPlayer -= Initialize;
     }
 
-    //void UpdateSpawnBehaviour(int currentPhase)
-    //{
-    //    if (IsInvoking("SpawnUFO")) CancelInvoke("SpawnUFO");
-    //
-    //    InvokeRepeating("SpawnUFO", spawnDelay[currentPhase], spawnDelay[currentPhase]);
-    //}
-
     [ContextMenu("Spawn UFO Now")]
     void SpawnUFO()
     {
@@ -93,25 +101,29 @@ public class UFOSpawner : MonoBehaviour
 
             int ufoType = Random.Range(0, 3);
 
-            // Temporary allocation
-            GameObject newFO = gameObject;
-            switch ((UFOBehaviour.UFOType)ufoType)
-            //switch (UFOBehaviour.UFOType.Red)
-            {
-                case UFOBehaviour.UFOType.Green:
-                    newFO = Instantiate(greenUfoPrefab, greenSpawnPoints[Random.Range(0, greenSpawnPoints.Length)].position, Quaternion.identity);
-                    break;
-                case UFOBehaviour.UFOType.Blue:
-                    newFO = Instantiate(blueUfoPrefab, blueSpawnPoints[Random.Range(0, blueSpawnPoints.Length)].position, Quaternion.identity);
-                    break;
-                case UFOBehaviour.UFOType.Red:
-                    newFO = Instantiate(redUfoPrefab, redSpawnPoints[Random.Range(0, redSpawnPoints.Length)].position, Quaternion.identity);
-                    break;
-            }
-
-            UFOBehaviour ufo = newFO.GetComponent<UFOBehaviour>();
-            ufo.Init(this);
+            photonView.RPC("SyncSpawnUFO", RpcTarget.MasterClient, ufoType);
         }
+    }
+
+    [PunRPC]
+    public void SyncSpawnUFO(UFOBehaviour.UFOType ufoType)
+    {
+        // Temporary allocation
+        GameObject newFO = gameObject;
+        switch (ufoType)
+        {
+            case UFOBehaviour.UFOType.Green:
+                newFO = PhotonNetwork.Instantiate(greenUfoPrefab.name, greenSpawnPoints[Random.Range(0, greenSpawnPoints.Length)].position, Quaternion.identity);
+                break;
+            case UFOBehaviour.UFOType.Blue:
+                newFO = PhotonNetwork.Instantiate(blueUfoPrefab.name, blueSpawnPoints[Random.Range(0, blueSpawnPoints.Length)].position, Quaternion.identity);
+                break;
+            case UFOBehaviour.UFOType.Red:
+                newFO = PhotonNetwork.Instantiate(redUfoPrefab.name, redSpawnPoints[Random.Range(0, redSpawnPoints.Length)].position, Quaternion.identity);
+                break;
+        }
+
+        newFO.GetComponent<UFOBehaviour>().Init();
     }
 
     public GameObject GetUFOBullet(UFOBehaviour.UFOType ufoType)

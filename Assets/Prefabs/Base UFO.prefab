@@ -184,6 +184,7 @@ GameObject:
   - component: {fileID: 8793207776049235264}
   - component: {fileID: 8793207776049235390}
   - component: {fileID: 2021112614132269488}
+  - component: {fileID: 1748636142590791489}
   m_Layer: 9
   m_Name: Base UFO
   m_TagString: Untagged
@@ -226,7 +227,7 @@ MonoBehaviour:
   collider: {fileID: 0}
   rBody: {fileID: 8793207776049235390}
   animator: {fileID: 2021112614132269488}
-  photonView: {fileID: 0}
+  photonView: {fileID: 1748636142590791489}
   canTakeDamage: 1
   ufoType: 1
   wanderTime: {x: 0.1, y: 0.2}
@@ -243,6 +244,7 @@ MonoBehaviour:
   lights: []
   magicCircle: {fileID: 8357009798366045196}
   bulletSpawnPoint: {fileID: 2930045039176127095}
+  destructionParticle: {fileID: 0}
   greenTravelTime: 8
   redChargeTime: 2
   redRotateTime: 0.5
@@ -282,3 +284,25 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1748636142590791489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8793207776049235389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  observableSearch: 2
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents: []
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

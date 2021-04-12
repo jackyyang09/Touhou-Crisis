@@ -293,7 +293,7 @@ public class PauseMenu : MonoBehaviour
             {
                 rebindText.text =
                     "隠れのボタンを入力してください、\n" +
-                    "（現在）" + "\"" + newCoverKey + "\"ESCでキャンセル";
+                    "（現在）" + "\"" + newCoverKey + "\"\nESCでキャンセル";
             }
             rebindInterface.rectTransform.DOScaleX(1, 0.125f);
             yield return new WaitForSeconds(0.25f);

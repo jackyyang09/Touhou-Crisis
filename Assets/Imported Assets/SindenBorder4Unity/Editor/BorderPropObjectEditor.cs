@@ -17,7 +17,7 @@ namespace SindenUnity
         private void OnEnable()
         {
             borderProperties = serializedObject.FindProperty("borderProperties");
-            width = borderProperties.FindPropertyRelative("widths");
+            width = borderProperties.FindPropertyRelative("width");
             height = borderProperties.FindPropertyRelative("height");
             uniformSize = borderProperties.FindPropertyRelative("uniformSize");
             color = borderProperties.FindPropertyRelative("color");

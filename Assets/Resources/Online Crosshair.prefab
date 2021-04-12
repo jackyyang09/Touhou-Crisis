@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 5752327397873321508}
   - component: {fileID: 5810797794979896138}
   - component: {fileID: 5810797794979896137}
-  - component: {fileID: 5810797794979896136}
   m_Layer: 5
   m_Name: Crosshair_Blue
   m_TagString: Untagged
@@ -90,7 +89,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47284d32441bbac41b595c18600f2ff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interpSpeedMultiplier: 2
   image: {fileID: 5752327397873321508}
+  inGame: 0
 --- !u!114 &5810797794979896137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,26 +111,10 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 5810797794979896136}
+  - {fileID: 5810797794979896138}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &5810797794979896136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5810797794979896135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 0
-  m_UseLocal: 1
 --- !u!1 &9079675973397218163
 GameObject:
   m_ObjectHideFlags: 0

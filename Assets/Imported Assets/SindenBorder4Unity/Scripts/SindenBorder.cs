@@ -1,12 +1,19 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SindenUnity
 {
     [RequireComponent(typeof(RectTransform))]
     public class SindenBorder : MonoBehaviour
     {
+        [SerializeField] Canvas parentCanvas = null;
+
+        [Tooltip("If true, will destroy all other instances of SindenBorder in the scene on enabling")]
+        [SerializeField] bool destroyDuplicates = true;
+
         [Tooltip("Will print normal statements to the console, warnings and errors will be printed regardless of this option.")]
         [SerializeField] bool logActions = true;
 
@@ -50,13 +57,15 @@ namespace SindenUnity
             }
         }
 
-        public BorderPropObject ActiveBorder
+        public BorderProperties ActiveBorder
         { 
             get
             {
-                return borders[activeIndex];
+                return runtimeBorder.properties;
             }
         }
+
+        public RuntimeBorder runtimeBorder = null;
 
         public int BorderWidthInPixels
         {
@@ -76,7 +85,7 @@ namespace SindenUnity
         }
 
         public static System.Action OnBorderEnabled;
-        public static System.Action<BorderPropObject> OnBorderUpdated;
+        public static System.Action<BorderProperties> OnBorderUpdated;
         public static System.Action OnBorderDisabled;
 
         int cachedBorderWidth = 0;
@@ -85,14 +94,7 @@ namespace SindenUnity
         public static Texture2D borderTexture = null;
         static GUIStyle borderStyle = null;
 
-        /// <summary>
-        /// True if the current border's width and height add up to 0, or if the color's alpha is 0
-        /// </summary>
-        bool activeBorderIsEmpty = false;
-
         const string DEBUG_TITLE = "Sinden Border: ";
-
-        [HideInInspector] Canvas parentCanvas = null;
 
         private void OnValidate()
         {
@@ -113,16 +115,18 @@ namespace SindenUnity
 
         private void OnEnable()
         {
-            if (HasBorders)
-            {
-                ApplyBorderProperties();
-            }
-            else
+            runtimeBorder = RuntimeBorder.Instance;
+
+            StartCoroutine(ApplyBorderDelayed());
+
+            if (!HasBorders)
             {
                 Debug.LogWarning(DEBUG_TITLE + "No border objects found in SindenBorder component attached to " + gameObject.name + "! Disabling...");
                 enabled = false;
             }
             OnBorderEnabled?.Invoke();
+
+            if (destroyDuplicates) DestroyDuplicates();
         }
 
         private void OnDisable()
@@ -130,12 +134,33 @@ namespace SindenUnity
             OnBorderDisabled?.Invoke();
         }
 
+        IEnumerator ApplyBorderDelayed()
+        {
+            yield return new WaitForEndOfFrame();
+            ApplyBorderProperties();
+        }
+
+        void DestroyDuplicates()
+        {
+            var duplicates = FindObjectsOfType<SindenBorder>();
+            if (duplicates.Length > 1)
+            {
+                for (int i = 0; i < duplicates.Length; i++)
+                {
+                    if (duplicates[0] != this)
+                    {
+                        Destroy(duplicates[0].gameObject);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Draws the border if this component is enabled
         /// </summary>
         private void OnGUI()
         {
-            if (activeBorderIsEmpty) return;
+            if (RuntimeBorder.Instance.isEmpty) return;
             // Draw border
             GUI.Box(new Rect(0, 0, Screen.width, Screen.height), GUIContent.none, borderStyle);
         }
@@ -143,7 +168,7 @@ namespace SindenUnity
         private void OnDrawGizmos()
         {
             if (!enabled) return;
-            if (activeBorderIsEmpty) return;
+            if (RuntimeBorder.Instance.isEmpty) return;
             if (borderTexture == null) ForceUpdateBorder();
             Graphics.DrawTexture(new Rect(0, 0, parentCanvas.pixelRect.width, parentCanvas.pixelRect.height), borderTexture);
         }
@@ -161,15 +186,15 @@ namespace SindenUnity
                 rect.anchorMin = new Vector2(0, 0);
                 rect.anchorMax = new Vector2(1, 1);
 
-                BorderPropObject border = ActiveBorder;
+                BorderProperties border = ActiveBorder;
 
-                activeBorderIsEmpty = border.width + border.height == 0 || border.width == 0 && border.uniformSize || border.color.a == 0;
+                RuntimeBorder.Instance.isEmpty = border.width + border.height == 0 || border.width == 0 && border.uniformSize || border.color.a == 0;
 
                 cachedBorderWidth = Mathf.Abs(BorderWidthInPixels);
                 cachedBorderHeight = Mathf.Abs(BorderHeightInPixels);
 
                 rect.sizeDelta = new Vector2(cachedBorderWidth * -2, cachedBorderHeight * -2);
-                if (!activeBorderIsEmpty)
+                if (!RuntimeBorder.Instance.isEmpty)
                 {
                     if (Application.isPlaying)
                     {
@@ -198,6 +223,7 @@ namespace SindenUnity
         {
             RecordObjectWithUndo();
             activeIndex = (int)Mathf.Repeat(activeIndex - 1, borders.Count);
+            runtimeBorder.properties = borders[activeIndex].Properties;
 
             ApplyBorderProperties();
         }
@@ -206,6 +232,7 @@ namespace SindenUnity
         {
             RecordObjectWithUndo();
             activeIndex = (int)Mathf.Repeat(activeIndex + 1, borders.Count);
+            runtimeBorder.properties = borders[activeIndex].Properties;
 
             ApplyBorderProperties();
         }

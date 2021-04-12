@@ -109,6 +109,7 @@ public class PlayerBehaviour : MonoBehaviour
     public System.Action OnReload;
     public System.Action OnFireNoAmmo;
     public System.Action<DamageType> OnTakeDamage;
+    public System.Action OnTakeDamageRemote;
     public System.Action OnPlayerDeath;
 
     public System.Action OnEnterTransit;
@@ -213,8 +214,11 @@ public class PlayerBehaviour : MonoBehaviour
                 miss = false;
             }
 
-            Vector3 hitPosition = railShooter.Cam.ScreenToViewportPoint(screenPoint);
-
+#if UNITY_ANDROID && !UNITY_EDITOR
+            Vector3 hitPosition = Input.touches[Input.touchCount - 1].position;
+#else
+            Vector3 hitPosition = Input.mousePosition;
+#endif
             ammoCount[activeWeaponIndex]--;
 
             OnBulletFired?.Invoke(miss, hitPosition);
@@ -281,20 +285,27 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (inCover) return;
         impulse.GenerateImpulse();
-        StartCoroutine("DamageRecovery");
+        StartCoroutine(DamageRecovery());
         currentLives--;
         OnTakeDamage?.Invoke(damageType);
 
         if (currentLives == 0 && !infiniteLives)
         {
             RemovePlayerControl();
-            Invoke("PlayerDeath", 1.5f);
+            OnPlayerDeath.Invoke();
         }
     }
 
-    public void PlayerDeath()
+    public void TakeDamageRemote()
     {
-        OnPlayerDeath.Invoke();
+        currentLives--;
+        OnTakeDamageRemote?.Invoke();
+
+        if (currentLives == 0 && !infiniteLives)
+        {
+            RemovePlayerControl();
+            OnPlayerDeath.Invoke();
+        }
     }
 
     IEnumerator DamageRecovery()
