@@ -4785,6 +4785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c83cf13377727664f834df089cde9f96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSceneName: Room for 2 WIP
   infiniteLives: 0
   maxLives: 5
   inTransit: 1

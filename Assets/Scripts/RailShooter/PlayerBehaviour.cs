@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
+using System;
 
 public enum DamageType
 {
@@ -11,6 +13,8 @@ public enum DamageType
 
 public class PlayerBehaviour : MonoBehaviour
 {
+    [SerializeField] string gameSceneName = "";
+
     [SerializeField] bool infiniteLives = false;
     public bool BuddhaMode { get { return infiniteLives; } }
     [SerializeField] int maxLives = 5;
@@ -104,21 +108,48 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    public System.Action<bool, Vector2> OnBulletFired;
-    public System.Action OnExitCover;
-    public System.Action OnReload;
-    public System.Action OnFireNoAmmo;
-    public System.Action<DamageType> OnTakeDamage;
-    public System.Action OnTakeDamageRemote;
-    public System.Action OnPlayerDeath;
+    public Action<bool, Vector2> OnBulletFired;
+    public Action OnExitCover;
+    public Action OnReload;
+    public Action OnFireNoAmmo;
+    public Action<DamageType> OnTakeDamage;
+    public Action OnTakeDamageRemote;
+    public Action OnPlayerDeath;
 
-    public System.Action OnEnterTransit;
-    public System.Action OnExitTransit;
-    public System.Action OnEnterSubArea;
+    public Action OnEnterTransit;
+    public Action OnExitTransit;
+    public Action OnEnterSubArea;
 
     // Start is called before the first frame update
     void Start()
     {
+        if (gameObject.scene.name.Equals(gameSceneName))
+        {
+            OnEnterScene(gameObject.scene, LoadSceneMode.Single);
+        }
+
+        coverKey = (KeyCode)PlayerPrefs.GetInt(PauseMenu.CoverInputKey);
+
+        // Just in case the player is spawned in the tween scene
+        DontDestroyOnLoad(this);
+    }
+
+    private void OnEnable()
+    {
+        railShooter.OnShoot += HandleShooting;
+        OnPlayerDeath += RemovePlayerControl;
+        SceneManager.sceneLoaded += OnEnterScene;
+    }
+
+    /// <summary>
+    /// Run this if the scene is the game scene
+    /// </summary>
+    /// <param name="arg0"></param>
+    /// <param name="arg1"></param>
+    private void OnEnterScene(Scene newScene, LoadSceneMode arg1)
+    {
+        if (!newScene.name.Equals(gameSceneName)) return;
+
         var modifiers = FindObjectOfType<GameplayModifiers>();
         if (modifiers)
         {
@@ -143,21 +174,19 @@ public class PlayerBehaviour : MonoBehaviour
             ammoCount[i] = weapons[i].ammoCapacity;
         }
         EnterTransit();
-
-        coverKey = (KeyCode)PlayerPrefs.GetInt(PauseMenu.CoverInputKey);
+        GameManager.OnLeaveScene += DestroySelf;
     }
 
-    private void OnEnable()
-    {
-        railShooter.OnShoot += HandleShooting;
-        OnPlayerDeath += RemovePlayerControl;
-    }
+    void DestroySelf() => Destroy(gameObject);
 
     private void OnDisable()
     {
+        GameManager.OnLeaveScene -= DestroySelf;
         railShooter.OnShoot -= HandleShooting;
         OnPlayerDeath -= RemovePlayerControl;
+        SceneManager.sceneLoaded -= OnEnterScene;
     }
+
 
     // Update is called once per frame
     void Update()

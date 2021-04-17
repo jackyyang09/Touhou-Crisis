@@ -150,6 +150,8 @@ public class PlayerUIManager : MonoBehaviour
             sakuya.OnBossDefeat += WinSequence;
             sakuya.OnBossDefeat += HideCoverTutorial;
         }
+
+        GameManager.OnLeaveScene += DestroySelf;
     }
 
     private void OnDisable()
@@ -179,7 +181,11 @@ public class PlayerUIManager : MonoBehaviour
             sakuya.OnBossDefeat -= WinSequence;
             sakuya.OnBossDefeat -= HideCoverTutorial;
         }
+
+        GameManager.OnLeaveScene -= DestroySelf;
     }
+
+    void DestroySelf() => Destroy(gameObject);
 
     // Update is called once per frame
     void Update()

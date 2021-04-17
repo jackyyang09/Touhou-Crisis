@@ -19,7 +19,6 @@ public class Crosshair : MonoBehaviour
         }
     }
 
-
     string HideCursorKey
     {
         get

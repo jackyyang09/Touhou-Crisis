@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    public static Action OnLeaveScene;
     public static Action<PlayerBehaviour> OnSpawnLocalPlayer;
 
     private void Start()
@@ -64,6 +65,15 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
             }
+        }
+
+        if (!player)
+        {
+            player = PlayerManager.Instance.LocalPlayer;
+        }
+        else
+        {
+            Debug.Log(PlayerManager.Instance);
         }
 
         PhotonNetwork.Instantiate(crosshairPrefab.name, Vector3.zero, Quaternion.identity);
@@ -94,10 +104,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             sakuya.OnBossDefeat -= StopGameTimer;
         }
-
-        player.OnPlayerDeath -= SyncLoseSequence;
-        player.OnPlayerDeath -= StopGameTimer;
-        player.OnBulletFired -= CountPlayerShot;
     }
 
     public void StartGameTimer()
@@ -189,6 +195,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     /// </summary>
     public override void OnLeftRoom()
     {
+        OnLeaveScene?.Invoke();
         SceneManager.LoadScene(0);
     }
 
@@ -231,6 +238,12 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         LoadingScreen loadScreen = FindObjectOfType<LoadingScreen>();
 
         yield return StartCoroutine(loadScreen.ShowRoutine());
+
+        player.OnPlayerDeath -= SyncLoseSequence;
+        player.OnPlayerDeath -= StopGameTimer;
+        player.OnBulletFired -= CountPlayerShot;
+
+        OnLeaveScene?.Invoke();
 
         PhotonNetwork.LoadLevel(1);
     }
