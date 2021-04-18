@@ -9,9 +9,10 @@ public class TweenScene : MonoBehaviour
 
     void Awake()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.LoadLevel(sceneNumber);
-        }
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    PhotonNetwork.LoadLevel(sceneNumber);
+        //}
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneNumber);
     }
 }

@@ -187,7 +187,6 @@ public class PlayerBehaviour : MonoBehaviour
         SceneManager.sceneLoaded -= OnEnterScene;
     }
 
-
     // Update is called once per frame
     void Update()
     {
