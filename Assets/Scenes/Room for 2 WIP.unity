@@ -483,6 +483,10 @@ PrefabInstance:
       propertyPath: viewIdField
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8877749697365984772, guid: e260328dc6c5a6f44aa50065aef40b4a, type: 3}
+      propertyPath: actOnMultiplayer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e260328dc6c5a6f44aa50065aef40b4a, type: 3}
 --- !u!1 &334917402
