@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba327a042efef7b4dab8fe59c81a1b1d, type: 3}
+  m_Name: M4G1-C
+  m_EditorClassIdentifier: 
+  weaponType: 1
+  bulletDamage: 1
+  ammoCapacity: 30
+  infiniteAmmo: 0
+  fireDelay: 0.085
+  pellets: 0
+  bulletSpread: 0
+  hitFlashPrefab: {fileID: 1367978030930376534, guid: 2880589ddbe8e2d4d9044910d7604b1c, type: 3}
+  missFlashPrefab: {fileID: 5146475814407794022, guid: c358f2adcf8c7bd42b7018c2d380fe6c, type: 3}
+  fireSound: {fileID: 0}
+  casingSound: {fileID: 0}
