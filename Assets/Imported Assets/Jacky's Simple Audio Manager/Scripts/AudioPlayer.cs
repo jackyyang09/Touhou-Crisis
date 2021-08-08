@@ -57,7 +57,7 @@ namespace JSAM
 
         public AudioSource Play()
         {
-            AudioManager am = AudioManager.instance;
+            AudioManager am = AudioManager.Instance;
             AudioSource source;
 
             if (loopSound)
@@ -74,7 +74,7 @@ namespace JSAM
 
         void PlayAtPosition()
         {
-            AudioManager am = AudioManager.instance;
+            AudioManager am = AudioManager.Instance;
             AudioSource source;
 
             if (loopSound)
@@ -114,7 +114,7 @@ namespace JSAM
         /// </summary>
         public void Stop()
         {
-            AudioManager am = AudioManager.instance;
+            AudioManager am = AudioManager.Instance;
 
             if (am == null) return;
             if (!loopSound)
@@ -128,7 +128,7 @@ namespace JSAM
             {
                 if (am.IsSoundLoopingInternal(sound))
                 {
-                    am.StopSoundLoopInternal(sound, sTransform, true);
+                    am.StopSoundLoopInternal(sound, true, sTransform);
                 }
             }
         }
@@ -152,11 +152,11 @@ namespace JSAM
 
         IEnumerator PlayOnEnable()
         {
-            while (!AudioManager.instance)
+            while (!AudioManager.Instance)
             {
                 yield return new WaitForEndOfFrame();
             }
-            while (!AudioManager.instance.Initialized())
+            while (!AudioManager.Instance.Initialized())
             {
                 yield return new WaitForEndOfFrame();
             }

@@ -36,7 +36,7 @@ public class CrosshairOnline : MonoBehaviourPun, IPunObservable
         if (inGame)
         {
             player = PlayerManager.Instance.LocalPlayer;
-            player.OnBulletFired += SpawnRemoteEffectGame;
+            player.OnShotFired += SpawnRemoteEffectGame;
 
             shooterLogic = FindObjectOfType<RailShooterLogic>();
             shooterLogic.OnShoot += SpawnRemoteEffect;
@@ -55,7 +55,7 @@ public class CrosshairOnline : MonoBehaviourPun, IPunObservable
 
         if (inGame)
         {
-            player.OnBulletFired -= SpawnRemoteEffectGame;
+            player.OnShotFired -= SpawnRemoteEffectGame;
             shooterLogic.OnShoot -= SpawnRemoteEffect;
         }
 
@@ -63,6 +63,11 @@ public class CrosshairOnline : MonoBehaviourPun, IPunObservable
         {
             shooterLogic.OnShoot -= SpawnRemoteEffect;
         }
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(transform.parent.gameObject);
     }
 
     private void SpawnRemoteEffectGame(bool hit, Vector2 hitPosition)

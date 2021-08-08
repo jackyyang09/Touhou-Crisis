@@ -11,10 +11,8 @@ public enum DamageType
     Bullet
 }
 
-public class PlayerBehaviour : MonoBehaviour
+public class PlayerBehaviour : MonoBehaviour, IReloadable
 {
-    [SerializeField] string gameSceneName = "";
-
     [SerializeField] bool infiniteLives = false;
     public bool BuddhaMode { get { return infiniteLives; } }
     [SerializeField] int maxLives = 5;
@@ -49,6 +47,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     [Header("Weapon Logic")]
     [SerializeField] List<WeaponObject> weapons = new List<WeaponObject>();
+    public WeaponObject[] Loadout { get { return weapons.ToArray(); } }
 
     public WeaponObject ActiveWeapon
     {
@@ -58,7 +57,8 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    public int[] ammoCount = new int[4];
+    [SerializeField] int[] ammoCount = new int[4];
+    public int[] AmmoCount { get { return ammoCount; } }
 
     public int CurrentAmmo
     {
@@ -77,12 +77,45 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     [SerializeField] int activeWeaponIndex = 0;
+    public int ActiveWeaponIndex { get { return activeWeaponIndex; } }
+
+    bool triggerPulled = false;
+
+    float fireDelay = 0;
 
     [Header("Object References")]
 
     [SerializeField] LayerMask shootableLayers;
 
     [SerializeField] RailShooterLogic railShooter = null;
+
+    [SerializeField] ScoreSystem scoreSystem = null;
+    public ScoreSystem ScoreSystem
+    {
+        get
+        {
+            return scoreSystem;
+        }
+    }
+
+    [SerializeField] AccuracyCounter accuracyCounter;
+    public AccuracyCounter AccuracyCounter
+    {
+        get
+        {
+            return accuracyCounter;
+        }
+    }
+
+    [SerializeField] DamageCounter damageCounter;
+    public DamageCounter DamageCounter
+    {
+        get
+        {
+            return damageCounter;
+        }
+    }
+
     public PhotonView PhotonView
     {
         get
@@ -99,6 +132,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField] Cinemachine.CinemachineImpulseSource impulse;
 
+    [SerializeField] Animator anim = null;
+
     bool canPlay = true;
     public bool CanPlay
     {
@@ -108,49 +143,66 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    public Action<bool, Vector2> OnBulletFired;
+    
+    /// <summary>
+    /// Called when a shot is successfully fired. 
+    /// Shotguns will invoke this several times
+    /// bool miss, Vector2 hitPosition
+    /// </summary>
+    public Action<bool, Vector2> OnShotFired;
+    /// <summary>
+    /// Called when an entire round is spent. 
+    /// bool hit
+    /// </summary>
+    public Action<bool> OnRoundExpended;
+    public Action OnEnterCover;
     public Action OnExitCover;
     public Action OnReload;
     public Action OnFireNoAmmo;
     public Action<DamageType> OnTakeDamage;
     public Action OnTakeDamageRemote;
     public Action OnPlayerDeath;
-
+    /// <summary>
+    /// Called when active weapon changes.
+    /// WeaponObject newWeapon
+    /// </summary>
+    public Action<WeaponObject> OnSwapWeapon;
+    public Action OnAmmoChanged;
     public Action OnEnterTransit;
     public Action OnExitTransit;
     public Action OnEnterSubArea;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Reinitialize()
     {
-        if (gameObject.scene.name.Equals(gameSceneName))
+        if (PhotonView.IsMine)
         {
-            OnEnterScene(gameObject.scene, LoadSceneMode.Single);
+            head.transform.localPosition = new Vector3(0, 1.5f, 0);
+            head.transform.localEulerAngles = Vector3.zero;
         }
 
-        coverKey = (KeyCode)PlayerPrefs.GetInt(PauseMenu.CoverInputKey);
+        anim.Play("Start");
 
-        // Just in case the player is spawned in the tween scene
-        DontDestroyOnLoad(this);
+        currentLives = maxLives;
+
+        for (int i = 0; i < weapons.Count; i++)
+        {
+            ammoCount[i] = weapons[i].ammoCapacity;
+        }
+
+        activeWeaponIndex = 0;
+
+        OnSwapWeapon?.Invoke(ActiveWeapon);
+        OnAmmoChanged?.Invoke();
+        EnterTransit();
+        ResumePlayerControl();
     }
 
-    private void OnEnable()
+    // Start is called before the first frame update
+    private void Start()
     {
-        railShooter.OnShoot += HandleShooting;
-        OnPlayerDeath += RemovePlayerControl;
-        SceneManager.sceneLoaded += OnEnterScene;
-    }
+        SoftSceneReloader.Instance.AddNewReloadable(this);
 
-    /// <summary>
-    /// Run this if the scene is the game scene
-    /// </summary>
-    /// <param name="arg0"></param>
-    /// <param name="arg1"></param>
-    private void OnEnterScene(Scene newScene, LoadSceneMode arg1)
-    {
-        if (!newScene.name.Equals(gameSceneName)) return;
-
-        var modifiers = FindObjectOfType<GameplayModifiers>();
+        var modifiers = GameplayModifiers.Instance;
         if (modifiers)
         {
             switch (modifiers.StartingLives)
@@ -168,23 +220,29 @@ public class PlayerBehaviour : MonoBehaviour
             }
         }
 
-        currentLives = maxLives;
-        for (int i = 0; i < weapons.Count; i++)
-        {
-            ammoCount[i] = weapons[i].ammoCapacity;
-        }
-        EnterTransit();
-        GameManager.OnLeaveScene += DestroySelf;
+        coverKey = (KeyCode)PlayerPrefs.GetInt(PauseMenu.CoverInputKey);
+
+        Reinitialize();
     }
 
-    void DestroySelf() => Destroy(gameObject);
+    private void OnEnable()
+    {
+        if (weapons[activeWeaponIndex].weaponType == FireType.SemiAuto)
+        {
+            railShooter.OnShoot += HandleShooting;
+        }
+        railShooter.OnTriggerDown += OnTriggerDown;
+        railShooter.OnTriggerUp += OnTriggerUp;
+        OnPlayerDeath += RemovePlayerControl;
+    }
 
     private void OnDisable()
     {
-        GameManager.OnLeaveScene -= DestroySelf;
+        //GameManager.OnLeaveScene -= DestroySelf;
         railShooter.OnShoot -= HandleShooting;
+        railShooter.OnTriggerDown -= OnTriggerDown;
+        railShooter.OnTriggerUp -= OnTriggerUp;
         OnPlayerDeath -= RemovePlayerControl;
-        SceneManager.sceneLoaded -= OnEnterScene;
     }
 
     // Update is called once per frame
@@ -194,6 +252,23 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (!PhotonView.IsMine) return;
         }
+
+        if (canPlay)
+        {
+            if (ActiveWeapon.weaponType == FireType.FullAuto)
+            {
+                if (fireDelay > 0)
+                {
+                    fireDelay -= Time.deltaTime;
+                }
+                else if (triggerPulled && fireDelay <= 0)
+                {
+                    HandleShooting(railShooter.FireRay(), railShooter.GetCursorPosition());
+                    fireDelay = ActiveWeapon.fireDelay;
+                }
+            }
+        }
+
         if (inTransit) return;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -217,39 +292,64 @@ public class PlayerBehaviour : MonoBehaviour
 #endif
     }
 
+    private void OnTriggerDown() => triggerPulled = true;
+    private void OnTriggerUp() => triggerPulled = false;
+
     void HandleShooting(Ray ray, Vector2 screenPoint)
     {
-        if (inCover || inTransit || Time.timeScale == 0) return;
+        if (inCover || inTransit || Time.timeScale == 0 || !canPlay) return;
 
+        bool hitOnce = false;
         if (CurrentAmmo > 0)
         {
+            ammoCount[activeWeaponIndex]--;
+            OnAmmoChanged?.Invoke();
+
             RaycastHit hit;
 
-            bool miss = true;
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, shootableLayers) && hit.rigidbody != null)
+            // If the wielded weapon is a shotgun
+            for (int i = 0; i < ActiveWeapon.pellets + 1; i++)
             {
-                PhotonView photonView = null;
-                if (hit.transform.TryGetComponent(out photonView))
-                {
-                    photonView.RPC("OnShotBehaviour", RpcTarget.All, ActiveWeaponDamage);
-                }
-                // Hit an offline object
-                else
-                {
-                    hit.transform.GetComponent<IShootable>().OnShotBehaviour(ActiveWeaponDamage);
-                }
-
-                miss = false;
-            }
-
 #if UNITY_ANDROID && !UNITY_EDITOR
-            Vector3 hitPosition = Input.touches[Input.touchCount - 1].position;
+                Vector2 hitPosition = Input.touches[Input.touchCount - 1].position;
 #else
-            Vector3 hitPosition = Input.mousePosition;
+                Vector2 hitPosition = Input.mousePosition;
 #endif
-            ammoCount[activeWeaponIndex]--;
+                bool miss = true;
 
-            OnBulletFired?.Invoke(miss, hitPosition);
+                if (i > 0)
+                {
+                    hitPosition += UnityEngine.Random.insideUnitCircle * ActiveWeapon.bulletSpread;
+                    ray = railShooter.GetRayFromScreenPoint(hitPosition);
+                }
+
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, shootableLayers) && hit.rigidbody != null)
+                {
+                    PhotonView photonView = null;
+                    if (hit.transform.TryGetComponent(out photonView))
+                    {
+                        if (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop)
+                        {
+                            photonView.RPC("OnShotBehaviour", RpcTarget.All, ActiveWeaponDamage);
+                        }
+                        else
+                        {
+                            hit.transform.GetComponent<BaseEnemy>().OnShotBehaviour(ActiveWeaponDamage);
+                        }
+                    }
+                    // Hit an offline object
+                    else
+                    {
+                        hit.transform.GetComponent<IShootable>().OnShotBehaviour(ActiveWeaponDamage);
+                    }
+
+                    miss = false;
+                    hitOnce = true;
+                }
+
+                OnShotFired?.Invoke(miss, hitPosition);
+            }
+            OnRoundExpended?.Invoke(hitOnce);
         }
         else
         {
@@ -279,8 +379,13 @@ public class PlayerBehaviour : MonoBehaviour
         if (coverEnterTimer / coverEnterTime <= coverThreshold && !inCover)
         {
             inCover = true;
-            ammoCount[activeWeaponIndex] = ActiveWeapon.ammoCapacity;
-            OnReload?.Invoke();
+            if (ActiveWeapon.infiniteAmmo)
+            {
+                ammoCount[activeWeaponIndex] = ActiveWeapon.ammoCapacity;
+                OnAmmoChanged?.Invoke();
+                OnReload?.Invoke();
+            }
+            OnEnterCover?.Invoke();
         }
 
         Transform coverTransform = AreaLogic.Instance.Player1CoverTransform;
@@ -290,9 +395,22 @@ public class PlayerBehaviour : MonoBehaviour
         head.transform.rotation = Quaternion.Lerp(coverTransform.rotation, fireTransform.rotation, lerpValue);
     }
 
+    public void SwapWeapon(int weaponIndex)
+    {
+        activeWeaponIndex = weaponIndex;
+        railShooter.OnShoot -= HandleShooting;
+        if (weapons[activeWeaponIndex].weaponType == FireType.SemiAuto)
+        {
+            railShooter.OnShoot += HandleShooting;
+        }
+        OnSwapWeapon?.Invoke(weapons[activeWeaponIndex]);
+    }
+
     public void EnterTransit()
     {
         inTransit = true;
+        anim.SetTrigger("InTransit");
+        anim.SetInteger("Area", AreaLogic.Instance.CurrentArea + 1);
         OnEnterTransit?.Invoke();
     }
 
@@ -326,7 +444,10 @@ public class PlayerBehaviour : MonoBehaviour
 
     public void TakeDamageRemote()
     {
-        currentLives--;
+        if (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop)
+        {
+            currentLives--;
+        }
         OnTakeDamageRemote?.Invoke();
 
         if (currentLives == 0 && !infiniteLives)
@@ -343,7 +464,18 @@ public class PlayerBehaviour : MonoBehaviour
         collider.enabled = true;
     }
 
-    public void GetPlayerControl()
+    public void SetAmmo(int weaponIndex, int amount)
+    {
+        ammoCount[weaponIndex] = amount;
+        OnAmmoChanged?.Invoke();
+    }
+
+    public void SetLoadout(List<WeaponObject> newWeapons)
+    {
+        weapons = new List<WeaponObject>(newWeapons);
+    }
+
+    public void ResumePlayerControl()
     {
         canPlay = true;
     }

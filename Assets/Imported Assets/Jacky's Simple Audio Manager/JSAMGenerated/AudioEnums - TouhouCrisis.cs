@@ -17,7 +17,9 @@
         MenuButton,
         EnemyDeath,
         UFOBullet,
-        PlayerHurtRemote
+        PlayerHurtRemote,
+        PlayerJoin,
+        ScoreBeeps
     }
     public enum TouhouCrisisMusic {
         FloweringNight,

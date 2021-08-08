@@ -41,7 +41,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         // this makes sure we can use PhotonNetwork.LoadLevel() on the master client
         // and all clients in the same room sync their level automatically
-        PhotonNetwork.AutomaticallySyncScene = false;
+
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     // Start is called before the first frame update
@@ -155,11 +156,11 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
         else
         {
+            lobbyScreen.Show();
             roomCode.text = PhotonNetwork.CurrentRoom.Name;
         }
 
         HideConnectingText();
-        lobbyScreen.Show();
     }
 
     public override void OnLeftRoom()
@@ -203,7 +204,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         else
         {
             Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-            PhotonNetwork.LoadLevel(2);
+            PhotonNetwork.LoadLevel(1);
         }
     }
 

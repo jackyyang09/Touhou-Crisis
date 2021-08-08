@@ -27,7 +27,12 @@ public class RailShooterLogic : MonoBehaviour
 
     [SerializeField] public PhotonView photonView;
 
+    /// <summary>
+    /// Ray rayFromCursor, Vector2 cursorPosition
+    /// </summary>
     public System.Action<Ray, Vector2> OnShoot;
+    public System.Action OnTriggerDown;
+    public System.Action OnTriggerUp;
 
     private void Awake()
     {
@@ -39,14 +44,7 @@ public class RailShooterLogic : MonoBehaviour
                 Destroy(vCam.gameObject);
             }
         }
-
-        //fireKey = (KeyCode)PlayerPrefs.GetInt(JSAM.PauseMenu.FireInputKey);
     }
-
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //}
 
     // Update is called once per frame
     void Update()
@@ -66,22 +64,48 @@ public class RailShooterLogic : MonoBehaviour
         {
             ShootBehaviour();
         }
+
+        if (Input.GetKey(fireKey))
+        {
+            OnTriggerDown?.Invoke();
+        }
+        else if (Input.GetKeyUp(fireKey))
+        {
+            OnTriggerUp?.Invoke();
+        }
 #endif
     }
 
-    void ShootBehaviour()
+    public Vector2 GetCursorPosition()
     {
-        Ray ray = new Ray();
-
         Vector2 screenPoint = Vector2.zero;
 #if UNITY_ANDROID && !UNITY_EDITOR
         screenPoint = Input.touches[Input.touchCount - 1].position;
 #else
         screenPoint = Input.mousePosition;
 #endif
-        ray = Cam.ScreenPointToRay(screenPoint);
+        return screenPoint;
+    }
 
-        OnShoot?.Invoke(ray, screenPoint);
+    public Ray FireRay()
+    {
+        return Cam.ScreenPointToRay(GetCursorPosition());
+    }
+
+    /// <summary>
+    /// Helper method to be used by external classes
+    /// </summary>
+    /// <param name="screenPoint"></param>
+    /// <returns></returns>
+    public Ray GetRayFromScreenPoint(Vector2 screenPoint)
+    {
+        return Cam.ScreenPointToRay(screenPoint);
+    }
+
+    void ShootBehaviour()
+    {
+        Vector2 screenPoint = GetCursorPosition();
+        OnShoot?.Invoke(FireRay(), screenPoint);
     }
 
     public void RebindFireKey(KeyCode newKey)

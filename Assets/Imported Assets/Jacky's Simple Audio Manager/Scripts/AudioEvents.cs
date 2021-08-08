@@ -20,7 +20,7 @@ namespace JSAM
             }
 
             List<string> enums = new List<string>();
-            System.Type enumType =  AudioLibrary.GetEnumType(AudioManager.instance.Library.soundEnumName);
+            System.Type enumType =  AudioLibrary.GetEnumType(AudioManager.Instance.Library.soundEnumName);
             enums.AddRange(System.Enum.GetNames(enumType));
             return enums.IndexOf(name);
         }
@@ -35,7 +35,7 @@ namespace JSAM
 
             if (index > -1)
             {
-                AudioManager.instance.PlaySoundInternal(index, transform);
+                AudioManager.Instance.PlaySoundInternal(index, transform);
             }
         }
 
@@ -45,7 +45,7 @@ namespace JSAM
 
             if (index > -1)
             {
-                AudioManager.instance.PlaySoundLoopInternal(index, transform);
+                AudioManager.Instance.PlaySoundLoopInternal(index, transform);
             }
         }
 
@@ -55,26 +55,26 @@ namespace JSAM
 
             if (index > -1)
             {
-                if (AudioManager.instance.IsSoundLoopingInternal(index))
+                if (AudioManager.Instance.IsSoundLoopingInternal(index))
                 {
-                    AudioManager.instance.StopSoundLoopInternal(index, transform, false);
+                    AudioManager.Instance.StopSoundLoopInternal(index, false, transform);
                 }
             }
         }
 
         public void SetMasterVolume(float newVal)
         {
-            AudioManager.instance.SetMasterVolumeInternal(newVal);
+            AudioManager.Instance.SetMasterVolumeInternal(newVal);
         }
 
         public void SetMusicVolume(float newVal)
         {
-            AudioManager.instance.SetMusicVolumeInternal(newVal);
+            AudioManager.Instance.SetMusicVolumeInternal(newVal);
         }
 
         public void SetSoundVolume(float newVal)
         {
-            AudioManager.instance.SetSoundVolumeInternal(newVal);
+            AudioManager.Instance.SetSoundVolumeInternal(newVal);
         }
     }
 }

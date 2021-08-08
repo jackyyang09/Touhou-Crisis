@@ -28,6 +28,7 @@ namespace SindenUnity
                     if (instance == null)
                     {
                         GameObject g = new GameObject("RuntimeBorder");
+                        g.hideFlags = HideFlags.HideAndDontSave;
                         instance = g.AddComponent<RuntimeBorder>();
                     }
                 }

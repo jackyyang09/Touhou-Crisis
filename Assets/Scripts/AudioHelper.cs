@@ -4,19 +4,32 @@ using UnityEngine;
 using JSAM;
 using Photon.Pun;
 
-public class AudioHelper : MonoBehaviour
+public class AudioHelper : MonoBehaviour, IReloadable
 {
     [SerializeField] PhotonView photonView;
     [SerializeField] PlayerBehaviour player = null;
     [SerializeField] ComboPuck puck;
 
+    public void Reinitialize()
+    {
+        AudioManager.PlayMusic(TouhouCrisisMusic.FloweringNight);
+        AudioManager.PlaySound(TouhouCrisisSounds.WaitBeep);
+    }
+
+    private void Start()
+    {
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+        if (player.PhotonView.IsMine)
+        {
+            Reinitialize();
+        }
+    }
+
     private void OnEnable()
     {
         if (!photonView.IsMine) return;
 
-        AudioManager.PlaySound(TouhouCrisisSounds.WaitBeep);
-
-        player.OnBulletFired += PlayFire;
+        player.OnRoundExpended += PlayFire;
         player.OnFireNoAmmo += PlayDryFire;
         player.OnReload += PlayReload;
         puck.OnReceivePuck += PuckReceive;
@@ -28,7 +41,7 @@ public class AudioHelper : MonoBehaviour
     {
         if (!photonView.IsMine) return;
 
-        player.OnBulletFired -= PlayFire;
+        player.OnRoundExpended -= PlayFire;
         player.OnFireNoAmmo -= PlayDryFire;
         player.OnReload -= PlayReload;
         puck.OnReceivePuck -= PuckReceive;
@@ -36,10 +49,10 @@ public class AudioHelper : MonoBehaviour
         player.OnEnterSubArea -= PlayAction;
     }
 
-    private void PlayFire(bool miss, Vector2 hitPosition)
+    private void PlayFire(bool miss)
     {
-        AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
-        AudioManager.PlaySound(TouhouCrisisSounds.BulletCasings);
+        AudioManager.Instance.PlaySoundInternal(player.ActiveWeapon.fireSound);
+        AudioManager.Instance.PlaySoundInternal(player.ActiveWeapon.casingSound);
     }
 
     bool shoutReloadOnce = false;

@@ -61,7 +61,7 @@ namespace SindenUnity
         { 
             get
             {
-                return runtimeBorder.properties;
+                return RuntimeBorder.Instance.properties;
             }
         }
 
@@ -127,11 +127,15 @@ namespace SindenUnity
             OnBorderEnabled?.Invoke();
 
             if (destroyDuplicates) DestroyDuplicates();
+
+            ResolutionListener.OnResolutionChanged += ForceUpdateBorder;
         }
 
         private void OnDisable()
         {
             OnBorderDisabled?.Invoke();
+
+            ResolutionListener.OnResolutionChanged -= ForceUpdateBorder;
         }
 
         IEnumerator ApplyBorderDelayed()
@@ -232,7 +236,7 @@ namespace SindenUnity
         {
             RecordObjectWithUndo();
             activeIndex = (int)Mathf.Repeat(activeIndex + 1, borders.Count);
-            runtimeBorder.properties = borders[activeIndex].Properties;
+            RuntimeBorder.Instance.properties = borders[activeIndex].Properties;
 
             ApplyBorderProperties();
         }

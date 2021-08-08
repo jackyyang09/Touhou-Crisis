@@ -46,10 +46,10 @@ namespace JSAM
             switch (playSoundOn)
             {
                 case ParticleEvent.ParticleEmitted:
-                    AudioManager.instance.PlaySoundInternal(sound, sTransform);
+                    AudioManager.Instance.PlaySoundInternal(sound, sTransform);
                     break;
                 case ParticleEvent.ParticleDeath:
-                    AudioManager.instance.PlaySoundInternal(sound, sTransform);
+                    AudioManager.Instance.PlaySoundInternal(sound, sTransform);
                     break;
             }
         }

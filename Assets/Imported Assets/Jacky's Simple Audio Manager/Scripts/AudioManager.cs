@@ -94,7 +94,7 @@ namespace JSAM
         [Header("General Settings")]
 
 
-        public static AudioManager instance;
+        public static AudioManager Instance;
 
         /// <summary>
         /// Only used if you have super special music with a custom looping portion that can be enabled/disabled on the fly
@@ -450,8 +450,8 @@ namespace JSAM
         /// <param name="track">Enum value for the music to be played. Check AudioManager for the appropriate value to use</param>
         public static AudioSource PlayMusic<T>(T track) where T : Enum
         {
-            if (!instance) return null;
-            return instance.PlayMusicInternal(track);
+            if (!Instance) return null;
+            return Instance.PlayMusicInternal(track);
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace JSAM
         /// <returns>The AudioSource playing the sound</returns>
         public static AudioSource PlayMusic3D<T>(T track, Transform trans, LoopMode loopMode = LoopMode.LoopWithLoopPoints) where T : Enum
         {
-            return instance.PlayMusic3DInternal(track, trans, loopMode);
+            return Instance.PlayMusic3DInternal(track, trans, loopMode);
         }
 
         /// <summary>
@@ -657,8 +657,8 @@ namespace JSAM
         /// </summary>
         public static void PauseMusic()
         {
-            if (!instance) return;
-            instance.PauseMusicInternal();
+            if (!Instance) return;
+            Instance.PauseMusicInternal();
         }
 
         /// <summary>
@@ -690,8 +690,8 @@ namespace JSAM
         /// </summary>
         public static void PauseMusic3D()
         {
-            if (!instance) return;
-            instance.PauseMusic3DInternal();
+            if (!Instance) return;
+            Instance.PauseMusic3DInternal();
         }
 
         /// <summary>
@@ -715,8 +715,8 @@ namespace JSAM
         /// </summary>
         public static void ResumeMusic()
         {
-            if (!instance) return;
-            instance.ResumeMusicInternal();
+            if (!Instance) return;
+            Instance.ResumeMusicInternal();
         }
 
         /// <summary>
@@ -746,8 +746,8 @@ namespace JSAM
         /// </summary>
         public static void ResumeMusic3D()
         {
-            if (!instance) return;
-            instance.ResumeMusic3DInternal();
+            if (!Instance) return;
+            Instance.ResumeMusic3DInternal();
         }
 
         /// <summary>
@@ -772,8 +772,8 @@ namespace JSAM
         /// </summary>
         public static void StopMusic()
         {
-            if (!instance) return;
-            instance.StopMusicInternal();
+            if (!Instance) return;
+            Instance.StopMusicInternal();
         }
 
         /// <summary>
@@ -794,8 +794,8 @@ namespace JSAM
         /// </summary>
         public static void StopMusic3D()
         {
-            if (!instance) return;
-            instance.StopMusic3DInternal();
+            if (!Instance) return;
+            Instance.StopMusic3DInternal();
         }
 
         /// <summary>
@@ -814,8 +814,8 @@ namespace JSAM
         /// <param name="time">Time in seconds, must be between 0 and the current track's duration</param>
         public static void SetMusicPlaybackPosition(float time)
         {
-            if (!instance) return;
-            instance.SetMusicPlaybackPositionInternal(time);
+            if (!Instance) return;
+            Instance.SetMusicPlaybackPositionInternal(time);
         }
 
         /// <summary>
@@ -843,8 +843,8 @@ namespace JSAM
         /// <param name="samples">Time in samples, must be between 0 and the current track's sample length</param>
         public static void SetMusicPlaybackPosition(int samples)
         {
-            if (!instance) return;
-            instance.SetMusicPlaybackPositionInternal(samples);
+            if (!Instance) return;
+            Instance.SetMusicPlaybackPositionInternal(samples);
         }
 
         /// <summary>
@@ -874,8 +874,8 @@ namespace JSAM
         /// <param name="loopMode">Does the track loop from start to finish? Does the track loop between loop points?</param>
         public static AudioSource FadeMusic<T>(T track, float time) where T : Enum
         {
-            if (!instance) return null;
-            return instance.FadeMusicInternal(track, time);
+            if (!Instance) return null;
+            return Instance.FadeMusicInternal(track, time);
         }
 
         /// <summary>
@@ -1001,7 +1001,7 @@ namespace JSAM
         /// <param name="playFromStartPoint">Start track playback from starting loop point, only works if loopMode is set to LoopWithLoopPoints</param>
         public AudioSource FadeMusicIn<T>(T track, float time, bool playFromStartPoint = false) where T : Enum
         {
-            return instance.FadeMusicInInternal(track, time, playFromStartPoint);
+            return Instance.FadeMusicInInternal(track, time, playFromStartPoint);
         }
 
         /// <summary>
@@ -1129,8 +1129,8 @@ namespace JSAM
         /// <param name="time">Fade duration</param>
         public static void FadeMusicOut(float time)
         {
-            if (!instance) return;
-            instance.FadeMusicOutInternal(time);
+            if (!Instance) return;
+            Instance.FadeMusicOutInternal(time);
         }
 
         /// <summary>
@@ -1179,8 +1179,8 @@ namespace JSAM
         /// <param name="keepMusicTime">Carry the current playback time of current track over to the next track?</param>
         public static AudioSource CrossfadeMusic<T>(T track, float time, bool keepMusicTime = false) where T : Enum
         {
-            if (!instance) return null;
-            return instance.CrossfadeMusicInternal(track, time, keepMusicTime);
+            if (!Instance) return null;
+            return Instance.CrossfadeMusicInternal(track, time, keepMusicTime);
         }
 
         /// <summary>
@@ -1375,8 +1375,8 @@ namespace JSAM
         /// <param name="track">The name of the track in question</param>
         public static void StopMusic<T>(T track) where T : Enum
         {
-            if (!instance) return;
-            instance.StopMusicInternal(track);
+            if (!Instance) return;
+            Instance.StopMusicInternal(track);
         }
 
         /// <summary>
@@ -1451,9 +1451,9 @@ namespace JSAM
         /// <returns>The AudioSource playing the sound</returns>
         public static AudioSource PlaySound<T>(T sound, Transform trans = null) where T : Enum
         {
-            if (!instance) return null;
+            if (!Instance) return null;
             int s = Convert.ToInt32(sound);
-            return instance.PlaySoundInternal(instance.library.sounds[s], trans);
+            return Instance.PlaySoundInternal(Instance.library.sounds[s], trans);
         }
 
         /// <summary>
@@ -1464,9 +1464,9 @@ namespace JSAM
         /// <returns>The AudioSource playing the sound</returns>
         public static AudioSource PlaySound<T>(T sound, Vector3 position) where T : Enum
         {
-            if (!instance) return null;
+            if (!Instance) return null;
             int s = Convert.ToInt32(sound);
-            return instance.PlaySoundInternal(instance.library.sounds[s], position);
+            return Instance.PlaySoundInternal(Instance.library.sounds[s], position);
         }
 
         /// <summary>
@@ -1700,9 +1700,9 @@ namespace JSAM
         /// <returns>The AudioSource playing the sound</returns>
         public static AudioSource PlaySoundLoop<T>(T sound, Transform trans = null) where T : Enum
         {
-            if (!instance) return null;
+            if (!Instance) return null;
             int s = Convert.ToInt32(sound);
-            return instance.PlaySoundLoopInternal(instance.library.sounds[s], trans);
+            return Instance.PlaySoundLoopInternal(Instance.library.sounds[s], trans);
         }
 
         /// <summary>
@@ -1713,9 +1713,9 @@ namespace JSAM
         /// <returns>The AudioSource playing the sound</returns>
         public static AudioSource PlaySoundLoop<T>(T sound, Vector3 position) where T : Enum
         {
-            if (!instance) return null;
+            if (!Instance) return null;
             int s = Convert.ToInt32(sound);
-            return instance.PlaySoundLoopInternal(instance.library.sounds[s], position);
+            return Instance.PlaySoundLoopInternal(Instance.library.sounds[s], position);
         }
 
         /// <summary>
@@ -1898,8 +1898,8 @@ namespace JSAM
         /// </summary>
         public static void StopAllSounds()
         {
-            if (!instance) return;
-            instance.StopAllSoundsInternal();
+            if (!Instance) return;
+            Instance.StopAllSoundsInternal();
         }
 
         /// <summary>
@@ -1929,9 +1929,9 @@ namespace JSAM
         /// <param name="trans">For sources, helps with duplicate sounds</param>
         public static void StopSound<T>(T sound, Transform trans = null) where T : Enum
         {
-            if (!instance) return;
+            if (!Instance) return;
             int s = Convert.ToInt32(sound);
-            instance.StopSoundInternal(instance.library.sounds[s], trans);
+            Instance.StopSoundInternal(Instance.library.sounds[s], trans);
         }
 
         public void StopSoundInternal(int s, Transform t = null)
@@ -1972,9 +1972,9 @@ namespace JSAM
         /// <param name="trans"></param>
         public static void StopSoundIfPlaying<T>(T sound, Transform trans = null) where T : Enum
         {
-            if (!instance) return;
+            if (!Instance) return;
             int s = Convert.ToInt32(sound);
-            instance.StopSoundIfPlayingInternal(instance.library.sounds[s], trans);
+            Instance.StopSoundIfPlayingInternal(Instance.library.sounds[s], trans);
         }
 
         /// <summary>
@@ -1996,25 +1996,11 @@ namespace JSAM
         /// <param name="sound">The enum value for the sound in question. Check AudioManager for the proper value</param>
         /// <param name="stopInstantly">Stops sound instantly if true</param>
         /// <param name="trans">Transform of the object playing the looping sound</param>
-        public static void StopSoundLoop<T>(T sound, bool stopInstantly = false) where T : Enum
+        public static void StopSoundLoop<T>(T sound, bool stopInstantly = false, Transform trans = null) where T : Enum
         {
-            if (!instance) return;
+            if (!Instance) return;
             int s = Convert.ToInt32(sound);
-            instance.StopSoundLoopInternal(instance.library.sounds[s], null, stopInstantly);
-        }
-
-        /// <summary>
-        /// Stops a looping sound played using PlaySoundLoop and it's variants. 
-        /// To stop a basic a sound that was played through PlaySound and it's variants, use StopSound instead
-        /// </summary>
-        /// <param name="sound">The enum value for the sound in question. Check AudioManager for the proper value</param>
-        /// <param name="stopInstantly">Stops sound instantly if true</param>
-        /// <param name="trans">Transform of the object playing the looping sound</param>
-        public static void StopSoundLoop<T>(T sound, Transform trans, bool stopInstantly = false) where T : Enum
-        {
-            if (!instance) return;
-            int s = Convert.ToInt32(sound);
-            instance.StopSoundLoopInternal(instance.library.sounds[s], trans, stopInstantly);
+            Instance.StopSoundLoopInternal(Instance.library.sounds[s], stopInstantly, trans);
         }
 
         /// <summary>
@@ -2023,9 +2009,9 @@ namespace JSAM
         /// <param name="s"></param>
         /// <param name="stopInstantly">Stops sound instantly if true</param>
         /// <param name="t">Transform of the object playing the looping sound</param>
-        public void StopSoundLoopInternal(int s, Transform t = null, bool stopInstantly = false)
+        public void StopSoundLoopInternal(int s, bool stopInstantly = false, Transform t = null)
         {
-            StopSoundLoopInternal(library.sounds[s], t, stopInstantly);
+            StopSoundLoopInternal(library.sounds[s], stopInstantly, t);
         }
 
         /// <summary>
@@ -2034,7 +2020,7 @@ namespace JSAM
         /// <param name="s"></param>
         /// <param name="stopInstantly"></param>
         /// <param name="t"></param>
-        public void StopSoundLoopInternal(AudioFileSoundObject s, Transform t = null, bool stopInstantly = false)
+        public void StopSoundLoopInternal(AudioFileSoundObject s, bool stopInstantly = false, Transform t = null)
         {
             for (int i = 0; i < loopingSources.Count; i++)
             {
@@ -2058,25 +2044,12 @@ namespace JSAM
         }
 
         /// <summary>
-        /// A shorthand for wrapping StopSoundLoop in an IsSoundLooping if-statement
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sound"></param>
-        /// <param name="trans"></param>
-        public static void StopSoundIfLooping<T>(T sound, Transform trans = null) where T : Enum
-        {
-            if (!instance) return;
-            int s = Convert.ToInt32(sound);
-            instance.StopSoundIfLoopingInternal(instance.library.sounds[s], trans);
-        }
-
-        /// <summary>
         /// A shorthand for wrapping StopSound in an IsSoundPlaying if-statement 
         /// Use this variant if you have a reference to the object itself
         /// </summary>
         /// <param name="sound"></param>
         /// <param name="trans"></param>
-        public void StopSoundIfLoopingInternal(AudioFileSoundObject sound, Transform trans = null)
+        public void StopSoundIfLoopingInternal(AudioFileSoundObject sound, bool stopInstantly = false, Transform trans = null)
         {
             if (!IsSoundLoopingInternal(sound)) return;
             StopSoundLoopInternal(sound, trans);
@@ -2089,11 +2062,11 @@ namespace JSAM
         /// <param name="sound"></param>
         /// <param name="trans"></param>
         /// <param name="stopInstantly">If true, stop the sound immediately</param>
-        public static void StopSoundIfLooping<T>(T sound, Transform trans = null, bool stopInstantly = false) where T : Enum
+        public static void StopSoundIfLooping<T>(T sound, bool stopInstantly = false, Transform trans = null) where T : Enum
         {
-            if (!instance) return;
+            if (!Instance) return;
             int s = Convert.ToInt32(sound);
-            instance.StopSoundIfLoopingInternal(instance.library.sounds[s], trans, stopInstantly);
+            Instance.StopSoundIfLoopingInternal(Instance.library.sounds[s], stopInstantly, trans);
         }
 
         /// <summary>
@@ -2106,7 +2079,7 @@ namespace JSAM
         public void StopSoundIfLoopingInternal(AudioFileSoundObject sound, Transform trans = null, bool stopInstantly = false)
         {
             if (!IsSoundLoopingInternal(sound)) return;
-            StopSoundLoopInternal(sound, trans, stopInstantly);
+            StopSoundLoopInternal(sound, stopInstantly, trans);
         }
 
         /// <summary>
@@ -2117,8 +2090,8 @@ namespace JSAM
         /// </param>
         public static void StopSoundLoopAll(bool stopInstantly = false)
         {
-            if (!instance) return;
-            instance.StopSoundLoopAllInternal(stopInstantly);
+            if (!Instance) return;
+            Instance.StopSoundLoopAllInternal(stopInstantly);
         }
 
         /// <summary>
@@ -2150,12 +2123,12 @@ namespace JSAM
         /// </summary>
         public static void ApplyVolumeGlobal()
         {
-            if (!instance) return;
-            instance.masterVolume = Mathf.Clamp01(instance.masterVolume);
-            instance.soundVolume = Mathf.Clamp01(instance.soundVolume);
-            instance.musicVolume = Mathf.Clamp01(instance.musicVolume);
-            instance.ApplySoundVolume();
-            instance.ApplyMusicVolume();
+            if (!Instance) return;
+            Instance.masterVolume = Mathf.Clamp01(Instance.masterVolume);
+            Instance.soundVolume = Mathf.Clamp01(Instance.soundVolume);
+            Instance.musicVolume = Mathf.Clamp01(Instance.musicVolume);
+            Instance.ApplySoundVolume();
+            Instance.ApplyMusicVolume();
         }
 
         /// <summary>
@@ -2163,8 +2136,8 @@ namespace JSAM
         /// </summary>
         public static float GetMasterVolume()
         {
-            if (!instance) return 0;
-            return instance.GetMasterVolumeInternal();
+            if (!Instance) return 0;
+            return Instance.GetMasterVolumeInternal();
         }
 
         /// <summary>
@@ -2182,8 +2155,8 @@ namespace JSAM
         /// <returns></returns>
         public static int GetMasterVolumeAsInt()
         {
-            if (!instance) return 0;
-            return instance.GetMasterVolumeAsIntInternal();
+            if (!Instance) return 0;
+            return Instance.GetMasterVolumeAsIntInternal();
         }
 
         /// <summary>
@@ -2202,8 +2175,8 @@ namespace JSAM
         /// <param name="volume">The new volume level from 0 to 1</param>
         public static void SetMasterVolume(float volume)
         {
-            if (!instance) return;
-            instance.SetMasterVolumeInternal(volume);
+            if (!Instance) return;
+            Instance.SetMasterVolumeInternal(volume);
         }
 
         /// <summary>
@@ -2226,8 +2199,8 @@ namespace JSAM
         /// <param name="volume">The new volume level from 0 to 100</param>
         public static void SetMasterVolume(int volume)
         {
-            if (!instance) return;
-            instance.SetMasterVolumeInternal(volume);
+            if (!Instance) return;
+            Instance.SetMasterVolumeInternal(volume);
         }
 
         /// <summary>
@@ -2248,8 +2221,8 @@ namespace JSAM
         /// </summary>
         public static float GetSoundVolume()
         {
-            if (!instance) return 0;
-            return instance.GetSoundVolumeInternal();
+            if (!Instance) return 0;
+            return Instance.GetSoundVolumeInternal();
         }
 
         /// <summary>
@@ -2267,8 +2240,8 @@ namespace JSAM
         /// <returns></returns>
         public static int GetSoundVolumeAsInt()
         {
-            if (!instance) return 0;
-            return instance.GetSoundVolumeAsIntInternal();
+            if (!Instance) return 0;
+            return Instance.GetSoundVolumeAsIntInternal();
         }
 
         /// <summary>
@@ -2288,8 +2261,8 @@ namespace JSAM
         /// <param name="v">The new volume level from 0 to 1</param>
         public static void SetSoundVolume(float volume)
         {
-            if (!instance) return;
-            instance.SetSoundVolumeInternal(volume);
+            if (!Instance) return;
+            Instance.SetSoundVolumeInternal(volume);
         }
 
         /// <summary>
@@ -2311,8 +2284,8 @@ namespace JSAM
         /// <param name="v">The new volume level from 0 to 100</param>
         public static void SetSoundVolume(int volume)
         {
-            if (!instance) return;
-            instance.SetSoundVolumeInternal(volume);
+            if (!Instance) return;
+            Instance.SetSoundVolumeInternal(volume);
         }
 
         /// <summary>
@@ -2332,8 +2305,8 @@ namespace JSAM
         /// </summary>
         public static float GetMusicVolume()
         {
-            if (!instance) return 0;
-            return instance.GetMusicVolumeInternal();
+            if (!Instance) return 0;
+            return Instance.GetMusicVolumeInternal();
         }
 
         /// <summary>
@@ -2351,8 +2324,8 @@ namespace JSAM
         /// <returns></returns>
         public static int GetMusicVolumeAsInt()
         {
-            if (!instance) return 0;
-            return instance.GetMusicVolumeAsIntInternal();
+            if (!Instance) return 0;
+            return Instance.GetMusicVolumeAsIntInternal();
         }
 
         /// <summary>
@@ -2372,8 +2345,8 @@ namespace JSAM
         /// <param name="v">The new volume level from 0 to 1</param>
         public static void SetMusicVolume(float volume)
         {
-            if (!instance) return;
-            instance.SetMusicVolumeInternal(volume);
+            if (!Instance) return;
+            Instance.SetMusicVolumeInternal(volume);
         }
 
         /// <summary>
@@ -2395,8 +2368,8 @@ namespace JSAM
         /// <param name="v">The new volume level from 0 to 100</param>
         public static void SetMusicVolume(int volume)
         {
-            if (!instance) return;
-            instance.SetMusicVolumeInternal(volume);
+            if (!Instance) return;
+            Instance.SetMusicVolumeInternal(volume);
         }
 
         /// <summary>
@@ -2417,8 +2390,8 @@ namespace JSAM
         /// <param name="mute"></param>
         public static void SetMasterChannelMute(bool mute)
         {
-            if (!instance) return;
-            instance.SetMasterChannelMuteInternal(mute);
+            if (!Instance) return;
+            Instance.SetMasterChannelMuteInternal(mute);
         }
 
         /// <summary>
@@ -2439,8 +2412,8 @@ namespace JSAM
         /// <returns></returns>
         public static bool IsMasterMuted()
         {
-            if (!instance) return false;
-            return instance.IsMasterMutedInternal();
+            if (!Instance) return false;
+            return Instance.IsMasterMutedInternal();
         }
 
         /// <summary>
@@ -2459,8 +2432,8 @@ namespace JSAM
         /// <param name="mute"></param>
         public static void SetSoundChannelMute(bool mute)
         {
-            if (!instance) return;
-            instance.SetSoundChannelMuteInternal(mute);
+            if (!Instance) return;
+            Instance.SetSoundChannelMuteInternal(mute);
         }
 
         /// <summary>
@@ -2480,8 +2453,8 @@ namespace JSAM
         /// <returns></returns>
         public static bool IsSoundMuted()
         {
-            if (!instance) return false;
-            return instance.IsSoundMutedInternal();
+            if (!Instance) return false;
+            return Instance.IsSoundMutedInternal();
         }
 
         /// <summary>
@@ -2500,8 +2473,8 @@ namespace JSAM
         /// <param name="mute"></param>
         public static void SetMusicChannelMute(bool mute)
         {
-            if (!instance) return;
-            instance.SetMusicChannelMuteInternal(mute);
+            if (!Instance) return;
+            Instance.SetMusicChannelMuteInternal(mute);
         }
 
         /// <summary>
@@ -2521,8 +2494,8 @@ namespace JSAM
         /// <returns></returns>
         public static bool IsMusicMuted()
         {
-            if (!instance) return false;
-            return instance.IsMusicMutedInternal();
+            if (!Instance) return false;
+            return Instance.IsMusicMutedInternal();
         }
 
         /// <summary>
@@ -2565,8 +2538,8 @@ namespace JSAM
         /// <returns></returns>
         public static float GetTrueMusicVolume()
         {
-            if (!instance) return 0;
-            return instance.GetTrueMusicVolumeInternal();
+            if (!Instance) return 0;
+            return Instance.GetTrueMusicVolumeInternal();
         }
 
         /// <summary>
@@ -2585,8 +2558,8 @@ namespace JSAM
         /// <returns></returns>
         public static float GetTrueSoundVolume()
         {
-            if (!instance) return 0;
-            return instance.GetTrueSoundVolumeInternal();
+            if (!Instance) return 0;
+            return Instance.GetTrueSoundVolumeInternal();
         }
 
         /// <summary>
@@ -2605,28 +2578,28 @@ namespace JSAM
         [RuntimeInitializeOnLoadMethod]
         public void EstablishSingletonDominance(bool killSelf = true)
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
             }
-            else if (instance != this)
+            else if (Instance != this)
             {
                 // A unique case where the Singleton exists but not in this scene
-                if (instance.gameObject.scene.name == null)
+                if (Instance.gameObject.scene.name == null)
                 {
-                    instance = this;
+                    Instance = this;
                 }
-                else if (!instance.gameObject.activeInHierarchy)
+                else if (!Instance.gameObject.activeInHierarchy)
                 {
-                    instance = this;
+                    Instance = this;
                 }
-                else if (instance.gameObject.scene.name == "DontDestroyOnLoad")
+                else if (Instance.gameObject.scene.name == "DontDestroyOnLoad")
                 {
                     Destroy(gameObject);
                 }
-                else if (instance.gameObject.scene.name != gameObject.scene.name)
+                else if (Instance.gameObject.scene.name != gameObject.scene.name)
                 {
-                    instance = this;
+                    Instance = this;
                 }
                 else if (killSelf)
                 {
@@ -2637,7 +2610,7 @@ namespace JSAM
 
         private void OnDestroy()
         {
-            if (instance == this) instance = null;
+            if (Instance == this) Instance = null;
         }
 
         /// <summary>
@@ -2698,8 +2671,8 @@ namespace JSAM
         /// <returns></returns>
         public static bool IsSoundPlaying<T>(T sound, Transform trans = null) where T : Enum
         {
-			if (!instance) return false;
-            return instance.IsSoundPlayingInternal(sound, trans);
+			if (!Instance) return false;
+            return Instance.IsSoundPlayingInternal(sound, trans);
         }
 
         /// <summary>
@@ -2712,7 +2685,7 @@ namespace JSAM
         /// <returns></returns>
         public bool IsSoundPlayingInternal<T>(T sound, Transform trans = null) where T : Enum
         {
-			if (!instance) return false;
+			if (!Instance) return false;
             int s = Convert.ToInt32(sound);
             return IsSoundPlayingInternal(s, trans);
         }
@@ -2767,8 +2740,8 @@ namespace JSAM
         /// <returns></returns>
         public static bool IsMusicPlaying<T>(T music) where T : Enum
         {
-            if (!instance) return false;
-            return instance.IsMusicPlayingInternal(music);
+            if (!Instance) return false;
+            return Instance.IsMusicPlayingInternal(music);
         }
 
         /// <summary>
@@ -2819,8 +2792,8 @@ namespace JSAM
         /// <returns></returns>
         public static bool IsSoundLooping<T>(T sound) where T : Enum
         {
-            if (!instance) return false;
-            return instance.IsSoundLoopingInternal(sound);
+            if (!Instance) return false;
+            return Instance.IsSoundLoopingInternal(sound);
         }
 
         /// <summary>
@@ -2897,7 +2870,7 @@ namespace JSAM
         public static AudioFileMusicObject GetMusic<T>(T track) where T : Enum
         {
             int a = Convert.ToInt32(track);
-            return instance.library.music[a];
+            return Instance.library.music[a];
         }
 
         /// <summary>
@@ -2909,7 +2882,7 @@ namespace JSAM
         public static AudioFileSoundObject GetSound<T>(T sound) where T : Enum
         {
             int a = Convert.ToInt32(sound);
-            return instance.library.sounds[a];
+            return Instance.library.sounds[a];
         }
 
         /// <summary>
@@ -2919,7 +2892,7 @@ namespace JSAM
         /// <returns></returns>
         public static AudioListener GetListener()
         {
-            return instance.listener;
+            return Instance.listener;
         }
 
         /// <summary>
@@ -2929,7 +2902,7 @@ namespace JSAM
         /// <returns></returns>
         public AudioListener GetListenerInternal()
         {
-            return instance.listener;
+            return Instance.listener;
         }
 
 #if UNITY_EDITOR

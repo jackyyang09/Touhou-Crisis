@@ -94,7 +94,7 @@ public class PauseMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (AudioManager.instance)
+        if (AudioManager.Instance)
         {
             LoadVolumeSettings();
             LoadSliderSettings();
@@ -107,11 +107,21 @@ public class PauseMenu : MonoBehaviour
     {
         railShooter = FindObjectOfType<RailShooterLogic>();
 
+        //if (Photon.Pun.PhotonNetwork.OfflineMode)
+        //{
+        //    canvas.onCanvasShow.AddListener(UpdateTimeScale);
+        //    canvas.onCanvasHide.AddListener(UpdateTimeScale);
+        //}
         railShooter.OnShoot += DeselectEverything;
     }
 
     void OnDisable()
     {
+        //if (Photon.Pun.PhotonNetwork.OfflineMode)
+        //{
+        //    canvas.onCanvasShow.RemoveListener(UpdateTimeScale);
+        //    canvas.onCanvasHide.RemoveListener(UpdateTimeScale);
+        //}
         railShooter.OnShoot -= DeselectEverything;
     }
 
@@ -137,6 +147,15 @@ public class PauseMenu : MonoBehaviour
         //        Cursor.visible = true;
         //    }
         //}
+    }
+
+    /// <summary>
+    /// Bad idea, Sakuya's Time Stop will cause issues
+    /// </summary>
+    void UpdateTimeScale()
+    {
+        Time.timeScale = canvas.IsVisible ? 0 : 1;
+        Debug.Log("Updating Time Scale");
     }
 
     public void LoadVolumeSettings()

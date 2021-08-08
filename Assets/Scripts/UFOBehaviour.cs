@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using Photon.Pun;
 
-public class UFOBehaviour : BaseEnemy
+public class UFOBehaviour : BaseEnemy, IReloadable
 {
     public enum UFOType
     {
@@ -54,17 +54,35 @@ public class UFOBehaviour : BaseEnemy
 
     public System.Action OnUFOExpire;
 
-    void Awake()
+    public void Reinitialize()
+    {
+        Destroy(gameObject);
+    }
+
+    void Start()
     {
         collider.isTrigger = true;
+
+        SoftSceneReloader.Instance.AddNewReloadable(this);
     }
 
     private void OnDisable()
     {
         if (!photonView.IsMine) return;
-        UFOSpawner.Instance.ReportUFODeath();
+        if (UFOSpawner.Instance != null)
+        {
+            UFOSpawner.Instance.ReportUFODeath();
+        }
         OnUFOExpire?.Invoke();
         OnUFOExpire = null;
+    }
+
+    private void OnDestroy()
+    {
+        if (SoftSceneReloader.Instance != null)
+        {
+            SoftSceneReloader.Instance.RemoveReloadable(this);
+        }
     }
 
     public void Init()
@@ -99,14 +117,18 @@ public class UFOBehaviour : BaseEnemy
 
     IEnumerator BehaviourTree()
     {
+        bool isLocal = GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Versus;
+
         switch (ufoType)
         {
             case UFOType.Green:
                 {
                     Vector3 destination = transform.position.ScaleBetter(new Vector3(-1, 1, 1));
-                    photonView.RPC("GreenSyncFlyTo", RpcTarget.All, destination);
+                    if (isLocal) GreenSyncFlyTo(destination);
+                    else photonView.RPC("GreenSyncFlyTo", RpcTarget.All, destination);
                     yield return new WaitForSeconds(greenTravelTime / 2);
-                    photonView.RPC("SyncShoot", RpcTarget.All);
+                    if (isLocal) SyncShoot();
+                    else photonView.RPC("SyncShoot", RpcTarget.All);
                     yield return new WaitForSeconds(greenTravelTime / 2);
                     Destroy(gameObject);
                 }
@@ -119,11 +141,13 @@ public class UFOBehaviour : BaseEnemy
                     {
                         Vector3 destination = UFOSpawner.Instance.AreaBox.GetRandomPointInBox();
                         float moveTime = Random.Range(wanderTime.x, wanderTime.y);
-                        photonView.RPC("SyncFlyTo", RpcTarget.All, new object[] { destination, moveTime} );
+                        if (isLocal) SyncFlyTo(destination, moveTime);
+                        else photonView.RPC("SyncFlyTo", RpcTarget.All, new object[] { destination, moveTime} );
                         yield return new WaitForSeconds(moveTime);
                         if (moves % movesPerShot == 0)
                         {
-                            photonView.RPC("SyncShoot", RpcTarget.All);
+                            if (isLocal) SyncShoot();
+                            else photonView.RPC("SyncShoot", RpcTarget.All);
                         }
                         moves++;
                         yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
@@ -137,13 +161,15 @@ public class UFOBehaviour : BaseEnemy
                         Vector3 destination = UFOSpawner.Instance.AreaBox.GetRandomPointInBox();
                         float moveTime = Random.Range(wanderTime.x, wanderTime.y);
 
-                        photonView.RPC("SyncFlyTo", RpcTarget.All, new object[] { destination, moveTime} );
+                        if (isLocal) SyncFlyTo(destination, moveTime);
+                        else photonView.RPC("SyncFlyTo", RpcTarget.All, new object[] { destination, moveTime} );
 
                         yield return new WaitForSeconds(Random.Range(waitTime.x, waitTime.y));
                     }
                     Vector3 target = AreaLogic.Instance.Player1FireTransform.position;
 
-                    photonView.RPC("SyncRedFlyTo", RpcTarget.All, new object[] { target });
+                    if (isLocal) SyncRedFlyTo(target);
+                    else photonView.RPC("SyncRedFlyTo", RpcTarget.All, new object[] { target });
 
                     Destroy(gameObject, redChargeTime);
                 }
@@ -180,6 +206,7 @@ public class UFOBehaviour : BaseEnemy
 
     private void OnTriggerEnter(Collider other)
     {
+        if (health == 0) return;
         if (other.transform.root.CompareTag("Player"))
         {
             PlayerManager.Instance.LocalPlayer.TakeDamage(DamageType.Bullet);

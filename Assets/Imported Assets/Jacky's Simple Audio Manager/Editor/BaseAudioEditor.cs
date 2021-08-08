@@ -29,9 +29,9 @@ namespace JSAM
 
         protected void PopulateSoundList()
         {
-            if (AudioManager.instance)
+            if (AudioManager.Instance)
             {
-                var sounds = AudioManager.instance.Library.sounds;
+                var sounds = AudioManager.Instance.Library.sounds;
                 for (int i = 0; i < sounds.Count; i++)
                 {
                     options.Add(sounds[i].SafeName);
@@ -59,7 +59,7 @@ namespace JSAM
         /// <param name="soundProperty">This is passed by reference, thanks Unity!</param>
         protected void DrawSoundDropdown(SerializedProperty soundProperty)
         {
-            if (!AudioManager.instance)
+            if (!AudioManager.Instance)
             {
                 EditorGUILayout.HelpBox("Could not find Audio Manager in the scene! This component needs AudioManager " +
                     "in order to function!", MessageType.Error);
@@ -76,7 +76,7 @@ namespace JSAM
             if (options.Count > 0)
             {
                 selected = EditorGUILayout.Popup(soundDesc, selected, options.ToArray());
-                soundProperty.objectReferenceValue = AudioManager.instance.Library.sounds[selected];
+                soundProperty.objectReferenceValue = AudioManager.Instance.Library.sounds[selected];
             }
             else
             {

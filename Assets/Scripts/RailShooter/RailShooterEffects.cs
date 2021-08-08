@@ -33,7 +33,7 @@ public class RailShooterEffects : MonoBehaviour
         }
         else if (player != null && !inMenu)
         {
-            player.OnBulletFired += PlayEffect;
+            player.OnShotFired += PlayScreenFlashEffect;
         }
     }
 
@@ -42,7 +42,7 @@ public class RailShooterEffects : MonoBehaviour
         railShooter.OnShoot -= PlayEffect;
         if (player != null)
         {
-            player.OnBulletFired -= PlayEffect;
+            player.OnShotFired -= PlayScreenFlashEffect;
         }
     }
 
@@ -54,7 +54,7 @@ public class RailShooterEffects : MonoBehaviour
             railShooter.OnShoot += PlayEffect;
             if (player != null)
             {
-                player.OnBulletFired -= PlayEffect;
+                player.OnShotFired -= PlayScreenFlashEffect;
             }
         }
         else
@@ -62,16 +62,18 @@ public class RailShooterEffects : MonoBehaviour
             railShooter.OnShoot -= PlayEffect;
             if (player != null)
             {
-                player.OnBulletFired += PlayEffect;
+                player.OnShotFired += PlayScreenFlashEffect;
             }
         }
     }
 
+    /// <summary>
+    /// Plays the default muzzle flash effect when in the game over screen
+    /// </summary>
+    /// <param name="ray"></param>
+    /// <param name="screenPoint"></param>
     public void PlayEffect(Ray ray, Vector2 screenPoint)
     {
-        //screenFlash.DOColor(flashColor, 0).SetUpdate(UpdateType.Normal, true);
-        //screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime).SetUpdate(UpdateType.Normal, true);
-
         if (spawnMuzzleFlash)
         {
             //Spawn bullet on the canvas
@@ -82,11 +84,16 @@ public class RailShooterEffects : MonoBehaviour
 
         if (playSound)
         {
-            AudioManager.instance.PlaySoundInternal(shootSound);
+            AudioManager.Instance.PlaySoundInternal(shootSound);
         }
     }
 
-    void PlayEffect(bool miss, Vector2 hitPosition)
+    /// <summary>
+    /// Play Screen Flash effect, but only when in-game
+    /// </summary>
+    /// <param name="miss"></param>
+    /// <param name="hitPosition"></param>
+    void PlayScreenFlashEffect(bool miss, Vector2 hitPosition)
     {
         screenFlash.DOColor(flashColor, 0);
         screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime);

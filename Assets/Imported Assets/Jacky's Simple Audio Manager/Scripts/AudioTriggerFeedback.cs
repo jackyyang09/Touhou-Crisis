@@ -34,7 +34,7 @@ namespace JSAM
         {
             if (triggersWith.Contains(other.gameObject.layer))
             {
-                AudioManager.instance.PlaySoundInternal(sound, sTransform);
+                AudioManager.Instance.PlaySoundInternal(sound, sTransform);
             }
         }
 
@@ -42,7 +42,7 @@ namespace JSAM
         {
             if (triggersWith.Contains(collision.gameObject.layer))
             {
-                AudioManager.instance.PlaySoundInternal(sound, sTransform);
+                AudioManager.Instance.PlaySoundInternal(sound, sTransform);
             }
         }
 

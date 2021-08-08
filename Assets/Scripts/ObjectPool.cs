@@ -7,13 +7,13 @@ using UnityEngine;
 /// </summary>
 public class ObjectPool : MonoBehaviour
 {
-    [SerializeField]
     [Tooltip("The reference object to pool")]
-    GameObject prefab = null;
-
-    [SerializeField]
+    [SerializeField] GameObject prefab = null;
+    
     [Tooltip("Spawn this many objects on start")]
-    int objectsToSpawn = 100;
+    [SerializeField] int objectsToSpawn = 100;
+
+    [SerializeField] bool parentObjects = true;
 
     List<GameObject> pool;
 
@@ -24,7 +24,8 @@ public class ObjectPool : MonoBehaviour
 
         for (int i = 0; i < objectsToSpawn; i++)
         {
-            pool.Add(Instantiate(prefab, transform));
+            Transform parent = parentObjects ? transform : null;
+            pool.Add(Instantiate(prefab, parent));
             pool[i].SetActive(false);
         }
     }

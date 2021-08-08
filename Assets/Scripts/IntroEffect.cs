@@ -12,7 +12,6 @@ public class IntroEffect : MonoBehaviour
 
     [SerializeField] UnityEngine.UI.Image image;
 
-    [SerializeField] float musicDelay = 0.5f;
     [SerializeField] float holdBlackTime = 1;
     [SerializeField] float fadeToWhiteTime = 0.5f;
     [SerializeField] float holdWhiteTime = 2;

@@ -19,9 +19,9 @@ namespace JSAM
         new void Start()
         {
             base.Start();
-            listener = AudioManager.instance.GetListenerInternal();
+            listener = AudioManager.Instance.GetListenerInternal();
 
-            source = AudioManager.instance.GetMusicSource();
+            source = AudioManager.Instance.GetMusicSource();
         }
 
         // Update is called once per frame
@@ -33,9 +33,9 @@ namespace JSAM
                 float dist = Vector3.Distance(listener.transform.position, positions[i]);
                 if (dist <= maxDistance[i])
                 {
-                    if (!AudioManager.instance.IsMusicPlayingInternal(music))
+                    if (!AudioManager.Instance.IsMusicPlayingInternal(music))
                     {
-                        source = AudioManager.instance.PlayMusicInternal(music);
+                        source = AudioManager.Instance.PlayMusicInternal(music);
                     }
 
                     if (dist <= minDistance[i])
@@ -52,7 +52,7 @@ namespace JSAM
                     }
                 }
             }
-            if (AudioManager.instance.IsMusicPlayingInternal(music)) source.volume = loudest;
+            if (AudioManager.Instance.IsMusicPlayingInternal(music)) source.volume = loudest;
         }
     }
 }

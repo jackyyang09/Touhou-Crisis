@@ -44,7 +44,8 @@ public class OptimizedTransitionSlide : OptimizedTransitionBase
                 sliders[i].rects[j].rect.DOAnchorPos(sliders[i].rects[j].origin, transitionTime).SetEase(easeType);
             }
         }
-        yield return new WaitForSeconds(transitionTime);
+        if (ignoreTimescale) yield return new WaitForSecondsRealtime(transitionTime);
+        else yield return new WaitForSeconds(transitionTime);
     }
 
     IEnumerator SlideTransitionOut()
@@ -61,7 +62,8 @@ public class OptimizedTransitionSlide : OptimizedTransitionBase
                 sliders[i].rects[j].rect.DOAnchorPos(destination, transitionTime).SetEase(easeType);
             }
         }
-        yield return new WaitForSeconds(transitionTime);
+        if (ignoreTimescale) yield return new WaitForSecondsRealtime(transitionTime);
+        else yield return new WaitForSeconds(transitionTime);
     }
 
     public override void EditorTransitionIn()

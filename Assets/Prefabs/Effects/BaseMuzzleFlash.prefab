@@ -135,8 +135,12 @@ MonoBehaviour:
   canvas: {fileID: 3018670032401890303}
   caster: {fileID: 0}
   children: []
+  flashLayoutGroups: 1
   layoutGroups: []
   layoutElements: []
+  dynamicUI: []
+  transition: {fileID: 0}
+  animation: {fileID: 0}
   onCanvasShow:
     m_PersistentCalls:
       m_Calls: []
@@ -156,4 +160,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rect: {fileID: 5818355323253171948}
-  disappearTime: 0.5
+  disappearTime: 0.05

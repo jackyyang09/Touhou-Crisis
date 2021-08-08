@@ -27,6 +27,7 @@ public class OptimizedCanvas : MonoBehaviour
     [SerializeField] List<RectTransform> dynamicUI = null;
 
     [SerializeField] OptimizedTransitionBase transition = null;
+    [SerializeField] new OptimizedAnimationBase animation = null;
 
     [SerializeField] public UnityEngine.Events.UnityEvent onCanvasShow;
     [SerializeField] public UnityEngine.Events.UnityEvent onCanvasHide;
@@ -47,6 +48,16 @@ public class OptimizedCanvas : MonoBehaviour
         {
             Hide();
         }
+    }
+
+    private void OnEnable()
+    {
+        ResolutionListener.OnResolutionChanged += FlashLayoutComponents;
+    }
+
+    private void OnDisable()
+    {
+        ResolutionListener.OnResolutionChanged -= FlashLayoutComponents;
     }
 
     [ContextMenu("Find Get References")]
@@ -314,9 +325,19 @@ public class OptimizedCanvas : MonoBehaviour
         }
     }
 
+    public void PlayAnimation()
+    {
+        if (animation != null) animation.StartAnimating();
+    }
+
+    public void StopAnimation()
+    {
+        if (animation != null) animation.StopAnimating();
+    }
+
     void FlashLayoutComponents()
     {
-        if (!flashLayoutGroups || !gameObject.activeInHierarchy) return;
+        if (!flashLayoutGroups || !gameObject.activeInHierarchy || !IsVisible) return;
         if (layoutRoutine != null) StopCoroutine(layoutRoutine);
         layoutRoutine = StartCoroutine(FlashLayoutComponents(true));
     }

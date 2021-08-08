@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.VFX;
 using DG.Tweening;
 
-public class EnvironmentChanger : MonoBehaviour
+public class EnvironmentChanger : MonoBehaviour, IReloadable
 {
     [System.Serializable]
     public struct SakuraPetals
@@ -45,6 +45,19 @@ public class EnvironmentChanger : MonoBehaviour
     int exposureID;
     int tintColorID;
 
+    public void Reinitialize()
+    {
+        ChangePhase(0);
+
+        environmentEffect.Reinit();
+
+        activeSkybox.SetColor(tintColorID, skyboxes[0].GetColor(tintColorID));
+        activeSkybox.SetFloat(exposureID, skyboxes[0].GetFloat(exposureID));
+
+        normalVolume.weight = 1;
+        finalVolume.weight = 0;
+    }
+
     private void Awake()
     {
         constantSpawnRateID = Shader.PropertyToID("Constant Spawn Rate");
@@ -61,6 +74,8 @@ public class EnvironmentChanger : MonoBehaviour
 
     private void Start()
     {
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+
         activeSkybox.SetColor(tintColorID, skyboxes[0].GetColor(tintColorID));
         activeSkybox.SetFloat(exposureID, skyboxes[0].GetFloat(exposureID));
     }
@@ -93,7 +108,7 @@ public class EnvironmentChanger : MonoBehaviour
 
         mainLight.DOIntensity(referenceLights[currentPhase].intensity, environmentChangeTime);
 
-        if (currentPhase == 2)
+        if (currentPhase == 3)
         {
             DOTween.To(() => normalVolume.weight, x => normalVolume.weight = x, 0f, environmentChangeTime);
             DOTween.To(() => finalVolume.weight, x => finalVolume.weight = x, 1, environmentChangeTime);

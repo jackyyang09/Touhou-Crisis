@@ -38,6 +38,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d63f9ffb2f72df540a9ebd7646e36b0c, type: 2}
   - {fileID: 11400000, guid: 0fa155b3f0ed39740bf0ebb9fe9e4652, type: 2}
   - {fileID: 11400000, guid: af9b1ed864ad57b44a7821bd0fff18d7, type: 2}
+  - {fileID: 11400000, guid: 93c8081577ed1c64ca58159db5fada3f, type: 2}
+  - {fileID: 11400000, guid: 635e35b61085e4346a8735b6b171b278, type: 2}
   music:
   - {fileID: 11400000, guid: 84d41701f6b65294a8f97a081c0b4051, type: 2}
   - {fileID: 11400000, guid: 69b8c277c5601824da6e241f30abc917, type: 2}
@@ -69,6 +71,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 671d44d5abaf6674cb60849d3377cc66, type: 2}
     - {fileID: 11400000, guid: 387532ea3067e994a957b792b28110b4, type: 2}
     - {fileID: 11400000, guid: af9b1ed864ad57b44a7821bd0fff18d7, type: 2}
+    - {fileID: 11400000, guid: 93c8081577ed1c64ca58159db5fada3f, type: 2}
+    - {fileID: 11400000, guid: 635e35b61085e4346a8735b6b171b278, type: 2}
     foldout: 1
   - name: VoiceOver
     files:

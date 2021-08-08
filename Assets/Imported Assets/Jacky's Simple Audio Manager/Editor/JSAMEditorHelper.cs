@@ -57,14 +57,14 @@ namespace JSAM.JSAMEditor
             MonoScript a = null;
             GameObject g = null;
             bool alt = false;
-            if (!AudioManager.instance)
+            if (!AudioManager.Instance)
             {
                 g = new GameObject();
                 // Audio Events just so its saferd
                 a = MonoScript.FromMonoBehaviour(g.AddComponent<AudioEvents>());
                 alt = true;
             }
-            else a = MonoScript.FromMonoBehaviour(AudioManager.instance);
+            else a = MonoScript.FromMonoBehaviour(AudioManager.Instance);
             string path = AssetDatabase.GetAssetPath(a);
             if (g != null) Object.DestroyImmediate(g);
             if (alt)
@@ -235,7 +235,7 @@ namespace JSAM.JSAMEditor
         public static void CopyToClipboard(string text)
         {
             EditorGUIUtility.systemCopyBuffer = text;
-            AudioManager.instance.DebugLog("Copied " + text + " to clipboard!");
+            AudioManager.Instance.DebugLog("Copied " + text + " to clipboard!");
         }
 
         public static bool RenderQuickReferenceGuide(bool foldout, string[] text)

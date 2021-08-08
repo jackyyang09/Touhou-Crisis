@@ -3,49 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class AreaLogic : MonoBehaviour
+public class AreaLogic : MonoBehaviour, IReloadable
 {
     [System.Serializable]
     public class SubAreaProps
     {
         public Transform player1CoverTransform;
         public Transform player1FireTransform;
+        public Transform player1MeleeTransform;
+
         public Transform player2CoverTransform;
         public Transform player2FireTransform;
+        public Transform player2MeleeTransform;
     }
 
     [SerializeField] SubAreaProps[] subAreas = null;
 
     [SerializeField] short currentSubArea = 0;
+    public short CurrentArea
+    { 
+        get
+        {
+            return currentSubArea;
+        }
+    }
 
-    public Transform Player1CoverTransform
-    {
-        get
-        {
-            return subAreas[currentSubArea].player1CoverTransform;
-        }
-    }
-    public Transform Player1FireTransform
-    {
-        get
-        {
-            return subAreas[currentSubArea].player1FireTransform;
-        }
-    }
-    public Transform GetPlayer2CoverTransform
-    {
-        get
-        {
-            return subAreas[currentSubArea].player2CoverTransform;
-        }
-    }
-    public Transform GetPlayer2FireTransform
-    {
-        get
-        {
-            return subAreas[currentSubArea].player2FireTransform;
-        }
-    }
+    public Transform Player1CoverTransform { get { return subAreas[currentSubArea].player1CoverTransform; } }
+    public Transform Player1FireTransform { get { return subAreas[currentSubArea].player1FireTransform; } }
+    public Transform Player1MeleeTransform { get { return subAreas[currentSubArea].player1MeleeTransform; } }
+
+    public Transform Player2CoverTransform { get { return subAreas[currentSubArea].player2CoverTransform; } }
+    public Transform Player2FireTransform { get { return subAreas[currentSubArea].player2FireTransform; } }
+    public Transform Player2MeleeTransform { get { return subAreas[currentSubArea].player2MeleeTransform; } }
 
     static AreaLogic instance;
     public static AreaLogic Instance
@@ -62,11 +51,16 @@ public class AreaLogic : MonoBehaviour
 
     public static System.Action OnEnterFirstArea;
 
+    public void Reinitialize()
+    {
+        currentSubArea = -1;
+    }
+
     // Start is called before the first frame update
-    //void Start()
-    //{
-    //    
-    //}
+    void Start()
+    {
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+    }
 
     // Update is called once per frame
     //void Update()

@@ -15,6 +15,11 @@ MonoBehaviour:
   weaponType: 0
   bulletDamage: 1
   ammoCapacity: 8
-  fireRate: 1
+  infiniteAmmo: 1
+  fireDelay: 0.1
+  pellets: 0
+  bulletSpread: 0
   hitFlashPrefab: {fileID: 1367978030930376534, guid: b39b6c7f6cd10af46a67cdd3f2dfa9fa, type: 3}
   missFlashPrefab: {fileID: 5146475814407794022, guid: c358f2adcf8c7bd42b7018c2d380fe6c, type: 3}
+  fireSound: {fileID: 11400000, guid: 671d44d5abaf6674cb60849d3377cc66, type: 2}
+  casingSound: {fileID: 11400000, guid: 5c04115f2641ad94ca5a73c138ba9f1e, type: 2}

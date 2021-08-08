@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class OptimizedTransitionBase : MonoBehaviour
 {
+    [SerializeField] protected bool ignoreTimescale = false;
+
     public abstract Coroutine TransitionIn();
     public abstract Coroutine TransitionOut();
 

@@ -172,7 +172,14 @@ public class GameplayModifiers : MonoBehaviourPun
 
     public void SetGameMode(GameModes mode)
     {
-        gameMode = mode;
+        //gameMode = mode;
+        photonView.RPC("SyncGameMode", RpcTarget.All, mode);
+    }
+
+    [PunRPC]
+    void SyncGameMode(object newGameMode)
+    {
+        gameMode = (GameModes)newGameMode;
     }
 
     /// <summary>
@@ -182,7 +189,7 @@ public class GameplayModifiers : MonoBehaviourPun
     /// <param name="spawnRate"></param>
     /// <param name="actionSpeed"></param>
     /// <param name="moveSpeed"></param>
-    public void ApplyAllProperties(LiveCounts lives, UFOSpawnRates spawnRate, BossActionSpeeds actionSpeed, BossMoveSpeeds moveSpeed)
+    public void ApplyAllProperties(LiveCounts lives, UFOSpawnRates spawnRate, BossActionSpeeds actionSpeed, BossMoveSpeeds moveSpeed, GameModes gameMode)
     {
         startingLives = lives;
         ufoSpawnRate = spawnRate;
@@ -205,9 +212,16 @@ public class GameplayModifiers : MonoBehaviourPun
         {
             initialized = true;
         }
-        else if (scene.name.Equals(mainMenuScene))
+        else if (!scene.name.Equals(mainMenuScene))
         {
-            Destroy(gameObject);
+            GameManager.OnQuitToMenu += SelfDestruct;
         }
     }
+
+    void OnDestroy()
+    {
+        GameManager.OnQuitToMenu -= SelfDestruct;
+    }
+
+    void SelfDestruct() => Destroy(gameObject);
 }

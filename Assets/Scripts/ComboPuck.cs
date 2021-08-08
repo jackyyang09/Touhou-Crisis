@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class ComboPuck : MonoBehaviour
+public class ComboPuck : MonoBehaviour, IReloadable
 {
     [SerializeField] PlayerBehaviour player;
     [SerializeField] bool hasPuck;
@@ -36,22 +36,37 @@ public class ComboPuck : MonoBehaviour
 
     bool soloMode = false;
 
+    public void Reinitialize()
+    {
+        hasPuck = PhotonNetwork.IsMasterClient || soloMode;
+        comboDecayTimer = 0;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            hasPuck = true;
-        }
-        if (PhotonNetwork.PlayerListOthers.Length == 0)
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+        if (PhotonNetwork.OfflineMode || GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Versus)
         {
             soloMode = true;
         }
-        //else
-        //{
-            comboDecayTimer = 0;
-        //}
+        Reinitialize();
     }
+
+    private void OnEnable()
+    {
+        player.OnShotFired += CountCombo;
+        player.OnEnterCover += PassReceivePuck;
+        player.OnTakeDamage += DropCombo;
+    }
+
+    private void OnDisable()
+    {
+        player.OnShotFired -= CountCombo;
+        player.OnEnterCover -= PassReceivePuck;
+        player.OnTakeDamage -= DropCombo;
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -66,23 +81,9 @@ public class ComboPuck : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void CountCombo(bool miss, Vector2 arg2)
     {
-        player.OnBulletFired += CountCombo;
-        player.OnReload += PassReceivePuck;
-        player.OnTakeDamage += DropCombo;
-    }
-
-    private void OnDisable()
-    {
-        player.OnBulletFired -= CountCombo;
-        player.OnReload -= PassReceivePuck;
-        player.OnTakeDamage -= DropCombo;
-    }
-
-    private void CountCombo(bool missed, Vector2 hitPosition)
-    {
-        if (missed || !hasPuck) return;
+        if (miss || !hasPuck) return;
         damageMultiplier = Mathf.Clamp(damageMultiplier + 0.1f, 0, maxMultiplier);
         comboDecayTimer = comboDecayTime;
         OnUpdateMultiplier?.Invoke(damageMultiplier);
@@ -101,11 +102,11 @@ public class ComboPuck : MonoBehaviour
         {
             if (soloMode)
             {
-                player.PhotonView.RPC("QueuePuck", RpcTarget.All, damageMultiplier);
+                player.PhotonView.RPC(nameof(QueuePuck), RpcTarget.All, damageMultiplier);
             }
             else
             {
-                PlayerManager.Instance.OtherPlayer.RPC("QueuePuck", RpcTarget.All, damageMultiplier);
+                PlayerManager.Instance.OtherPlayer.RPC(nameof(QueuePuck), RpcTarget.All, damageMultiplier);
             }
             hasPuck = false;
             damageMultiplier = 1;
@@ -113,6 +114,7 @@ public class ComboPuck : MonoBehaviour
         }
         else if (incomingMultiplier != -1)
         {
+            comboDecayTimer = comboDecayTime;
             damageMultiplier = incomingMultiplier;
             incomingMultiplier = -1;
             hasPuck = true;

@@ -38,7 +38,7 @@ namespace JSAM
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (AudioManager.instance) SetSoundProperties();
+            if (AudioManager.Instance) SetSoundProperties();
         }
 #endif
 

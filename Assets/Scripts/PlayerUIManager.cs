@@ -7,7 +7,7 @@ using DG.Tweening;
 using UnityEngine.Rendering.Universal;
 using System;
 
-public class PlayerUIManager : MonoBehaviour
+public class PlayerUIManager : MonoBehaviour, IReloadable
 {
     [SerializeField] Camera screenSpaceCamera = null;
     [SerializeField] Canvas overlayCanvas = null;
@@ -19,6 +19,7 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] RailShooterLogic railShooterLogic = null;
     [SerializeField] RailShooterEffects railShooterEffects = null;
     [SerializeField] GameObject[] personalObjects = null;
+    [SerializeField] OptimizedCanvas pauseMenu = null;
 
     [Header("Ammo Count")]
     [SerializeField] TextMeshProUGUI ammoText = null;
@@ -40,6 +41,7 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] PuckUI player2Puck = null;
 
     [Header("Damage Effects")]
+    [SerializeField] Image baseDamageImage = null;
     [SerializeField] Image slashDamageImage = null;
     [SerializeField] Image bulletDamageImage = null;
     [SerializeField] Image remoteDamageImage = null;
@@ -55,20 +57,9 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] Image enemyHealthBar = null;
     [SerializeField] Image[] enemySpellcards = null;
 
-    [Header("Game Over")]
-    [SerializeField] OptimizedCanvas gameOverScreen = null;
-    [SerializeField] TextMeshProUGUI gameOverText = null;
-    [SerializeField] TextMeshProUGUI gameOverTimeText = null;
-    [SerializeField] OptimizedCanvas gameOverTimeCanvas = null;
-    [SerializeField] OptimizedCanvas p1ScoreCanvas = null;
-    [SerializeField] TextMeshProUGUI p1ScoreText = null;
-    [SerializeField] OptimizedCanvas p2ScoreCanvas = null;
-    [SerializeField] TextMeshProUGUI p2ScoreText = null;
-    [SerializeField] OptimizedCanvas gameOverButtonCanvas = null;
-    [SerializeField] GameObject retryButton = null;
-    [SerializeField] GameObject retryBlock = null;
-    [SerializeField] Canvas reimuPortrait = null;
-    [SerializeField] Canvas marisaPortrait = null;
+    [Header("Game Over UI")]
+    [SerializeField] GameOverUI gameOverUI1P;
+    [SerializeField] GameOverUI gameOverUI2P;
 
     LoadingScreen loadingScreen = null;
 
@@ -87,14 +78,8 @@ public class PlayerUIManager : MonoBehaviour
         loadingScreen = FindObjectOfType<LoadingScreen>();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void Reinitialize()
     {
-        transform.SetParent(null, false);
-
-        var cameraData = Camera.main.GetUniversalAdditionalCameraData();
-        cameraData.cameraStack.Add(screenSpaceCamera);
-
         if (Photon.Pun.PhotonNetwork.IsMasterClient)
         {
             player2Puck.enabled = false;
@@ -105,8 +90,34 @@ public class PlayerUIManager : MonoBehaviour
             remoteDamageImage.transform.localScale = new Vector3(-1, 1, 1);
         }
 
+        cachedTime = 0;
+
         // Initialize lives
         UpdateLivesDisplay(DamageType.Bullet);
+
+        // Hide game over items
+        railShooterEffects.SetInMenu(false);
+        railShooterEffects.playSound = false;
+        railShooterEffects.spawnMuzzleFlash = false;
+
+        if (pauseMenu.IsVisible)
+        {
+            pauseMenu.Hide();
+            pauseMenu.gameObject.SetActive(true);
+        }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+
+        transform.SetParent(null, false);
+
+        var cameraData = Camera.main.GetUniversalAdditionalCameraData();
+        cameraData.cameraStack.Add(screenSpaceCamera);
+
+        Reinitialize();
     }
 
     private void OnEnable()
@@ -130,14 +141,16 @@ public class PlayerUIManager : MonoBehaviour
                 "を踏んで撃ち返せ！";
             }
         }
-        
-        player.OnBulletFired += SpawnMuzzleFlash;
+
+        player.OnShotFired += SpawnMuzzleFlash;
         player.OnReload += HideReloadGraphic;
         player.OnReload += UpdateAmmoCount;
         player.OnTakeDamage += FadeDamageEffect;
         player.OnTakeDamage += UpdateLivesDisplay;
         player.OnTakeDamageRemote += FadeDamageRemote;
         player.OnFireNoAmmo += ShowReloadGraphic;
+        player.OnSwapWeapon += OnSwapWeapon;
+        player.OnAmmoChanged += UpdateAmmoCount;
         player.OnEnterTransit += FlashWaitGraphic;
         player.OnExitTransit += FlashActionGraphic;
 
@@ -147,11 +160,8 @@ public class PlayerUIManager : MonoBehaviour
         {
             sakuya.OnShot += UpdateBossHealth;
             sakuya.OnChangePhase += RefillBossHealth;
-            sakuya.OnBossDefeat += WinSequence;
             sakuya.OnBossDefeat += HideCoverTutorial;
         }
-
-        GameManager.OnLeaveScene += DestroySelf;
     }
 
     private void OnDisable()
@@ -162,13 +172,15 @@ public class PlayerUIManager : MonoBehaviour
             player.OnExitCover -= HideCoverTutorial;
         }
 
-        player.OnBulletFired -= SpawnMuzzleFlash;
+        player.OnShotFired -= SpawnMuzzleFlash;
         player.OnReload -= HideReloadGraphic;
         player.OnReload -= UpdateAmmoCount;
         player.OnTakeDamage -= FadeDamageEffect;
         player.OnTakeDamage -= UpdateLivesDisplay;
         player.OnTakeDamageRemote -= FadeDamageRemote;
         player.OnFireNoAmmo -= ShowReloadGraphic;
+        player.OnSwapWeapon -= OnSwapWeapon;
+        player.OnAmmoChanged -= UpdateAmmoCount;
         player.OnEnterTransit -= FlashWaitGraphic;
         player.OnExitTransit -= FlashActionGraphic;
 
@@ -178,14 +190,9 @@ public class PlayerUIManager : MonoBehaviour
         {
             sakuya.OnShot -= UpdateBossHealth;
             sakuya.OnChangePhase -= RefillBossHealth;
-            sakuya.OnBossDefeat -= WinSequence;
             sakuya.OnBossDefeat -= HideCoverTutorial;
         }
-
-        GameManager.OnLeaveScene -= DestroySelf;
     }
-
-    void DestroySelf() => Destroy(gameObject);
 
     // Update is called once per frame
     void Update()
@@ -195,7 +202,7 @@ public class PlayerUIManager : MonoBehaviour
 
     private void ShowCoverTutorial(Ray arg1, Vector2 arg2)
     {
-        if (!player.InCover || coverTutorial.IsVisible || !player.CanPlay) return;
+        if (!player.InCover || coverTutorial.IsVisible || !player.CanPlay || pauseMenu.IsVisible) return;
 
         shotsFiredInCover++;
         if (shotsFiredInCover >= shotsBeforeTutorial)
@@ -213,6 +220,11 @@ public class PlayerUIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spawn a special muzzle flash depending on the weapon fired
+    /// </summary>
+    /// <param name="missed"></param>
+    /// <param name="hitPosition"></param>
     public void SpawnMuzzleFlash(bool missed, Vector2 hitPosition)
     {
         // Get muzzle flash prefab
@@ -230,9 +242,6 @@ public class PlayerUIManager : MonoBehaviour
         var bullet = Instantiate(muzzleFlash, overlayCanvas.transform).transform as RectTransform;
 
         bullet.position = hitPosition;
-
-        UpdateAmmoCount();
-        //ExpendAmmo();
     }
 
     #region Deprecated Ammo Code
@@ -251,13 +260,18 @@ public class PlayerUIManager : MonoBehaviour
         {
             bulletImages[i].Show();
         }
-        UpdateAmmoCount();
     }
     #endregion
 
     void UpdateAmmoCount()
     {
         ammoText.text = player.CurrentAmmo.ToString();
+    }
+
+    void OnSwapWeapon(WeaponObject newWeapon)
+    {
+        if (player.CurrentAmmo > 0) HideReloadGraphic();
+        UpdateAmmoCount();
     }
 
     void ShowReloadGraphic() => reloadImage.Show();
@@ -305,6 +319,8 @@ public class PlayerUIManager : MonoBehaviour
 
     void FadeDamageEffect(DamageType damageType)
     {
+        baseDamageImage.DOColor(Color.white, 0);
+        baseDamageImage.DOColor(Color.clear, 0.5f).SetDelay(1);
         switch (damageType)
         {
             case DamageType.Slash:
@@ -361,7 +377,7 @@ public class PlayerUIManager : MonoBehaviour
 
         if (enemyHealthBar.fillAmount <= 0)
         {
-            enemySpellcards[Mathf.Clamp(enemySpellcards.Length - sakuya.CurrentPhase, 0, enemySpellcards.Length)].enabled = false;
+            enemySpellcards[Mathf.Clamp(enemySpellcards.Length - sakuya.CurrentPhase, 0, enemySpellcards.Length - 1)].enabled = false;
         }
     }
 
@@ -370,97 +386,36 @@ public class PlayerUIManager : MonoBehaviour
         enemyHealthBar.DOFillAmount(1, 0.5f);
     }
 
-    void WinSequence()
+    void GameOverSequence()
     {
         PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
-        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin);
-        gameOverText.text = "BOSS CLEAR";
-        StartCoroutine(ShowGameOverScreen());
-    }
-
-    public void LoseSequence()
-    {
-        PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
-        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
-        gameOverText.text = "GAME OVER";
-        StartCoroutine(ShowGameOverScreen());
-    }
-
-    IEnumerator ShowGameOverScreen()
-    {
-        bool isHost = Photon.Pun.PhotonNetwork.IsMasterClient;
-        
-        var otherPlayer = PlayerManager.Instance.OtherPlayer;
 
         railShooterEffects.SetInMenu(true);
         railShooterEffects.playSound = true;
         railShooterEffects.spawnMuzzleFlash = true;
 
-        if (isHost)
-        {
-            p1ScoreText.text = scoreText.text;
-            reimuPortrait.enabled = true;
-            marisaPortrait.enabled = false;
-        }
-        else
-        {
-            p1ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
-            p2ScoreText.text = scoreText.text;
-            reimuPortrait.enabled = false;
-            marisaPortrait.enabled = true;
-            UpdateTimeCounter();
-        }
+        //pauseMenu.gameObject.SetActive(false);
+        pauseMenu.Hide();
+    }
 
-        if (otherPlayer != null)
-        {
-            if (isHost)
-            {
-                p2ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
-            }
-            else
-            {
-                p1ScoreText.text = otherPlayer.GetComponent<ScoreSystem>().CurrentScore.ToString();
-            }
-        }
+    public void WinSequence()
+    {
+        GameOverSequence();
 
-        gameOverScreen.Show();
+        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin);
 
-        yield return new WaitForSeconds(0.25f);
+        if (Photon.Pun.PhotonNetwork.OfflineMode) gameOverUI1P.RunGameOverSequence(true);
+        else gameOverUI2P.RunGameOverSequence(true);
+    }
 
-        gameOverText.enabled = true;
-        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
+    public void LoseSequence()
+    {
+        GameOverSequence();
 
-        yield return new WaitForSeconds(0.8f);
+        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
 
-        UpdateTimeCounter();
-        cachedTime = GameManager.Instance.GameTimeElapsed;
-        gameOverTimeText.text = HelperMethods.TimeToString(cachedTime);
-        if (gameOverTimeText.text.Length > 8)
-        {
-            gameOverTimeText.text = gameOverTimeText.text.Remove(8);
-        }
-        gameOverTimeCanvas.Show();
-        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
-
-        yield return new WaitForSeconds(0.15f);
-
-        p1ScoreCanvas.Show();
-        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
-
-        yield return new WaitForSeconds(0.15f);
-
-        if (!isHost || otherPlayer != null)
-        {
-            p2ScoreCanvas.Show();
-            JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
-            yield return new WaitForSeconds(0.15f);
-        }
-
-        retryBlock.SetActive(!isHost);
-        retryButton.SetActive(isHost);
-
-        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
-        gameOverButtonCanvas.Show();
+        if (Photon.Pun.PhotonNetwork.OfflineMode) gameOverUI1P.RunGameOverSequence(false);
+        else gameOverUI2P.RunGameOverSequence(false);
     }
 
     Coroutine delayRoutine = null;

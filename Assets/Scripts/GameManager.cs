@@ -5,9 +5,10 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
+public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadable
 {
-    [SerializeField] GameObject playerPrefab = null;
+    [SerializeField] GameObject hostPrefab = null;
+    [SerializeField] GameObject clientPrefab = null;
 
     [SerializeField] float gameTimer = 0;
     float remoteGameTimer = 0;
@@ -21,10 +22,10 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [SerializeField] float timeBetweenSync = 3;
-    [SerializeField] int shotsFired = 0;
-    [SerializeField] int shotsHit = 0;
 
     [SerializeField] GameObject crosshairPrefab = null;
+
+    int rematchRequests = 0;
 
     Sakuya sakuya;
     PlayerBehaviour player;
@@ -42,12 +43,22 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    public static Action OnLeaveScene;
     public static Action<PlayerBehaviour> OnSpawnLocalPlayer;
+    public static Action OnReceiveRematchRequest;
+    public static Action OnReloadScene;
+    public static Action OnQuitToMenu;
+    
+    public void Reinitialize()
+    {
+        gameTimer = 0;
+        remoteGameTimer = 0;
+        rematchRequests = 0;
+        gameOverRoutine = null;
+    }
 
     private void Start()
     {
-        if (playerPrefab == null)
+        if (hostPrefab == null)
         {
             Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
         }
@@ -57,7 +68,15 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             {
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManager.GetActiveScene().name);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                var newPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                GameObject newPlayer;
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    newPlayer = PhotonNetwork.Instantiate(hostPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                }
+                else
+                {
+                    newPlayer = PhotonNetwork.Instantiate(clientPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                }
                 player = newPlayer.GetComponent<PlayerBehaviour>();
                 OnSpawnLocalPlayer?.Invoke(player);
             }
@@ -71,16 +90,18 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             player = PlayerManager.Instance.LocalPlayer;
         }
-        else
+
+        if (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop)
         {
-            Debug.Log(PlayerManager.Instance);
+            PhotonNetwork.Instantiate(crosshairPrefab.name, Vector3.zero, Quaternion.identity);
         }
 
-        PhotonNetwork.Instantiate(crosshairPrefab.name, Vector3.zero, Quaternion.identity);
         player.OnTakeDamage += DamageRemotePlayer;
         player.OnPlayerDeath += SyncLoseSequence;
-        player.OnPlayerDeath += StopGameTimer;
-        player.OnBulletFired += CountPlayerShot;
+
+        Reinitialize();
+
+        SoftSceneReloader.Instance.AddNewReloadable(this);
     }
 
     new void OnEnable()
@@ -91,7 +112,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         sakuya = FindObjectOfType<Sakuya>();
         if (sakuya != null)
         {
-            sakuya.OnBossDefeat += StopGameTimer;
+            sakuya.OnBossDefeat += SyncWinSequence;
         }
     }
 
@@ -102,7 +123,12 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 
         if (sakuya != null)
         {
-            sakuya.OnBossDefeat -= StopGameTimer;
+            sakuya.OnBossDefeat -= SyncWinSequence;
+        }
+
+        if (player != null)
+        {
+            player.OnPlayerDeath -= SyncLoseSequence;
         }
     }
 
@@ -126,12 +152,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             CancelInvoke("SyncRemoteProperties");
             InvokeRepeating("SyncRemoteProperties", 0, 1);
         }
-    }
-
-    void CountPlayerShot(bool miss, Vector2 hitPosition)
-    {
-        if (!miss) shotsHit++;
-        shotsFired++;
     }
 
     private void Update()
@@ -161,22 +181,51 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         gameTimer = remoteGameTimer;
     }
 
-    Coroutine loseRoutine = null;
+    Coroutine gameOverRoutine = null;
+    void SyncWinSequence()
+    {
+        if (gameOverRoutine == null)
+        {
+            gameOverRoutine = StartCoroutine(SyncWinRoutine());
+        }
+    }
+
+    IEnumerator SyncWinRoutine()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        photonView.RPC("InitiateWinSequence", RpcTarget.All);
+    }
+
     void SyncLoseSequence()
     {
-        loseRoutine = StartCoroutine(SyncLoseRoutine());
+        if (gameOverRoutine == null)
+        {
+            gameOverRoutine = StartCoroutine(SyncLoseRoutine());
+        }
+        else
+        {
+            Debug.Log("wtf?");
+        }
     }
 
     IEnumerator SyncLoseRoutine()
     {
-        yield return new WaitForSecondsRealtime(1.5f);
+        yield return new WaitForSecondsRealtime(1f);
         photonView.RPC("InitiateLoseSequence", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void InitiateWinSequence()
+    {
+        FindObjectOfType<PlayerUIManager>().WinSequence();
+        StopGameTimer();
     }
 
     [PunRPC]
     void InitiateLoseSequence()
     {
         FindObjectOfType<PlayerUIManager>().LoseSequence();
+        StopGameTimer();
     }
 
     private void DamageRemotePlayer(DamageType obj)
@@ -190,12 +239,28 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         player.TakeDamageRemote();
     }
 
+    public void SyncRequestRematch()
+    {
+        photonView.RPC("RequestRematch", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void RequestRematch()
+    {
+        rematchRequests++;
+        OnReceiveRematchRequest?.Invoke();
+        if (rematchRequests == PhotonNetwork.CurrentRoom.PlayerCount)
+        {
+            ReloadScene();
+        }
+    }
+
     /// <summary>
     /// Called when the local player left the room. We need to load the launcher scene.
     /// </summary>
     public override void OnLeftRoom()
     {
-        OnLeaveScene?.Invoke();
+        OnQuitToMenu?.Invoke();
         SceneManager.LoadScene(0);
     }
 
@@ -233,19 +298,25 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 
     IEnumerator ReloadSceneRoutine()
     {
+        OnReloadScene?.Invoke();
+
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.MenuButton);
 
         LoadingScreen loadScreen = FindObjectOfType<LoadingScreen>();
 
         yield return StartCoroutine(loadScreen.ShowRoutine());
 
-        player.OnPlayerDeath -= SyncLoseSequence;
-        player.OnPlayerDeath -= StopGameTimer;
-        player.OnBulletFired -= CountPlayerShot;
+        yield return new WaitForSeconds(1);
 
-        OnLeaveScene?.Invoke();
+        SoftSceneReloader.Instance.ExecuteSoftReload();
+        
+        yield return StartCoroutine(loadScreen.HideRoutine());
 
-        PhotonNetwork.LoadLevel(1);
+        // Reinitialize doesn't get called by SoftSceneReloader here for some reason?
+        Reinitialize();
+        reloadSceneRoutine = null;
+
+        //PhotonNetwork.LoadLevel(1);
     }
 
     public override void OnPlayerEnteredRoom(Player other)
@@ -260,7 +331,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 
     public override void OnPlayerLeftRoom(Player other)
     {
-        Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other disconnects
+        Debug.LogFormat("OnPlayerLeftRoom() {0}", other.NickName); // seen when other player disconnects
         //if (PhotonNetwork.IsMasterClient)
         //{
         //    Debug.LogFormat("OnPlayerLeftRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient); // called before OnPlayerLeftRoom
@@ -271,6 +342,5 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
 
         // lmao just leave dude
         LeaveRoom();
-        SceneManager.LoadScene(0);
     }
 }

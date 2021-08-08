@@ -44,7 +44,7 @@ namespace JSAM
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (AudioManager.instance) CheckForMusic();
+            if (AudioManager.Instance) CheckForMusic();
         }
 #endif
 

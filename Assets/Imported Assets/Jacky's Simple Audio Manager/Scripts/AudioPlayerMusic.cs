@@ -52,7 +52,7 @@ namespace JSAM
 
         public void Play()
         {
-            AudioManager am = AudioManager.instance;
+            AudioManager am = AudioManager.Instance;
 
             if (am == null) return;
             if (am.IsMusicPlayingInternal(music) && !restartOnReplay) return;
@@ -80,7 +80,7 @@ namespace JSAM
 
         public void Stop()
         {
-            AudioManager am = AudioManager.instance;
+            AudioManager am = AudioManager.Instance;
 
             if (am != null)
             {
@@ -104,7 +104,7 @@ namespace JSAM
         /// </summary>
         public void FadeIn(float time)
         {
-            sourceBeingUsed = AudioManager.instance.FadeMusicInInternal(music, time);
+            sourceBeingUsed = AudioManager.Instance.FadeMusicInInternal(music, time);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace JSAM
         /// <param name="time"></param>
         public void FadeOut(float time)
         {
-            AudioManager.instance.FadeMusicOutInternal(time);
+            AudioManager.Instance.FadeMusicOutInternal(time);
             sourceBeingUsed = null;
         }
 
@@ -133,11 +133,11 @@ namespace JSAM
 
         IEnumerator PlayDelayed()
         {
-            while (!AudioManager.instance)
+            while (!AudioManager.Instance)
             {
                 yield return new WaitForEndOfFrame();
             }
-            while (!AudioManager.instance.Initialized())
+            while (!AudioManager.Instance.Initialized())
             {
                 yield return new WaitForEndOfFrame();
             }

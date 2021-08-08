@@ -6,13 +6,14 @@ using Photon.Pun;
 using UnityEngine.UI;
 using JSAM;
 
-public class Sakuya : BaseEnemy
+public class Sakuya : BaseEnemy, IReloadable
 {
     [System.Serializable]
     struct BehaviourStruct
     {
         public Vector2 timeBetweenWander;
         public Vector2 timesToWander;
+        public Vector2 closeInOutTime;
     }
 
     [SerializeField] int[] healthPhases = new int[] { 75, 150, 200 };
@@ -49,6 +50,14 @@ public class Sakuya : BaseEnemy
 
     [SerializeField] Animator timeStopAnim;
 
+    bool isOwner
+    {
+        get
+        {
+            return PhotonNetwork.IsMasterClient || GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Versus;
+        }
+    }
+
     public System.Action<int> OnChangePhase;
     public System.Action OnBossDefeat;
 
@@ -62,18 +71,46 @@ public class Sakuya : BaseEnemy
 
     GameplayModifiers modifiers = null;
 
-    // Start is called before the first frame update
-    void Start()
+    Vector3 startPosition;
+
+    public void Reinitialize()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            behaviourRoutine = StartCoroutine(BehaviourTree());
-        }
+        animator.SetTrigger("Reset");
+        animator.Play("SecondaryMagicCircle.Idle");
+        magicCirclePrimary.localScale = Vector3.zero;
+        magicCircleSecondary.enabled = false;
+        renderer.color = Color.white;
+        collider.enabled = true;
+
+        canTakeDamage = true;
+        changingPhase = false;
+
+        transform.DOKill();
+
+        PlayIdle();
+
+        transform.position = startPosition;
+
+        currentPhase = 0;
 
         maxHealth = healthPhases[currentPhase];
         health = maxHealth;
 
-        modifiers = FindObjectOfType<GameplayModifiers>();
+        // Update health UI
+        OnShot?.Invoke();
+
+        if (isOwner)
+        {
+            behaviourRoutine = StartCoroutine(BehaviourTree());
+        }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+
+        modifiers = GameplayModifiers.Instance;
         if (modifiers)
         {
             switch (modifiers.BossActionSpeed)
@@ -89,14 +126,31 @@ public class Sakuya : BaseEnemy
             }
             designateStruct.timeBetweenWander = behaviourStructs[(int)modifiers.BossMoveSpeed].timeBetweenWander;
             designateStruct.timesToWander = behaviourStructs[(int)GameplayModifiers.BossActionSpeeds.Fast - (int)modifiers.BossActionSpeed].timesToWander;
+            designateStruct.closeInOutTime = behaviourStructs[(int)modifiers.BossMoveSpeed].closeInOutTime;
         }
+
+        startPosition = transform.position;
+
+        Reinitialize();
     }
 
-    // Update is called once per frame
-    //void Update()
-    //{
-    //
-    //}
+    private void OnEnable()
+    {
+        GameManager.OnReloadScene += StopMoving;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnReloadScene -= StopMoving;
+    }
+
+    private void StopMoving()
+    {
+        if (behaviourRoutine != null)
+        {
+            StopCoroutine(behaviourRoutine);
+        }
+    }
 
     public override void TakeDamage(float d = 1)
     {
@@ -115,12 +169,23 @@ public class Sakuya : BaseEnemy
         {
             canTakeDamage = false;
             changingPhase = true;
-            if (PhotonNetwork.IsMasterClient)
+            switch (GameplayModifiers.Instance.GameMode)
             {
-                StopCoroutine(behaviourRoutine);
-                behaviourRoutine = null;
-                photonView.RPC("StartPhaseChange", RpcTarget.All);
+                case GameplayModifiers.GameModes.Versus:
+                    StopCoroutine(behaviourRoutine);
+                    behaviourRoutine = null;
+                    StartPhaseChange();
+                    break;
+                case GameplayModifiers.GameModes.Coop:
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        StopCoroutine(behaviourRoutine);
+                        behaviourRoutine = null;
+                        photonView.RPC(nameof(StartPhaseChange), RpcTarget.All);
+                    }
+                    break;
             }
+            
             if (attackRoutine != null)
             {
                 StopCoroutine(attackRoutine);
@@ -159,9 +224,17 @@ public class Sakuya : BaseEnemy
 
     void Dash()
     {
-        if (PhotonNetwork.IsMasterClient)
+        switch (GameplayModifiers.Instance.GameMode)
         {
-            photonView.RPC("DashTo", RpcTarget.All, GetRandomPosition());
+            case GameplayModifiers.GameModes.Versus:
+                DashTo(GetRandomPosition());
+                break;
+            case GameplayModifiers.GameModes.Coop:
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    photonView.RPC("DashTo", RpcTarget.All, GetRandomPosition());
+                }
+                break;
         }
     }
 
@@ -256,6 +329,42 @@ public class Sakuya : BaseEnemy
         attackRoutine = null;
     }
 
+    [PunRPC]
+    public void MeleeAttack()
+    {
+        StartCoroutine(DoMeleeAttack());
+    }
+
+    IEnumerator DoMeleeAttack()
+    {
+        float closeInTime = behaviourStructs[currentPhase].closeInOutTime.x;
+        float closeOutTime = behaviourStructs[currentPhase].closeInOutTime.y;
+
+        renderer.flipX = false;
+        animator.Play("Sakuya Melee Entrance");
+
+        GameObject meleeBullet = pools[3].GetObject();
+
+        transform.DOMove(AreaLogic.Instance.Player1MeleeTransform.position, closeInTime).SetEase(Ease.Linear);
+
+        yield return new WaitForSeconds(closeInTime);
+
+        animator.Play("Sakuya Melee Attack");
+        AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
+
+        meleeBullet.SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+
+        meleeBullet.SetActive(false);
+
+        // Identical to GoToCenter()
+        Vector3 destination = box.GetBoxCenter();
+        transform.DOMove(destination, closeOutTime).SetEase(Ease.Linear);
+        animator.Play("Sakuya Move");
+        renderer.flipX = destination.x - transform.position.x < 0;
+    }
+
     protected override void DamageFlash()
     {
         renderer.DOComplete();
@@ -301,10 +410,10 @@ public class Sakuya : BaseEnemy
 
             switch (currentPhase)
             {
-                case 1:
+                case 2:
                     magicCirclePrimary.DOScale(3, 1);
                     break;
-                case 2:
+                case 3:
                     magicCircleSecondary.enabled = true;
                     animator.Play("Secondary MagicCircle Intro");
                     AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 5);
@@ -316,7 +425,7 @@ public class Sakuya : BaseEnemy
             canTakeDamage = true;
             changingPhase = false;
 
-            if (PhotonNetwork.IsMasterClient)
+            if (isOwner)
             {
                 behaviourRoutine = StartCoroutine(BehaviourTree());
             }
@@ -340,11 +449,9 @@ public class Sakuya : BaseEnemy
             renderer.DOComplete();
             renderer.DOColor(Color.clear, 2).SetDelay(1);
 
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(2);
 
             OnBossDefeat?.Invoke();
-
-            Destroy(gameObject);
         }
     }
 
@@ -426,6 +533,8 @@ public class Sakuya : BaseEnemy
     {
         yield return new WaitForSeconds(2);
 
+        bool isLocal = GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Versus;
+
         while (true)
         {
             // If no modifiers found, fallback to debug system
@@ -435,7 +544,8 @@ public class Sakuya : BaseEnemy
             for (int i = 0; i < wanderNum; i++)
             {
                 Vector3 destination = GetRandomPosition();
-                photonView.RPC("WanderTo", RpcTarget.All, destination);
+                if (isLocal) WanderTo(destination);
+                else photonView.RPC(nameof(WanderTo), RpcTarget.All, destination);
                 float wanderTime = Random.Range(behaviourStruct.timeBetweenWander.x, behaviourStruct.timeBetweenWander.y);
                 yield return new WaitForSeconds(wanderTime);
             }
@@ -443,7 +553,6 @@ public class Sakuya : BaseEnemy
             int attackIndex = 0;
             do
             {
-                //attackIndex = (/*Random.Range(0, currentPhase + 1)*/2);
                 attackIndex = Random.Range(0, currentPhase + 1);
             } while (attackIndex == 2 && !canStopTime);
 
@@ -451,23 +560,34 @@ public class Sakuya : BaseEnemy
             {
                 case 0:
                     canStopTime = true;
-                    photonView.RPC("SakuyaVolley", RpcTarget.All);
+                    if (isLocal) SakuyaVolley();
+                    else photonView.RPC(nameof(SakuyaVolley), RpcTarget.All);
                     yield return new WaitForSeconds(5);
                     break;
                 case 1:
                     canStopTime = true;
-                    photonView.RPC("ArrangeKnivesClockwise", RpcTarget.All);
-                    yield return new WaitForSeconds(8);
+                    if (isLocal) MeleeAttack();
+                    else photonView.RPC(nameof(MeleeAttack), RpcTarget.All);
+                    float waitTime = behaviourStruct.closeInOutTime.x + behaviourStruct.closeInOutTime.y + 0.5f;
+                    yield return new WaitForSeconds(waitTime);
                     break;
                 case 2:
+                    canStopTime = true;
+                    if (isLocal) ArrangeKnivesClockwise();
+                    else photonView.RPC(nameof(ArrangeKnivesClockwise), RpcTarget.All);
+                    yield return new WaitForSeconds(8);
+                    break;
+                case 3:
                     canStopTime = false;
                     int knifeThrows = (int)Random.Range(timeStopKnifeThrows.x, timeStopKnifeThrows.y + 1);
-                    photonView.RPC("TimeStopCombo", RpcTarget.All, knifeThrows);
+                    if (isLocal) TimeStopCombo(knifeThrows);
+                    else photonView.RPC(nameof(TimeStopCombo), RpcTarget.All, knifeThrows);
                     yield return new WaitForSeconds(5);
                     break;
             }
 
-            photonView.RPC("PlayIdle", RpcTarget.All);
+            if (isLocal) PlayIdle();
+            else photonView.RPC(nameof(PlayIdle), RpcTarget.All);
         }
     }
 
@@ -477,8 +597,11 @@ public class Sakuya : BaseEnemy
         Sakuya sakuya = FindObjectOfType<Sakuya>();
         if (sakuya)
         {
-            sakuya.healthPhases = new int[] { 1, 1, 1 };
-            sakuya.health = 2;
+            for (int i = 0; i < sakuya.healthPhases.Length; i++)
+            {
+                sakuya.healthPhases[i] = 1;
+                sakuya.health = 2;
+            }
             sakuya.TakeDamage();
             CommandTerminal.Terminal.Log("Sakuya has been punished!");
         }

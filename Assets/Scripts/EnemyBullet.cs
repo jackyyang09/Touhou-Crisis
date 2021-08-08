@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSAM;
 
-public class EnemyBullet : MonoBehaviour
+public class EnemyBullet : MonoBehaviour, IReloadable
 {
     [SerializeField] protected float speed;
 
@@ -15,16 +15,23 @@ public class EnemyBullet : MonoBehaviour
 
     [SerializeField] protected float lifeTime;
 
+    [SerializeField] protected bool collideWithEnvironment = true;
+
     [SerializeField] AudioFileSoundObject bulletSound;
     public bool playSound;
 
     protected Vector3 ogPos;
     protected Vector3 targetPos;
 
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //}
+    public void Reinitialize()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void Start()
+    {
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+    }
 
     public void Init(Transform target)
     {
@@ -58,10 +65,10 @@ public class EnemyBullet : MonoBehaviour
 
         if (playSound)
         {
-            AudioManager.instance.PlaySoundInternal(bulletSound);
+            AudioManager.Instance.PlaySoundInternal(bulletSound);
         }
 
-        Invoke("DisableSelf", lifeTime);
+        Invoke(nameof(DisableSelf), lifeTime);
     }
 
     private void OnDisable()
@@ -72,16 +79,32 @@ public class EnemyBullet : MonoBehaviour
         }
 
         rb.velocity = Vector3.zero;
-        if (IsInvoking("DisableSelf")) CancelInvoke("DisableSelf");
+        if (IsInvoking(nameof(DisableSelf))) CancelInvoke(nameof(DisableSelf));
+    }
+
+    private void OnDestroy()
+    {
+        if (SoftSceneReloader.Instance != null)
+        {
+            SoftSceneReloader.Instance.RemoveReloadable(this);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        bool disableSelf = false;
+
         if (other.CompareTag("Player"))
         {
             HitTarget();
+            disableSelf = true;
         }
-        gameObject.SetActive(false);
+        else if (collideWithEnvironment)
+        {
+            disableSelf = true;
+        }
+
+        if (disableSelf) gameObject.SetActive(false);
     }
 
     public void HitTarget()

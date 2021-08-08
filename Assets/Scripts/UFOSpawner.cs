@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class UFOSpawner : MonoBehaviourPun
+public class UFOSpawner : MonoBehaviourPun, IReloadable
 {
     [SerializeField] GameObject redUfoPrefab = null;
     [SerializeField] GameObject greenUfoPrefab = null;
@@ -32,6 +32,8 @@ public class UFOSpawner : MonoBehaviourPun
     [SerializeField] ObjectPool blueBulletPool = null;
     [SerializeField] ObjectPool greenBulletPool = null;
 
+    int selectedSpawnDelay;
+
     int activeUfos = 0;
 
     static UFOSpawner instance;
@@ -47,9 +49,29 @@ public class UFOSpawner : MonoBehaviourPun
         }
     }
 
+    public void Reinitialize()
+    {
+        switch (GameplayModifiers.Instance.GameMode)
+        {
+            case GameplayModifiers.GameModes.Versus:
+                DisableSpawner();
+                InvokeRepeating("SpawnLocalUFO", spawnDelay[selectedSpawnDelay], spawnDelay[selectedSpawnDelay]);
+                break;
+            case GameplayModifiers.GameModes.Coop:
+                if (PhotonNetwork.IsMasterClient)
+                {
+                    DisableSpawner();
+                    InvokeRepeating("SpawnUFO", spawnDelay[selectedSpawnDelay], spawnDelay[selectedSpawnDelay]);
+                }
+                break;
+        }
+    }
+
     void Start()
     {
-        var modifiers = FindObjectOfType<GameplayModifiers>();
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+
+        var modifiers = GameplayModifiers.Instance;
         if (modifiers)
         {
             switch (modifiers.UFOSpawnRate)
@@ -60,12 +82,12 @@ public class UFOSpawner : MonoBehaviourPun
                 case GameplayModifiers.UFOSpawnRates.Low:
                 case GameplayModifiers.UFOSpawnRates.Normal:
                 case GameplayModifiers.UFOSpawnRates.High:
-                    int spawnRate = (int)modifiers.UFOSpawnRate - 1;
-                    if (PhotonNetwork.IsMasterClient)
-                        InvokeRepeating("SpawnUFO", spawnDelay[spawnRate], spawnDelay[spawnRate]);
+                    selectedSpawnDelay = (int)modifiers.UFOSpawnRate - 1;
                     break;
             }
         }
+
+        Reinitialize();
     }
 
     void OnEnable()
@@ -84,7 +106,8 @@ public class UFOSpawner : MonoBehaviourPun
 
     void DisableSpawner()
     {
-        if (IsInvoking("SpawnUFO")) CancelInvoke("SpawnUFO");
+        if (IsInvoking(nameof(SpawnUFO))) CancelInvoke(nameof(SpawnUFO));
+        if (IsInvoking(nameof(SpawnLocalUFO))) CancelInvoke(nameof(SpawnLocalUFO));
     } 
 
     void Initialize(PlayerBehaviour player)
@@ -98,10 +121,18 @@ public class UFOSpawner : MonoBehaviourPun
         if (activeUfos < maximumUfos)
         {
             activeUfos++;
-
             int ufoType = Random.Range(0, 3);
-
             photonView.RPC("SyncSpawnUFO", RpcTarget.MasterClient, ufoType);
+        }
+    }
+
+    void SpawnLocalUFO()
+    {
+        if (activeUfos < maximumUfos)
+        {
+            activeUfos++;
+            int ufoType = Random.Range(0, 3);
+            SyncSpawnUFO((UFOBehaviour.UFOType)ufoType);
         }
     }
 

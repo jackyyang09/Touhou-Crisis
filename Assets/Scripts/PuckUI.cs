@@ -6,7 +6,7 @@ using TMPro;
 using System;
 using DG.Tweening;
 
-public class PuckUI : MonoBehaviour
+public class PuckUI : MonoBehaviour, IReloadable
 {
     [SerializeField] PlayerBehaviour player = null;
     [SerializeField] ComboPuck puck = null;
@@ -18,6 +18,26 @@ public class PuckUI : MonoBehaviour
     [SerializeField] bool isPlayerTwo = false;
 
     [SerializeField] OptimizedCanvas canvas = null;
+
+    public void Reinitialize()
+    {
+        // Player 1 starts with puck
+        if (isPlayerTwo)
+        {
+            // Pass
+            puckImage.DORotate(new Vector3(0, 0, 180), 0, RotateMode.LocalAxisAdd);
+        }
+        else
+        {
+            // Receive
+            puckImage.DORotate(new Vector3(0, 0, 180), 0, RotateMode.LocalAxisAdd);
+        }
+    }
+
+    private void Start()
+    {
+        SoftSceneReloader.Instance.AddNewReloadable(this);
+    }
 
     private void OnEnable()
     {
