@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using JSAM;
+using static Facade;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -37,8 +38,6 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] OptimizedCanvas rebindInterface = null;
     [SerializeField] TMPro.TextMeshProUGUI rebindText = null;
 
-    GameObject flashEffect = null;
-
     [SerializeField] Image rebindMask;
     Coroutine rebindRoutine = null;
 
@@ -46,25 +45,6 @@ public class PauseMenu : MonoBehaviour
 
     void Awake()
     {
-        var flashEffects = FindObjectsOfType<RailShooterEffects>();
-
-        if (flashEffects.Length > 1)
-        {
-            for (int i = 0; i < flashEffects.Length; i++)
-            {
-                // Do these objects share the same root?
-                if (flashEffects[i].transform.root == transform.root)
-                {
-                    flashEffect = flashEffects[i].transform.GetChild(0).gameObject;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            flashEffect = flashEffects[0].transform.GetChild(0).gameObject;
-        }
-
         if (!PlayerPrefs.HasKey(CrosshairKey))
         {
             PlayerPrefs.SetInt(CrosshairKey, 1);
@@ -192,7 +172,7 @@ public class PauseMenu : MonoBehaviour
 
         if (PlayerPrefs.HasKey(ScreenFlashKey))
         {
-            flashEffect.gameObject.SetActive(PlayerPrefs.GetInt(ScreenFlashKey) == 1);
+            ApplyScreenFlashSettings();
         }
 
         if (PlayerPrefs.HasKey(HideCursorKey))
@@ -245,12 +225,26 @@ public class PauseMenu : MonoBehaviour
         AudioManager.SetSoundVolume(soundSlider.value);
     }
 
-    public void ApplyScreenFlashSettings()
+    public void ToggleScreenFlashSettings()
     {
         PlayerPrefs.SetInt(ScreenFlashKey, (int)Mathf.Repeat(PlayerPrefs.GetInt(ScreenFlashKey) + 1, 2f));
         PlayerPrefs.Save();
-        flashEffect.gameObject.SetActive(PlayerPrefs.GetInt(ScreenFlashKey) == 1);
+        ApplyScreenFlashSettings();
+    }
+
+    public void ApplyScreenFlashSettings()
+    {
         LoadToggleSettings();
+        if (!playerUI) return;
+        switch (PlayerPrefs.GetInt(ScreenFlashKey))
+        {
+            case 0:
+                playerUI.ShooterEffects.DisableScreenFlashes();
+                break;
+            case 1:
+                playerUI.ShooterEffects.EnableScreenFlashes();
+                break;
+        }
     }
 
     public void ApplyCrosshairSettings()

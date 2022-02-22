@@ -281,8 +281,7 @@ public class OptimizedCanvas : MonoBehaviour
 
         if (Application.isPlaying && flashLayoutGroups && gameObject.activeInHierarchy)
         {
-            if (layoutRoutine != null) StopCoroutine(layoutRoutine);
-            layoutRoutine = StartCoroutine(FlashLayoutComponents(active));
+            FlashLayoutComponents();
         }
 
         // Invoke events immediately, will not invoke if transition is applied
@@ -335,7 +334,7 @@ public class OptimizedCanvas : MonoBehaviour
         if (animation != null) animation.StopAnimating();
     }
 
-    void FlashLayoutComponents()
+    public void FlashLayoutComponents()
     {
         if (!flashLayoutGroups || !gameObject.activeInHierarchy || !IsVisible) return;
         if (layoutRoutine != null) StopCoroutine(layoutRoutine);
@@ -344,6 +343,11 @@ public class OptimizedCanvas : MonoBehaviour
 
     IEnumerator FlashLayoutComponents(bool showForOneFrame)
     {
+        for (int i = 0; i < dynamicUI.Count; i++)
+        {
+            dynamicUI[i].hasChanged = false;
+        }
+
         if (showForOneFrame)
         {
             for (int i = 0; i < layoutElements.Count; i++)
@@ -356,7 +360,7 @@ public class OptimizedCanvas : MonoBehaviour
                 layoutGroups[i].enabled = true;
             }
 
-            yield return new WaitForSecondsRealtime(1);
+            yield return new WaitForEndOfFrame();
         }
         
         for (int i = 0; i < layoutElements.Count; i++)
@@ -367,11 +371,6 @@ public class OptimizedCanvas : MonoBehaviour
         for (int i = 0; i < layoutGroups.Count; i++)
         {
             layoutGroups[i].enabled = false;
-        }
-
-        for (int i = 0; i < dynamicUI.Count; i++)
-        {
-            dynamicUI[i].hasChanged = false;
         }
 
         layoutRoutine = null;

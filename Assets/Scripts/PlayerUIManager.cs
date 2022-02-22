@@ -7,7 +7,7 @@ using DG.Tweening;
 using UnityEngine.Rendering.Universal;
 using System;
 
-public class PlayerUIManager : MonoBehaviour, IReloadable
+public class PlayerUIManager : BasicSingleton<PlayerUIManager>, IReloadable
 {
     [SerializeField] Camera screenSpaceCamera = null;
     [SerializeField] Canvas overlayCanvas = null;
@@ -18,6 +18,7 @@ public class PlayerUIManager : MonoBehaviour, IReloadable
     [SerializeField] Sakuya sakuya = null;
     [SerializeField] RailShooterLogic railShooterLogic = null;
     [SerializeField] RailShooterEffects railShooterEffects = null;
+    public RailShooterEffects ShooterEffects { get { return railShooterEffects; } }
     [SerializeField] GameObject[] personalObjects = null;
     [SerializeField] OptimizedCanvas pauseMenu = null;
 
@@ -96,9 +97,9 @@ public class PlayerUIManager : MonoBehaviour, IReloadable
         UpdateLivesDisplay(DamageType.Bullet);
 
         // Hide game over items
-        railShooterEffects.SetInMenu(false);
-        railShooterEffects.playSound = false;
-        railShooterEffects.spawnMuzzleFlash = false;
+        railShooterEffects.InMenu = false;
+        railShooterEffects.PlaySound = false;
+        railShooterEffects.SpawnMuzzleFlash = false;
 
         if (pauseMenu.IsVisible)
         {
@@ -390,9 +391,9 @@ public class PlayerUIManager : MonoBehaviour, IReloadable
     {
         PlayerManager.Instance.LocalPlayer.RemovePlayerControl();
 
-        railShooterEffects.SetInMenu(true);
-        railShooterEffects.playSound = true;
-        railShooterEffects.spawnMuzzleFlash = true;
+        railShooterEffects.InMenu = true;
+        railShooterEffects.PlaySound = true;
+        railShooterEffects.SpawnMuzzleFlash = true;
 
         //pauseMenu.gameObject.SetActive(false);
         pauseMenu.Hide();

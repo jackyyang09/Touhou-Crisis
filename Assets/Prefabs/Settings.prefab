@@ -3326,7 +3326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 58.05
+      value: 79.3
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset
@@ -3496,7 +3496,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 58.05
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset
@@ -4089,7 +4089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176953, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ApplyScreenFlashSettings
+      value: ToggleScreenFlashSettings
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176953, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -4097,7 +4097,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176953, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: JSAM.PauseMenu, Assembly-CSharp
+      value: PauseMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176953, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -4121,7 +4121,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 54.05
+      value: 50.95
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset
@@ -4334,7 +4334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 55.7
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset
@@ -4536,7 +4536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 110.45
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset
@@ -4750,7 +4750,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 58.05
+      value: 79.3
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset

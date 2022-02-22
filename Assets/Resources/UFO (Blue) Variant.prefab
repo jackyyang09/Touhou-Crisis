@@ -4918,9 +4918,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: health
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: collider
       value: 
       objectReference: {fileID: 7481105158015671472}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: maxHealth
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: waitTime.x
       value: 0

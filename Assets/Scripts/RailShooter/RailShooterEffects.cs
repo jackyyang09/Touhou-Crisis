@@ -6,7 +6,10 @@ using DG.Tweening;
 
 public class RailShooterEffects : MonoBehaviour
 {
-    public bool playSound = false;
+    public bool PlaySound = false;
+    public bool SpawnMuzzleFlash = false;
+    public bool InMenu = false;
+
     [SerializeField] RailShooterLogic railShooter = null;
     [SerializeField] PlayerBehaviour player = null;
     [SerializeField] AudioFileSoundObject shootSound = null;
@@ -17,9 +20,6 @@ public class RailShooterEffects : MonoBehaviour
 
     [SerializeField] GameObject muzzleFlashPrefab = null;
     [SerializeField] RectTransform muzzleFlashCanvas = null;
-    public bool spawnMuzzleFlash = false;
-
-    [SerializeField] bool inMenu = false;
 
     //private void Start()
     //{
@@ -27,13 +27,9 @@ public class RailShooterEffects : MonoBehaviour
 
     private void OnEnable()
     {
-        if (inMenu)
+        if (InMenu)
         {
             railShooter.OnShoot += PlayEffect;
-        }
-        else if (player != null && !inMenu)
-        {
-            player.OnShotFired += PlayScreenFlashEffect;
         }
     }
 
@@ -42,28 +38,7 @@ public class RailShooterEffects : MonoBehaviour
         railShooter.OnShoot -= PlayEffect;
         if (player != null)
         {
-            player.OnShotFired -= PlayScreenFlashEffect;
-        }
-    }
-
-    public void SetInMenu(bool isInMenu)
-    {
-        inMenu = isInMenu;
-        if (inMenu)
-        {
-            railShooter.OnShoot += PlayEffect;
-            if (player != null)
-            {
-                player.OnShotFired -= PlayScreenFlashEffect;
-            }
-        }
-        else
-        {
-            railShooter.OnShoot -= PlayEffect;
-            if (player != null)
-            {
-                player.OnShotFired += PlayScreenFlashEffect;
-            }
+            DisableScreenFlashes();
         }
     }
 
@@ -74,7 +49,9 @@ public class RailShooterEffects : MonoBehaviour
     /// <param name="screenPoint"></param>
     public void PlayEffect(Ray ray, Vector2 screenPoint)
     {
-        if (spawnMuzzleFlash)
+        if (InMenu) return;
+
+        if (SpawnMuzzleFlash)
         {
             //Spawn bullet on the canvas
             var bullet = Instantiate(muzzleFlashPrefab, muzzleFlashCanvas).transform as RectTransform;
@@ -82,10 +59,26 @@ public class RailShooterEffects : MonoBehaviour
             bullet.position = screenPoint;
         }
 
-        if (playSound)
+        if (PlaySound)
         {
             AudioManager.Instance.PlaySoundInternal(shootSound);
         }
+    }
+
+    bool screenFlashesSubbed = true;
+    public void EnableScreenFlashes()
+    {
+        if (!screenFlashesSubbed)
+        {
+            player.OnShotFired += PlayScreenFlashEffect;
+            screenFlashesSubbed = true;
+        }
+    }
+
+    public void DisableScreenFlashes()
+    {
+        player.OnShotFired -= PlayScreenFlashEffect;
+        screenFlashesSubbed = false;
     }
 
     /// <summary>
@@ -95,6 +88,7 @@ public class RailShooterEffects : MonoBehaviour
     /// <param name="hitPosition"></param>
     void PlayScreenFlashEffect(bool miss, Vector2 hitPosition)
     {
+        if (InMenu) return;
         screenFlash.DOColor(flashColor, 0);
         screenFlash.DOColor(Color.clear, 0).SetDelay(fadeEffectTime);
     }
