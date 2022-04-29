@@ -96,6 +96,11 @@ public class PlayerUIManager : BasicSingleton<PlayerUIManager>, IReloadable
         // Initialize lives
         UpdateLivesDisplay(DamageType.Bullet);
 
+        for (int i = 0; i < enemySpellcards.Length; i++)
+        {
+            enemySpellcards[i].enabled = true;
+        }
+
         // Hide game over items
         railShooterEffects.InMenu = false;
         railShooterEffects.PlaySound = false;
@@ -203,7 +208,8 @@ public class PlayerUIManager : BasicSingleton<PlayerUIManager>, IReloadable
 
     private void ShowCoverTutorial(Ray arg1, Vector2 arg2)
     {
-        if (!player.InCover || coverTutorial.IsVisible || !player.CanPlay || pauseMenu.IsVisible) return;
+        if (!player.InCover || coverTutorial.IsVisible || !player.CanPlay || 
+            pauseMenu.IsVisible || player.LoadoutSystem.WeaponReady) return;
 
         shotsFiredInCover++;
         if (shotsFiredInCover >= shotsBeforeTutorial)

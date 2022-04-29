@@ -46,6 +46,10 @@ PrefabInstance:
       value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: ufoRenderer
+      value: 
+      objectReference: {fileID: 9000693256786810387}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: redChargeTime
       value: 1.75
       objectReference: {fileID: 0}
@@ -192,6 +196,11 @@ PrefabInstance:
 --- !u!1 &8270677247383486873 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4169493821874512106, guid: 50954c074e43ad645bf33a4c601138d7, type: 3}
+  m_PrefabInstance: {fileID: 5411740881398456691}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9000693256786810387 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4031495159962072928, guid: 50954c074e43ad645bf33a4c601138d7, type: 3}
   m_PrefabInstance: {fileID: 5411740881398456691}
   m_PrefabAsset: {fileID: 0}
 --- !u!108 &6375734199836640353 stripped

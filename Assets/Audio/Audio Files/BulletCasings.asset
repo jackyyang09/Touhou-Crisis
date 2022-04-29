@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d15ae218647a2d4f85e14306846c10c, type: 3}
   m_Name: BulletCasings
   m_EditorClassIdentifier: 
-  safeName: SpatialSound
   presetDescription: '<Default Preset>
 
     - Sound meant to be played in the game
@@ -28,7 +27,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5f85a23ae74fe2945b24621cfc54e2a7, type: 3}
   - {fileID: 8300000, guid: ca0cbce929d45714793014bca1598d72, type: 3}
   useLibrary: 1
-  relativeVolume: 0.3
+  relativeVolume: 0.5
   spatialize: 0
   maxDistance: 0
   priority: 128

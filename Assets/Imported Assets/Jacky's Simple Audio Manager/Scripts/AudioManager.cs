@@ -93,7 +93,6 @@ namespace JSAM
 
         [Header("General Settings")]
 
-
         public static AudioManager Instance;
 
         /// <summary>
@@ -175,9 +174,10 @@ namespace JSAM
             if (settings.DontDestroyOnLoad)
             {
                 DontDestroyOnLoad(gameObject);
+                gameObject.transform.SetParent(null, true);
             }
 
-            EstablishSingletonDominance(true);
+            EstablishSingletonDominance();
 
             if (!initialized)
             {
@@ -2573,39 +2573,39 @@ namespace JSAM
         }
 
         /// <summary>
+        /// TODO: Make this more stable
         /// Ensures that the AudioManager you think you're referring to actually exists in this scene
         /// </summary>
-        [RuntimeInitializeOnLoadMethod]
-        public void EstablishSingletonDominance(bool killSelf = true)
+        public void EstablishSingletonDominance()
         {
-            if (Instance == null)
+            // I'm not the instance and yet the instance exists?
+            if (Instance != this && Instance != null)
             {
-                Instance = this;
-            }
-            else if (Instance != this)
-            {
+                // Instance is from a previous scene and got leftover somehow
+                if (!settings.DontDestroyOnLoad && Application.isPlaying && Instance.gameObject.scene.isLoaded)
+                {
+                    Destroy(Instance.gameObject);
+                }
                 // A unique case where the Singleton exists but not in this scene
-                if (Instance.gameObject.scene.name == null)
-                {
-                    Instance = this;
-                }
-                else if (!Instance.gameObject.activeInHierarchy)
-                {
-                    Instance = this;
-                }
-                else if (Instance.gameObject.scene.name == "DontDestroyOnLoad")
-                {
-                    Destroy(gameObject);
-                }
                 else if (Instance.gameObject.scene.name != gameObject.scene.name)
                 {
+                    if (Instance.gameObject.scene.name == "DontDestroyOnLoad" || gameObject.scene == null) // Previous is still here and active
+                    {
+                        enabled = false;
+                    }
+                    else
+                    {
+                        Instance = this;
+                    }
+                }
+                // For some reason the other instance is just deactivated
+                else if (!Instance.gameObject.activeInHierarchy)
+                {
+                    Destroy(Instance.gameObject);
                     Instance = this;
                 }
-                else if (killSelf)
-                {
-                    Destroy(gameObject);
-                }
             }
+            else Instance = this;
         }
 
         private void OnDestroy()
@@ -2906,19 +2906,26 @@ namespace JSAM
         }
 
 #if UNITY_EDITOR
-
         /// <summary>
         /// A MonoBehaviour function called when the script is loaded or a value is changed in the inspector (Called in the editor only).
         /// </summary>
         private void OnValidate()
         {
-            EstablishSingletonDominance(false);
+            if (Instance == null) Instance = FindObjectOfType<AudioManager>();
             if (GetListener() == null) FindNewListener();
             ValidateSourcePrefab();
 
             if (!doneLoading) return;
 
             SetSpatialSound(Settings.Spatialize);
+        }
+
+        private void LateUpdate()
+        {
+            if (settings.Spatialize && settings.SpatializeOnLateUpdate)
+            {
+                TrackSounds();
+            }
         }
 
         public bool SourcePrefabExists()
@@ -2935,14 +2942,6 @@ namespace JSAM
                 UnityEditor.EditorUtility.DisplayDialog("AudioManager Notice",
                     "The source prefab you specified was missing an AudioChannelHelper. This component is necessary for AudioManager to function. " +
                     "The prefab has been modified to include one, but do remember to attach one in the future.", "Thanks!");
-            }
-        }
-
-        private void LateUpdate()
-        {
-            if (settings.Spatialize && settings.SpatializeOnLateUpdate)
-            {
-                TrackSounds();
             }
         }
 #endif

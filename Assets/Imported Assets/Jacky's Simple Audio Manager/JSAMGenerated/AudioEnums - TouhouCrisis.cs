@@ -19,7 +19,9 @@
         UFOBullet,
         PlayerHurtRemote,
         PlayerJoin,
-        ScoreBeeps
+        ScoreBeeps,
+        Weapon_Unlock,
+        WeaponChange
     }
     public enum TouhouCrisisMusic {
         FloweringNight,

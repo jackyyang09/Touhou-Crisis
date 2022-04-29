@@ -17,13 +17,7 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
     public bool BuddhaMode { get { return infiniteLives; } }
     [SerializeField] int maxLives = 5;
     int currentLives;
-    public int CurrentLives
-    {
-        get
-        {
-            return currentLives;
-        }
-    }
+    public int CurrentLives { get { return currentLives; } }
 
     [SerializeField] bool inTransit;
 
@@ -35,13 +29,7 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
     [SerializeField] float coverThreshold = 0.7f;
 
     bool inCover = false;
-    public bool InCover
-    {
-        get
-        {
-            return inCover;
-        }
-    }
+    public bool InCover { get { return inCover; } }
 
     [SerializeField] float damageRecoveryTime = 1.5f;
 
@@ -49,32 +37,14 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
     [SerializeField] List<WeaponObject> weapons = new List<WeaponObject>();
     public WeaponObject[] Loadout { get { return weapons.ToArray(); } }
 
-    public WeaponObject ActiveWeapon
-    {
-        get
-        {
-            return weapons[activeWeaponIndex];
-        }
-    }
+    public WeaponObject ActiveWeapon { get { return weapons[activeWeaponIndex]; } }
 
     [SerializeField] int[] ammoCount = new int[4];
     public int[] AmmoCount { get { return ammoCount; } }
 
-    public int CurrentAmmo
-    {
-        get
-        {
-            return ammoCount[activeWeaponIndex];
-        }
-    }
+    public int CurrentAmmo { get { return ammoCount[activeWeaponIndex]; } }
 
-    public float ActiveWeaponDamage
-    {
-        get
-        {
-            return ActiveWeapon.bulletDamage * comboPuck.Multliplier;
-        }
-    }
+    public float ActiveWeaponDamage { get { return ActiveWeapon.bulletDamage * comboPuck.Multliplier; } }
 
     [SerializeField] int activeWeaponIndex = 0;
     public int ActiveWeaponIndex { get { return activeWeaponIndex; } }
@@ -90,39 +60,18 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
     [SerializeField] RailShooterLogic railShooter = null;
 
     [SerializeField] ScoreSystem scoreSystem = null;
-    public ScoreSystem ScoreSystem
-    {
-        get
-        {
-            return scoreSystem;
-        }
-    }
+    public ScoreSystem ScoreSystem { get { return scoreSystem; } }
 
     [SerializeField] AccuracyCounter accuracyCounter;
-    public AccuracyCounter AccuracyCounter
-    {
-        get
-        {
-            return accuracyCounter;
-        }
-    }
+    public AccuracyCounter AccuracyCounter { get { return accuracyCounter; } }
 
     [SerializeField] DamageCounter damageCounter;
-    public DamageCounter DamageCounter
-    {
-        get
-        {
-            return damageCounter;
-        }
-    }
+    public DamageCounter DamageCounter { get { return damageCounter; } }
 
-    public PhotonView PhotonView
-    {
-        get
-        {
-            return railShooter.photonView;
-        }
-    }
+    [SerializeField] LoadoutSystem loadoutSystem;
+    public LoadoutSystem LoadoutSystem { get { return loadoutSystem; } }
+
+    public PhotonView PhotonView { get { return railShooter.photonView; } }
 
     [SerializeField] ComboPuck comboPuck;
 
@@ -135,14 +84,7 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
     [SerializeField] Animator anim = null;
 
     bool canPlay = true;
-    public bool CanPlay
-    {
-        get
-        {
-            return canPlay;
-        }
-    }
-
+    public bool CanPlay { get { return canPlay; } }
     
     /// <summary>
     /// Called when a shot is successfully fired. 
@@ -234,6 +176,12 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
         railShooter.OnTriggerDown += OnTriggerDown;
         railShooter.OnTriggerUp += OnTriggerUp;
         OnPlayerDeath += RemovePlayerControl;
+
+        SickDev.DevConsole.DevConsole.singleton.AddCommand(new SickDev.CommandSystem.ActionCommand(Die)
+        {
+            alias = "Die",
+            description = "Reduces own health to 0"
+        });
     }
 
     private void OnDisable()
@@ -403,6 +351,7 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
         {
             railShooter.OnShoot += HandleShooting;
         }
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.WeaponChange);
         OnSwapWeapon?.Invoke(weapons[activeWeaponIndex]);
     }
 
@@ -485,10 +434,10 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
         canPlay = false;
     }
 
-    [CommandTerminal.RegisterCommand(Help = "Give player infinite lives", MaxArgCount = 0)]
-    static void Buddha(CommandTerminal.CommandArg[] args)
+    void Die()
     {
-        var player = FindObjectOfType<PlayerBehaviour>();
-        player.infiniteLives = true;
+        inCover = false;
+        currentLives = 1;
+        TakeDamage(DamageType.Bullet);
     }
 }

@@ -20,6 +20,7 @@ public class LoadoutSystem : MonoBehaviour, IReloadable
     [SerializeField] ComboPuck combo = null;
 
     WeaponObject specialWeapon = null;
+    public WeaponObject SpecialWeapon { get { return specialWeapon; } }
     [SerializeField] bool weaponReady = false;
     public bool WeaponReady { get { return weaponReady; } }
 
@@ -47,6 +48,13 @@ public class LoadoutSystem : MonoBehaviour, IReloadable
         railShooter.OnShoot += OnTriggerPull;
         player.OnRoundExpended += OnBulletFired;
         player.OnEnterCover += OnEnterCover;
+
+        SickDev.DevConsole.DevConsole.singleton.AddCommand(new SickDev.CommandSystem.ActionCommand(GiveAmmo)
+        {
+            alias = "GiveAmmo",
+            description = "Enables use of secondary weapon"
+        });
+        
     }
 
     private void OnDisable()
@@ -58,6 +66,7 @@ public class LoadoutSystem : MonoBehaviour, IReloadable
 
     private void OnTriggerPull(Ray arg1, Vector2 arg2)
     {
+        if (!player.CanPlay) return;
         if (weaponReady && player.InCover)
         {
             player.SwapWeapon((int)Mathf.Repeat(player.ActiveWeaponIndex + 1, player.Loadout.Length));
@@ -92,6 +101,7 @@ public class LoadoutSystem : MonoBehaviour, IReloadable
     public void GivePlayerAmmo()
     {
         weaponReady = true;
+        currentCharge = maxCharge;
         player.SetAmmo(1, specialWeapon.ammoCapacity);
     }
 
@@ -110,11 +120,9 @@ public class LoadoutSystem : MonoBehaviour, IReloadable
         }
     }
 
-    [CommandTerminal.RegisterCommand(Help = "Enables use of secondary weapon", MaxArgCount = 0)]
-    static void GiveAmmo(CommandTerminal.CommandArg[] args)
+    void GiveAmmo()
     {
-        LoadoutSystem loadout = PlayerManager.Instance.LocalPlayer.GetComponent<LoadoutSystem>();
-        loadout.GivePlayerAmmo();
-        loadout.OnChargeChanged?.Invoke();
+        GivePlayerAmmo();
+        OnChargeChanged?.Invoke();
     }
 }

@@ -11,13 +11,7 @@ public class ScoreSystem : MonoBehaviour,/* IPunObservable,*/ IReloadable
     public const float DAMAGE_TAKEN_PENALTY = -3000;
 
     [SerializeField] float score = 0;
-    public int CurrentScore
-    {
-        get
-        {
-            return (int)score;
-        }
-    }
+    public int CurrentScore { get { return (int)score; } }
 
     [Header("Object References")]
     [SerializeField] PlayerBehaviour player = null;
@@ -55,19 +49,13 @@ public class ScoreSystem : MonoBehaviour,/* IPunObservable,*/ IReloadable
         float scoreToAdd = SCORE_ON_HIT * comboPuck.Multliplier;
         score += scoreToAdd;
         OnScoreChanged?.Invoke((int)score);
-        player.PhotonView.RPC(nameof(RemoteAddScoreOnHit), RpcTarget.Others, scoreToAdd);
-    }
-
-    [PunRPC]
-    void RemoteAddScoreOnHit(object scoreToAdd)
-    {
-        score += (float)scoreToAdd;
-        OnScoreChanged?.Invoke((int)score);
+        player.PhotonView.RPC(nameof(AddScore), RpcTarget.Others, scoreToAdd);
     }
 
     public void AddArbitraryScore(float scoreToAdd)
     {
-        score += scoreToAdd * comboPuck.Multliplier;
+        scoreToAdd *= comboPuck.Multliplier;
+        score += scoreToAdd;
         OnScoreChanged?.Invoke((int)score);
         player.PhotonView.RPC(nameof(AddScore), RpcTarget.Others, scoreToAdd);
     }
@@ -75,7 +63,7 @@ public class ScoreSystem : MonoBehaviour,/* IPunObservable,*/ IReloadable
     [PunRPC]
     void AddScore(float scoreToAdd)
     {
-        score += scoreToAdd * comboPuck.Multliplier;
+        score += scoreToAdd;
         OnScoreChanged?.Invoke((int)score);
     }
 

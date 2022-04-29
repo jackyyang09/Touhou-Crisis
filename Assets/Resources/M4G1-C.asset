@@ -21,5 +21,5 @@ MonoBehaviour:
   bulletSpread: 0
   hitFlashPrefab: {fileID: 1367978030930376534, guid: 2880589ddbe8e2d4d9044910d7604b1c, type: 3}
   missFlashPrefab: {fileID: 5146475814407794022, guid: c358f2adcf8c7bd42b7018c2d380fe6c, type: 3}
-  fireSound: {fileID: 0}
-  casingSound: {fileID: 0}
+  fireSound: {fileID: 11400000, guid: d2f54e7520044ca41929e4f4933c78fa, type: 2}
+  casingSound: {fileID: 11400000, guid: 642551ba729a0c94da3641a25dd7431a, type: 2}

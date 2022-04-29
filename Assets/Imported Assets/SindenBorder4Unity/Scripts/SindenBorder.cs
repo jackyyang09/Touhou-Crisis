@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,13 +23,7 @@ namespace SindenUnity
         [SerializeField] float borderScale = 1;
 
         [SerializeField] List<BorderPropObject> borders = null;
-        public List<BorderPropObject> Borders
-        {
-            get
-            {
-                return borders;
-            }
-        }
+        public List<BorderPropObject> Borders { get { return borders; } }
 
         /// <summary>
         /// Returns true if there is at least 1 border stored in this component. 
@@ -57,23 +50,11 @@ namespace SindenUnity
             }
         }
 
-        public BorderProperties ActiveBorder
-        { 
-            get
-            {
-                return RuntimeBorder.Instance.properties;
-            }
-        }
+        public BorderProperties ActiveBorder { get { return RuntimeBorder.Instance.properties; } }
 
         public RuntimeBorder runtimeBorder = null;
 
-        public int BorderWidthInPixels
-        {
-            get
-            {
-                return (int)(ActiveBorder.width * borderScale);
-            }
-        }
+        public int BorderWidthInPixels { get { return (int)(ActiveBorder.width * borderScale); } }
 
         public int BorderHeightInPixels
         {

@@ -4888,6 +4888,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7969018183955694619, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
   m_PrefabInstance: {fileID: 5762190360521087148}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &4723969532139053568 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1043006457066338988, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
+  m_PrefabInstance: {fileID: 5762190360521087148}
+  m_PrefabAsset: {fileID: 0}
 --- !u!108 &5174200493638111505 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 592533916543961533, guid: 4aa5e55b99350e24ca2a1bd9e1515403, type: 3}
@@ -4937,6 +4942,10 @@ PrefabInstance:
       propertyPath: waitTime.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
+      propertyPath: ufoRenderer
+      value: 
+      objectReference: {fileID: 4723969532139053568}
     - target: {fileID: 8793207776049235264, guid: c359a61a70fe47042ad09d9cda48a234, type: 3}
       propertyPath: wanderTime.x
       value: 1

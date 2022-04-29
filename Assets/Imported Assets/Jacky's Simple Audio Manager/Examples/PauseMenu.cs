@@ -57,7 +57,7 @@ public class PauseMenu : MonoBehaviour
 
         if (!PlayerPrefs.HasKey(HideCursorKey))
         {
-            PlayerPrefs.SetInt(HideCursorKey, 0);
+            PlayerPrefs.SetInt(HideCursorKey, 1);
         }
 
         if (!PlayerPrefs.HasKey(FireInputKey))
@@ -103,6 +103,8 @@ public class PauseMenu : MonoBehaviour
         //    canvas.onCanvasHide.RemoveListener(UpdateTimeScale);
         //}
         railShooter.OnShoot -= DeselectEverything;
+
+        SaveVolumeSettings();
     }
 
     private void DeselectEverything(Ray obj, Vector2 vector2)
@@ -204,25 +206,25 @@ public class PauseMenu : MonoBehaviour
 
     public void SaveVolumeSettings()
     {
-        PlayerPrefs.SetFloat(MasterVolumeKey, AudioManager.GetMasterVolume());
-        PlayerPrefs.SetFloat(MusicVolumeKey, AudioManager.GetMusicVolume());
-        PlayerPrefs.SetFloat(SoundVolumeKey, AudioManager.GetSoundVolume());
         PlayerPrefs.Save();
     }
 
     public void ApplyMasterVolume()
     {
         AudioManager.SetMasterVolume(masterSlider.value);
+        PlayerPrefs.SetFloat(MasterVolumeKey, AudioManager.GetMasterVolume());
     }
 
     public void ApplyMusicVolume()
     {
         AudioManager.SetMusicVolume(musicSlider.value);
+        PlayerPrefs.SetFloat(MusicVolumeKey, AudioManager.GetMusicVolume());
     }
 
     public void ApplySoundVolume()
     {
         AudioManager.SetSoundVolume(soundSlider.value);
+        PlayerPrefs.SetFloat(SoundVolumeKey, AudioManager.GetSoundVolume());
     }
 
     public void ToggleScreenFlashSettings()

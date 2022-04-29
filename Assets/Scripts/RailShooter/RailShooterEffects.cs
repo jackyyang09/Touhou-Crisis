@@ -27,19 +27,33 @@ public class RailShooterEffects : MonoBehaviour
 
     private void OnEnable()
     {
-        if (InMenu)
+        TryEnableShootEffects();
+        if (player)
         {
-            railShooter.OnShoot += PlayEffect;
+            EnableScreenFlashes();
         }
     }
 
     private void OnDisable()
     {
         railShooter.OnShoot -= PlayEffect;
-        if (player != null)
+        if (player)
         {
             DisableScreenFlashes();
         }
+    }
+
+    public void TryEnableShootEffects()
+    {
+        if (InMenu)
+        {
+            railShooter.OnShoot += PlayEffect;
+        }
+    }
+
+    public void DisableShootEffects()
+    {
+        railShooter.OnShoot -= PlayEffect;
     }
 
     /// <summary>
@@ -49,7 +63,7 @@ public class RailShooterEffects : MonoBehaviour
     /// <param name="screenPoint"></param>
     public void PlayEffect(Ray ray, Vector2 screenPoint)
     {
-        if (InMenu) return;
+        if (!InMenu) return;
 
         if (SpawnMuzzleFlash)
         {
@@ -65,10 +79,10 @@ public class RailShooterEffects : MonoBehaviour
         }
     }
 
-    bool screenFlashesSubbed = true;
+    bool screenFlashesSubbed = false;
     public void EnableScreenFlashes()
     {
-        if (!screenFlashesSubbed)
+        if (!screenFlashesSubbed && PlayerPrefs.GetInt(PauseMenu.ScreenFlashKey) == 1)
         {
             player.OnShotFired += PlayScreenFlashEffect;
             screenFlashesSubbed = true;

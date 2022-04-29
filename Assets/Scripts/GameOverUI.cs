@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System;
 using DG.Tweening;
 
 public class GameOverUI : MonoBehaviour, IReloadable
@@ -28,8 +27,10 @@ public class GameOverUI : MonoBehaviour, IReloadable
 
     [SerializeField] TextMeshProUGUI[] winnerText = null;
 
-    [SerializeField] OptimizedCanvas reimuPortrait = null;
-    [SerializeField] OptimizedCanvas marisaPortrait = null;
+    [SerializeField] UnityEngine.UI.Image reimuPortrait = null;
+    [SerializeField] Sprite[] reimuSprites;
+    [SerializeField] UnityEngine.UI.Image marisaPortrait = null;
+    [SerializeField] Sprite[] marisaSprites;
 
     [SerializeField] OptimizedCanvas shootToContinue = null;
 
@@ -44,13 +45,15 @@ public class GameOverUI : MonoBehaviour, IReloadable
 
     bool offline = false;
 
+    public static System.Action OnGameOver;
+
     public void Reinitialize()
     {
         gameOverScreen.Hide();
 
         gameOverTitle.Hide();
-        reimuPortrait.Hide();
-        marisaPortrait.Hide();
+        reimuPortrait.enabled = false;
+        marisaPortrait.enabled = false;
 
         timeCanvas.Hide();
         accuracyCanvas.Hide();
@@ -97,6 +100,8 @@ public class GameOverUI : MonoBehaviour, IReloadable
     {
         if (bossDefeated)
         {
+            reimuPortrait.sprite = reimuSprites[0];
+            marisaPortrait.sprite = marisaSprites[0];
             if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
             {
                 gameOverTitleText.text = "BOSS CLEAR";
@@ -108,6 +113,8 @@ public class GameOverUI : MonoBehaviour, IReloadable
         }
         else
         {
+            reimuPortrait.sprite = reimuSprites[1];
+            marisaPortrait.sprite = marisaSprites[1];
             if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
             {
                 gameOverTitleText.text = "GAME OVER";
@@ -119,7 +126,9 @@ public class GameOverUI : MonoBehaviour, IReloadable
         }
 
         if (offline) StartCoroutine(ShowGameOverScreen1P());
-        else StartCoroutine(ShowGameOverScreen2P());
+        else StartCoroutine(ShowGameOverScreen2P(bossDefeated));
+
+        OnGameOver?.Invoke();
     }
 
     bool skipResults = false;
@@ -133,7 +142,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
         yield return new WaitForSecondsRealtime(0.25f);
 
         gameOverTitle.Show();
-        reimuPortrait.Show();
+        reimuPortrait.enabled = true;
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
 
         yield return new WaitForSecondsRealtime(0.8f);
@@ -203,8 +212,10 @@ public class GameOverUI : MonoBehaviour, IReloadable
 
         scoreCanvas.Show();
 
-        while (!skipResults)
+        float timer = 2;
+        while (!skipResults && timer > 0)
         {
+            timer -= Time.deltaTime;
             yield return null;
         }
 
@@ -212,7 +223,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
         float finalScore = myScore + accuracyBonus + damagePenalty;
 
         float changeTime = 1;
-        float timer = 0;
+        timer = 0;
         skipResults = false;
 
         changeTime = 1;
@@ -248,7 +259,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
         shootToContinue.PlayAnimation();
     }
 
-    IEnumerator ShowGameOverScreen2P()
+    IEnumerator ShowGameOverScreen2P(bool bossDefeated)
     {
         bool isHost = Photon.Pun.PhotonNetwork.IsMasterClient;
         int hostId = 0;
@@ -271,8 +282,8 @@ public class GameOverUI : MonoBehaviour, IReloadable
         yield return new WaitForSecondsRealtime(0.25f);
 
         gameOverTitle.Show();
-        reimuPortrait.Show();
-        marisaPortrait.Show();
+        reimuPortrait.enabled = true;
+        marisaPortrait.enabled = true;
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
 
         railShooter.OnShoot += SkipResults;
@@ -420,8 +431,10 @@ public class GameOverUI : MonoBehaviour, IReloadable
         }
         JSAM.AudioManager.StopSoundIfLooping(TouhouCrisisSounds.ScoreBeeps);
 
-        if (finalScores[hostId] > finalScores[clientId])
+        if (finalScores[hostId] > finalScores[clientId]) // Reimu Wins
         {
+            if (bossDefeated) reimuPortrait.sprite = reimuSprites[2];
+
             var rect = winnerText[hostId].transform as RectTransform;
             float targetX = rect.anchoredPosition.x;
 
@@ -431,8 +444,10 @@ public class GameOverUI : MonoBehaviour, IReloadable
 
             winnerText[clientId].enabled = false;
         }
-        else if (finalScores[hostId] < finalScores[clientId])
+        else if (finalScores[hostId] < finalScores[clientId]) // Marisa Wins
         {
+            if (bossDefeated) marisaPortrait.sprite = marisaSprites[2];
+
             var rect = winnerText[clientId].transform as RectTransform;
             float targetX = rect.anchoredPosition.x;
 

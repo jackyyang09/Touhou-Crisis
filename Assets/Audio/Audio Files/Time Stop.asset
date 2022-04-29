@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d15ae218647a2d4f85e14306846c10c, type: 3}
   m_Name: Time Stop
   m_EditorClassIdentifier: 
-  safeName: SpatialSound
   presetDescription: '<Default Preset>
 
     - Sound meant to be played in the game
@@ -22,7 +21,7 @@ MonoBehaviour:
 
     - Minor pitch shift is applied'
   category: 
-  file: {fileID: 8300000, guid: e2ee38a3bb7fe384b91482510dc8e82a, type: 3}
+  file: {fileID: 8300000, guid: 67cadc0c7a4475c4e9c0a1bca1611dc9, type: 3}
   files:
   - {fileID: 8300000, guid: e2ee38a3bb7fe384b91482510dc8e82a, type: 3}
   useLibrary: 0

@@ -19,13 +19,7 @@ public class Sakuya : BaseEnemy, IReloadable
     [SerializeField] int[] healthPhases = new int[] { 75, 150, 200 };
     
     int currentPhase;
-    public int CurrentPhase
-    {
-        get
-        {
-            return currentPhase;
-        }
-    }
+    public int CurrentPhase { get { return currentPhase; } }
 
     [SerializeField] new SpriteRenderer renderer = null;
     [SerializeField] Color damagedColour;
@@ -137,11 +131,32 @@ public class Sakuya : BaseEnemy, IReloadable
     private void OnEnable()
     {
         GameManager.OnReloadScene += StopMoving;
+        GameOverUI.OnGameOver += StopAttacking;
+
+        SickDev.DevConsole.DevConsole.singleton.AddCommand(new SickDev.CommandSystem.ActionCommand(CrippleBoss)
+        {
+            alias = "CrippleBoss",
+            description = "Reduces bosses health and subsequent health bars to 1"
+        });
     }
 
     private void OnDisable()
     {
         GameManager.OnReloadScene -= StopMoving;
+        GameOverUI.OnGameOver -= StopAttacking;
+    }
+
+    void StopAttacking()
+    {
+        if (behaviourRoutine != null)
+        {
+            StopCoroutine(behaviourRoutine);
+        }
+        if (attackRoutine != null)
+        {
+            StopCoroutine(attackRoutine);
+            attackRoutine = null;
+        }
     }
 
     private void StopMoving()
@@ -259,6 +274,7 @@ public class Sakuya : BaseEnemy, IReloadable
                     animator.Play("Sakuya Volley 2");
                 break;
             case 2:
+            case 3:
                 animator.Play("Sakuya Volley 2");
                 break;
         }
@@ -296,7 +312,13 @@ public class Sakuya : BaseEnemy, IReloadable
                 animator.Play("Sakuya 4 Combo");
                 break;
             case 2:
-                animator.Play("Sakuya 4 Combo 2");
+            case 3:
+            case 4:
+                if (Random.value > 0.5f)
+                {
+                    animator.Play("Sakuya 4 Combo");
+                }
+                else animator.Play("Sakuya 4 Combo 2");
                 break;
         }
 
@@ -340,29 +362,38 @@ public class Sakuya : BaseEnemy, IReloadable
         float closeInTime = behaviourStructs[currentPhase].closeInOutTime.x;
         float closeOutTime = behaviourStructs[currentPhase].closeInOutTime.y;
 
-        renderer.flipX = false;
-        animator.Play("Sakuya Melee Entrance");
-
         GameObject meleeBullet = pools[3].GetObject();
 
-        transform.DOMove(AreaLogic.Instance.Player1MeleeTransform.position, closeInTime).SetEase(Ease.Linear);
+        if (health > 0)
+        {
+            renderer.flipX = false;
+            animator.Play("Sakuya Melee Entrance");
+        
+            transform.DOMove(AreaLogic.Instance.Player1MeleeTransform.position, closeInTime).SetEase(Ease.Linear);
 
-        yield return new WaitForSeconds(closeInTime);
+            yield return new WaitForSeconds(closeInTime);
+        }
 
-        animator.Play("Sakuya Melee Attack");
-        AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
+        if (health > 0)
+        {
+            animator.Play("Sakuya Melee Attack");
+            AudioManager.PlaySound(TouhouCrisisSounds.EnemySword);
 
-        meleeBullet.SetActive(true);
+            meleeBullet.SetActive(true);
 
-        yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);
+        }
 
         meleeBullet.SetActive(false);
 
-        // Identical to GoToCenter()
-        Vector3 destination = box.GetBoxCenter();
-        transform.DOMove(destination, closeOutTime).SetEase(Ease.Linear);
-        animator.Play("Sakuya Move");
-        renderer.flipX = destination.x - transform.position.x < 0;
+        if (health > 0)
+        {
+            // Identical to GoToCenter()
+            Vector3 destination = box.GetBoxCenter();
+            transform.DOMove(destination, closeOutTime).SetEase(Ease.Linear);
+            animator.Play("Sakuya Move");
+            renderer.flipX = destination.x - transform.position.x < 0;
+        }
     }
 
     protected override void DamageFlash()
@@ -390,6 +421,8 @@ public class Sakuya : BaseEnemy, IReloadable
         {
             knives[i].gameObject.SetActive(false);
         }
+
+        transform.DOKill();
 
         AudioManager.PlaySound(TouhouCrisisSounds.SpellcardBreak);
 
@@ -554,7 +587,7 @@ public class Sakuya : BaseEnemy, IReloadable
             do
             {
                 attackIndex = Random.Range(0, currentPhase + 1);
-            } while (attackIndex == 2 && !canStopTime);
+            } while (attackIndex == 3 && !canStopTime);
 
             switch (attackIndex)
             {
@@ -575,7 +608,7 @@ public class Sakuya : BaseEnemy, IReloadable
                     canStopTime = true;
                     if (isLocal) ArrangeKnivesClockwise();
                     else photonView.RPC(nameof(ArrangeKnivesClockwise), RpcTarget.All);
-                    yield return new WaitForSeconds(8);
+                    yield return new WaitForSeconds(7.5f);
                     break;
                 case 3:
                     canStopTime = false;
@@ -591,23 +624,14 @@ public class Sakuya : BaseEnemy, IReloadable
         }
     }
 
-    [CommandTerminal.RegisterCommand(Help = "Reduces bosses health and subsequent health bars to 1", MaxArgCount = 0)]
-    static void CrippleBoss(CommandTerminal.CommandArg[] args)
+    void CrippleBoss()
     {
-        Sakuya sakuya = FindObjectOfType<Sakuya>();
-        if (sakuya)
+        for (int i = 0; i < healthPhases.Length; i++)
         {
-            for (int i = 0; i < sakuya.healthPhases.Length; i++)
-            {
-                sakuya.healthPhases[i] = 1;
-                sakuya.health = 2;
-            }
-            sakuya.TakeDamage();
-            CommandTerminal.Terminal.Log("Sakuya has been punished!");
+            healthPhases[i] = 1;
+            health = 2;
         }
-        else
-        {
-            CommandTerminal.Terminal.Log("Sakuya was not found in this scene!");
-        }
+        TakeDamage();
+        Debug.Log("Sakuya has been punished!");
     }
 }

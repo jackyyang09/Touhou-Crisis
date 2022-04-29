@@ -13,13 +13,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
     [SerializeField] float gameTimer = 0;
     float remoteGameTimer = 0;
     bool gameTimerEnabled = false;
-    public float GameTimeElapsed
-    {
-        get
-        {
-            return gameTimer;
-        }
-    }
+    public float GameTimeElapsed { get { return gameTimer; } }
 
     [SerializeField] float timeBetweenSync = 3;
 
@@ -54,6 +48,19 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
         remoteGameTimer = 0;
         rematchRequests = 0;
         gameOverRoutine = null;
+
+        DiscordWrapper.Instance.UpdateActivity(
+            state: PhotonNetwork.OfflineMode ? "Offline Solo" :
+            (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop ? "Online Co-Op" : "Online Versus"),
+            details: "In-Game",
+            largeImageKey: "sakuya",
+            smallImageKey: PhotonNetwork.IsMasterClient ? "reimu_discord" : "marisa_discord",
+            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " +
+                (PhotonNetwork.IsMasterClient ? "Reimu" : "Marisa"),
+            partySize: PhotonNetwork.CurrentRoom.PlayerCount,
+            partyMax: PhotonNetwork.OfflineMode ? 1 : 2,
+            startTime: DateTimeOffset.Now.ToUnixTimeSeconds()
+            );
     }
 
     private void Start()
@@ -202,10 +209,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
         {
             gameOverRoutine = StartCoroutine(SyncLoseRoutine());
         }
-        else
-        {
-            Debug.Log("wtf?");
-        }
     }
 
     IEnumerator SyncLoseRoutine()
@@ -265,6 +268,11 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
     }
 
     public void LeaveRoom()
+    {
+        PhotonNetwork.Disconnect();
+    }
+
+    public void OnApplicationQuit()
     {
         PhotonNetwork.Disconnect();
     }

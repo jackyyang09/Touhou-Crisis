@@ -10,13 +10,7 @@ public class UFOSpawner : MonoBehaviourPun, IReloadable
     [SerializeField] GameObject blueUfoPrefab = null;
 
     [SerializeField] ModularBox areaBox = null;
-    public ModularBox AreaBox
-    {
-        get
-        {
-            return areaBox;
-        }
-    }
+    public ModularBox AreaBox { get { return areaBox; } }
 
     [SerializeField] Sakuya sakuya = null;
 
@@ -96,12 +90,16 @@ public class UFOSpawner : MonoBehaviourPun, IReloadable
         //sakuya.OnChangePhase += UpdateSpawnBehaviour;
         sakuya.OnBossDefeat += DisableSpawner;
         //UpdateSpawnBehaviour(0);
+
+        GameOverUI.OnGameOver += DisableSpawner;
     }
 
     void OnDisable()
     {
         //sakuya.OnChangePhase -= UpdateSpawnBehaviour;
         sakuya.OnBossDefeat -= DisableSpawner;
+
+        GameOverUI.OnGameOver -= DisableSpawner;
     }
 
     void DisableSpawner()

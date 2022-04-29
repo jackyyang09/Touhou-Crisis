@@ -47,7 +47,7 @@ namespace SindenUnity
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField(
-                "For good practice, keep all border-constrained RecTransforms as children to this GameObject. " +
+                "For good practice, keep all border-constrained RectTransforms as children to this GameObject. " +
                 "Any Layout components should be applied to children rather than on this GameObject.", labelStyle);
 
             EditorGUILayout.Space();

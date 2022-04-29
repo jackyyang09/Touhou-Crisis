@@ -32,6 +32,11 @@ public class UFOBehaviour : BaseEnemy, IReloadable
 
     [SerializeField] float scoreValue = 100;
 
+    [SerializeField] Renderer ufoRenderer;
+    [SerializeField] int flashMaterialIndex = 1;
+    Material flashMaterial;
+    int flashID;
+
     [SerializeField] Light[] lights = null;
 
     [SerializeField] SpriteRenderer magicCircle = null;
@@ -61,6 +66,9 @@ public class UFOBehaviour : BaseEnemy, IReloadable
 
     void Start()
     {
+        flashMaterial = ufoRenderer.materials[flashMaterialIndex];
+        flashID = Shader.PropertyToID("_EmissionColor");
+
         collider.isTrigger = true;
 
         SoftSceneReloader.Instance.AddNewReloadable(this);
@@ -82,6 +90,17 @@ public class UFOBehaviour : BaseEnemy, IReloadable
         if (SoftSceneReloader.Instance != null)
         {
             SoftSceneReloader.Instance.RemoveReloadable(this);
+        }
+
+        transform.DOKill(false);
+        magicCircle.DOKill(false);
+        magicCircle.transform.DOKill(false);
+
+        // Destroy instanced material
+        if (flashMaterial != null)
+        {
+            flashMaterial.DOKill(false);
+            Destroy(flashMaterial);
         }
     }
 
@@ -214,9 +233,16 @@ public class UFOBehaviour : BaseEnemy, IReloadable
         }
     }
 
+    /// <summary>
+    /// Make sure to set emissive value to RGB(1, 1, 1)
+    /// so the emission value is enabled during runtime
+    /// </summary>
+    [ContextMenu(nameof(DamageFlash))]
     protected override void DamageFlash()
     {
         animator.SetTrigger("Hit");
+        flashMaterial.SetColor(flashID, Color.white);
+        flashMaterial.DOColor(Color.black, flashID, 0).SetDelay(0.15f);
     }
 
     protected override void Die()
@@ -225,13 +251,13 @@ public class UFOBehaviour : BaseEnemy, IReloadable
         {
             StopCoroutine(behaviourRoutine);
         }
-        transform.DOKill();
+        transform.DOKill(false);
 
         for (int i = 0; i < lights.Length; i++)
         {
             lights[i].enabled = false;
         }
-        PlayerManager.Instance.LocalPlayer.GetComponent<ScoreSystem>().AddArbitraryScore(scoreValue);
+        PlayerManager.Instance.LocalPlayer.ScoreSystem.AddArbitraryScore(scoreValue);
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.EnemyDeath);
         collider.isTrigger = false;
         rBody.useGravity = true;

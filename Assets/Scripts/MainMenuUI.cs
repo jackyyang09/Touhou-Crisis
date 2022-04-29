@@ -4,7 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
-using System;
 using JSAM;
 
 public class MainMenuUI : MonoBehaviourPunCallbacks
@@ -21,6 +20,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] float bgFadeTime = 0.5f;
     [SerializeField] float gameStartDelay = 0.25f;
 
+    [SerializeField] TMPro.TextMeshProUGUI versionLabel = null;
+
     [SerializeField] OptimizedCanvas lobbyTopBar = null;
     [SerializeField] LoadingScreen loadingScreen = null;
 
@@ -36,7 +37,11 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] OptimizedCanvas[] hostPrivilegeMask = null;
 
     [SerializeField] OptimizedCanvas player1NamePlate = null;
+    RectTransform player1NameRect { get { return player1NamePlate.transform as RectTransform; } }
+    float player1NameDest;
     [SerializeField] OptimizedCanvas player2NamePlate = null;
+    RectTransform player2NameRect { get { return player2NamePlate.transform as RectTransform; } }
+    float player2NameDest;
 
     [SerializeField] GameObject startGameClientBlock = null;
 
@@ -48,10 +53,17 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     Coroutine gameStartRoutine = null;
 
     // Start is called before the first frame update
-    //void Start()
-    //{
-    //    
-    //}
+    IEnumerator Start()
+    {
+        versionLabel.text = "VERSION " + Application.version;
+
+        yield return null;
+
+        player1NameDest = player1NameRect.anchoredPosition.x;
+        player2NameDest = player2NameRect.anchoredPosition.x;
+
+        UpdateDiscordToMenu();
+    }
 
     public void PlayButtonSound()
     {
@@ -63,7 +75,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         PlayButtonSound();
         onePlayerButton.SetActive(false);
         twoPlayerButtons.SetActive(true);
-        Invoke("DelayedConnect", delay);
+        Invoke(nameof(DelayedConnect), delay);
     }
 
     public void DelayedConnect()
@@ -102,13 +114,12 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     public void SyncEnterGameSetup()
     {
-        photonView.RPC("EnterGameSetup", RpcTarget.All);
+        photonView.RPC(nameof(EnterGameSetup), RpcTarget.All);
     }
-
 
     public void SyncGameplayModifiers()
     {
-        photonView.RPC("SyncGameplayModifiersRPC", RpcTarget.All, new object[]
+        photonView.RPC(nameof(SyncGameplayModifiersRPC), RpcTarget.All, new object[]
         {
             GameplayModifiers.Instance.StartingLives,
             GameplayModifiers.Instance.UFOSpawnRate,
@@ -138,6 +149,18 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         PlayButtonSound();
         lobbyScreen.Hide();
         gameSetup.ShowDelayed(0.1f);
+
+        DiscordWrapper.Instance.UpdateActivity(
+            state: "Game Setup",
+            details: PhotonNetwork.OfflineMode ? "Offline Solo" : 
+            (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop ? "Online Co-Op" : "Online Versus"),
+            largeImageKey: "sakuya",
+            smallImageKey: PhotonNetwork.IsMasterClient ? "reimu_discord" : "marisa_discord",
+            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " + 
+            (PhotonNetwork.IsMasterClient ? "Reimu" : "Marisa"),
+            partySize: PhotonNetwork.OfflineMode ? 1 : 2, 
+            partyMax: PhotonNetwork.OfflineMode ? 1 : 2
+        );
     }
 
     public void SyncEnterGame()
@@ -154,7 +177,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     public void SyncReturnToLobby()
     {
-        photonView.RPC("ReturnToLobby", RpcTarget.All);
+        photonView.RPC(nameof(ReturnToLobby), RpcTarget.All);
     }
 
     [PunRPC]
@@ -163,6 +186,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         PlayButtonSound();
         lobbyScreen.ShowDelayed(0.1f);
         gameSetup.Hide();
+
+        UpdateDiscordWithRoomState(PhotonNetwork.CurrentRoom.PlayerCount);
     }
 
     [PunRPC]
@@ -220,6 +245,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
                 }
             }
             player2NamePlate.Hide();
+
+            UpdateDiscordWithRoomState(1);
         }
     }
 
@@ -245,6 +272,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         startGameClientBlock.SetActive(false);
 
         roomSetupScreen.ShowDelayed(0.1f);
+
+        UpdateDiscordToMenu();
     }
 
     public override void OnPlayerLeftRoom(Player other)
@@ -258,8 +287,10 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     public void OnPlayerTwoJoin(string name)
     {
         player2NamePlate.Show();
-        (player2NamePlate.transform as RectTransform).DOAnchorPosX(900, 0);
-        (player2NamePlate.transform as RectTransform).DOAnchorPosX(79, uiMoveSpeed).SetEase(easeType);
+
+        player2NameRect.anchoredPosition = new Vector2(player2NameDest + 2000, 0);
+        player2NameRect.DOAnchorPosX(player2NameDest, uiMoveSpeed).SetEase(easeType);
+
         Lean.Localization.LeanLocalization.SetToken("Tokens/Player2Name", name);
 
         if (!PhotonNetwork.IsMasterClient)
@@ -274,8 +305,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
             startGameClientBlock.SetActive(true);
 
-            (player1NamePlate.transform as RectTransform).DOAnchorPosX(-900, 0);
-            (player1NamePlate.transform as RectTransform).DOAnchorPosX(-79, uiMoveSpeed).SetEase(easeType);
+            player1NameRect.anchoredPosition = new Vector2(player1NameDest - 2000, 0);
+            player1NameRect.DOAnchorPosX(player1NameDest, uiMoveSpeed).SetEase(easeType);
 
             Lean.Localization.LeanLocalization.SetToken("Tokens/Player1Name", PhotonNetwork.MasterClient.NickName);
         }
@@ -289,12 +320,14 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
             multiplayerMask[i].Hide();
             twoPlayerButtonListener[i].SetActive(PhotonNetwork.IsMasterClient);
         }
+
+        UpdateDiscordWithRoomState(2);
     }
 
     public void OnPlayerTwoLeave()
     {
-        (player2NamePlate.transform as RectTransform).DOAnchorPosX(79, 0);
-        (player2NamePlate.transform as RectTransform).DOAnchorPosX(900, uiMoveSpeed).SetEase(easeType);
+        player2NameRect.DOComplete();
+        player2NameRect.DOAnchorPosX(player2NameRect.anchoredPosition.x + 2000, uiMoveSpeed).SetEase(easeType);
 
         //(player1NamePlate.transform as RectTransform).DOAnchorPosX(16, 0);
         //(player1NamePlate.transform as RectTransform).DOAnchorPosX(-700, uiMoveSpeed).SetEase(easeType);
@@ -316,11 +349,36 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         {
             lobbyScreen.ShowDelayed(0.1f);
         }
+
+        UpdateDiscordWithRoomState(1);
     }
 
     public void QuitGame()
     {
         PlayButtonSound();
         Application.Quit();
+    }
+
+    void UpdateDiscordToMenu()
+    {
+        DiscordWrapper.Instance.UpdateActivity(
+            details: "In-Menu",
+            largeImageKey: "sakuya"
+        );
+    }
+
+    void UpdateDiscordWithRoomState(int playersConnected)
+    {
+        DiscordWrapper.Instance.UpdateActivity(
+            details: playersConnected == 1 ? 
+            (PhotonNetwork.OfflineMode ? "Offline Solo" : "Hosting Room w/ ID: " + PhotonNetwork.CurrentRoom.Name) : "Choosing Game Mode",
+            state: "Waiting for Players",
+            largeImageKey: "sakuya",
+            smallImageKey: PhotonNetwork.IsMasterClient ? "reimu_discord" : "marisa_discord",
+            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " +
+                (PhotonNetwork.IsMasterClient ? "Reimu" : "Marisa"),
+            partySize: playersConnected,
+            partyMax: PhotonNetwork.OfflineMode ? 1 : 2
+            );
     }
 }
