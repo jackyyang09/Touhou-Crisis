@@ -93,6 +93,8 @@ public class Sakuya : BaseEnemy, IReloadable
         // Update health UI
         OnShot?.Invoke();
 
+        StopAllCoroutines();
+
         if (isOwner)
         {
             behaviourRoutine = StartCoroutine(BehaviourTree());
@@ -515,6 +517,21 @@ public class Sakuya : BaseEnemy, IReloadable
 
     public void StopTime()
     {
+        if (SteamManager.Initialized)
+        {
+            if (Steamworks.SteamUserStats.GetAchievement("ACHIEVE_4", out bool unlocked))
+            {
+                if (!unlocked)
+                {
+                    if (!PlayerManager.Instance.LocalPlayer.InCover)
+                    {
+                        Steamworks.SteamUserStats.SetAchievement("ACHIEVE_4");
+                        Steamworks.SteamUserStats.StoreStats();
+                    }
+                }
+            }
+        }
+
         Time.timeScale = 0;
         AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDialLowPass, 0.1f, true);
         AudioManager.PlaySound(TouhouCrisisSounds.TimeStop);

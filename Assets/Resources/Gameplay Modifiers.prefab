@@ -50,6 +50,7 @@ MonoBehaviour:
   bossMoveSpeed: 1
   bossActionSpeed: 1
   gameMode: 0
+  hostIsReimu: 1
 --- !u!114 &1339430985847348154
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -31,10 +31,10 @@ public class LoadoutSystemUI : MonoBehaviour, IReloadable
                 loadoutSystem.SpecialWeapon.name + " ready!\n" +
                 "Shoot to switch weapons!";
         }
-        else
+        else if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("Japanese"))
         {
             weaponSwitchText.text =
-                loadoutSystem.SpecialWeapon.name + "TRANSLATION NEEDED";
+                loadoutSystem.SpecialWeapon.name + "さん\nが再戦を求めています！";
         }
 
         weaponSwitchCanvas.Hide();
@@ -62,28 +62,47 @@ public class LoadoutSystemUI : MonoBehaviour, IReloadable
         player.OnEnterCover -= ShowWeaponSwitchCanvas;
         player.OnExitCover -= HideWeaponSwitchCanvas;
         player.OnRoundExpended -= UpdateAmmoUI;
+        player.OnSwapWeapon -= OnSwapWeapon;
         loadoutSystem.OnChargeChanged -= UpdateChargeUI;
     }
 
     public void Reinitialize()
     {
-        pulseImage.transform.DOKill(true);
-        pulseImage.enabled = false;
-        pulseImage.transform.localScale = Vector2.one;
-        pulsing = false;
+        StopPulsing();
+
         weaponSwitchCanvas.Hide();
     }
 
     public void ShowWeaponSwitchCanvas()
     {
-        if (!loadoutSystem.WeaponReady) return;
-        weaponSwitchCanvas.Show();
+        if (loadoutSystem.WeaponReady)
+        {
+            weaponSwitchCanvas.Show();
+        }
+        else
+        {
+            equippedImage.enabled = false;
+            icon.color = Color.black;
+            StopPulsing();
+        }
     }
 
     public void OnSwapWeapon(WeaponObject obj)
     {
         equippedImage.enabled = !obj.infiniteAmmo;
         weaponSwitchCanvas.Hide();
+
+        if (loadoutSystem.WeaponReady)
+        {
+            if (player.ActiveWeapon.infiniteAmmo)
+            {
+                StartPulsing();
+            }
+            else if (!player.ActiveWeapon.infiniteAmmo)
+            {
+                StopPulsing();
+            }
+        }
     }
 
     public void HideWeaponSwitchCanvas() => weaponSwitchCanvas.Hide();
@@ -95,25 +114,8 @@ public class LoadoutSystemUI : MonoBehaviour, IReloadable
         if (loadoutSystem.ChargePercentage >= 1 && !pulsing)
         {
             JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Weapon_Unlock);
-            icon.color = Color.white;
-            pulseImage.enabled = true;
 
-            pulseImage.transform.DOKill(true);
-            pulseImage.transform.localScale = Vector2.one;
-            pulseImage.CrossFadeAlpha(1, 0, false);
-            pulseImage.CrossFadeAlpha(0, pulseTime, false);
-
-            pulseImage.transform.DOScale(pulseScale, pulseTime).OnStepComplete(() =>
-            {
-                pulseImage.transform.localScale = Vector2.one;
-                pulseImage.CrossFadeAlpha(1, 0, false);
-                pulseImage.CrossFadeAlpha(0, pulseTime, false);
-            }).SetLoops(-1);
-            pulsing = true;
-        }
-        else if (player.AmmoCount[1] == 0)
-        {
-            icon.color = Color.black;
+            StartPulsing();
         }
     }
 
@@ -123,16 +125,33 @@ public class LoadoutSystemUI : MonoBehaviour, IReloadable
         {
             fillImage.fillAmount = (float)player.AmmoCount[1] / player.Loadout[1].ammoCapacity;
         }
+    }
 
-        if (pulsing)
+    void StartPulsing()
+    {
+        if (pulsing) return;
+        icon.color = Color.white;
+        pulseImage.enabled = true;
+
+        pulseImage.transform.DOKill(true);
+        pulseImage.transform.localScale = Vector2.one;
+        pulseImage.CrossFadeAlpha(1, 0, false);
+        pulseImage.CrossFadeAlpha(0, pulseTime, false);
+
+        pulseImage.transform.DOScale(pulseScale, pulseTime).OnStepComplete(() =>
         {
-            if (player.AmmoCount[1] < player.Loadout[1].ammoCapacity)
-            {
-                pulseImage.transform.DOKill(true);
-                pulseImage.transform.localScale = Vector2.one;
-                pulseImage.enabled = false;
-                pulsing = false;
-            }
-        }
+            pulseImage.transform.localScale = Vector2.one;
+            pulseImage.CrossFadeAlpha(1, 0, false);
+            pulseImage.CrossFadeAlpha(0, pulseTime, false);
+        }).SetLoops(-1);
+        pulsing = true;
+    }
+
+    void StopPulsing()
+    {
+        pulseImage.transform.DOKill(true);
+        pulseImage.transform.localScale = Vector2.one;
+        pulseImage.enabled = false;
+        pulsing = false;
     }
 }

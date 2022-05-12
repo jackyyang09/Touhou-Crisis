@@ -176,7 +176,15 @@ public class CustomLayoutGroup : LayoutGroup
                     }
 
                     width = trueSizeDelta.x;
-                    height = rect.sizeDelta.y;
+                    switch (mode)
+                    {
+                        case LayoutMode.Uniform:
+                            height = trueSizeDelta.y / children.Count;
+                            break;
+                        case LayoutMode.Proportional:
+                            height = rect.sizeDelta.y;
+                            break;
+                    }
                     break;
             }
 

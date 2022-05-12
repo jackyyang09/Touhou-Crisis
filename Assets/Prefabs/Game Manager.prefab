@@ -46,10 +46,10 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: Sent Request to Retry
+    Text: Sent Request for Rematch
     Object: {fileID: 0}
   - Language: Japanese
-    Text: '-'
+    Text: "\u518D\u6226\u30EA\u30AF\u30A8\u30B9\u30C8\u3092\u9001\u308B"
     Object: {fileID: 0}
 --- !u!1 &236493005590165226
 GameObject:
@@ -97,10 +97,10 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: Wait for host to start
+    Text: Accuracy
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u30B9\u30BF\u30FC\u30C8\u5F85\u3061\u4E2D"
+    Text: "\u547D\u4E2D\u7387"
     Object: {fileID: 0}
 --- !u!1 &463537875062488663
 GameObject:
@@ -384,7 +384,7 @@ MonoBehaviour:
     Text: '{Tokens/OtherPlayer} has requested a rematch!'
     Object: {fileID: 0}
   - Language: Japanese
-    Text: '-'
+    Text: "{Tokens/OtherPlayer}\u3055\u3093 \u304C\u518D\u6226\u3092\u6C42\u3081\u3066\u3044\u307E\u3059\uFF01"
     Object: {fileID: 0}
 --- !u!1 &2212893085596097191
 GameObject:
@@ -469,6 +469,8 @@ Transform:
   - {fileID: 6974279837779072826}
   - {fileID: 4020499158679807221}
   - {fileID: 1234575212598044387}
+  - {fileID: 9172310677396132299}
+  - {fileID: 2322192159948214944}
   m_Father: {fileID: 7744010230295127514}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -561,6 +563,57 @@ MonoBehaviour:
   - Language: Japanese
     Text: "\u30BF\u30A4\u30C8\u30EB\u3078"
     Object: {fileID: 0}
+--- !u!1 &3311532983487591371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9172310677396132299}
+  - component: {fileID: 4984320155045901696}
+  m_Layer: 0
+  m_Name: Text/Game Over/Winner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9172310677396132299
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3311532983487591371}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6643417500481332681}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4984320155045901696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3311532983487591371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Winner
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u52DD\u8005"
+    Object: {fileID: 0}
 --- !u!1 &3426304013336460121
 GameObject:
   m_ObjectHideFlags: 0
@@ -610,7 +663,7 @@ MonoBehaviour:
     Text: Damage Taken
     Object: {fileID: 0}
   - Language: Japanese
-    Text: NONE
+    Text: "\u88AB\u30C0\u30E1\u30FC\u30B8"
     Object: {fileID: 0}
 --- !u!1 &3952325286575709893
 GameObject:
@@ -1036,8 +1089,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf4d138b42744c4d967b928c2fc7831, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hostPrefab: {fileID: 607749399971973752, guid: cea7444ae27dcc54cbade4eb6a40a4c6, type: 3}
-  clientPrefab: {fileID: 1881797267208158728, guid: 47b11e3f36fb6954681078764b51dbd4, type: 3}
+  reimuPrefab: {fileID: 607749399971973752, guid: cea7444ae27dcc54cbade4eb6a40a4c6, type: 3}
+  marisaPrefab: {fileID: 1881797267208158728, guid: 47b11e3f36fb6954681078764b51dbd4, type: 3}
   gameTimer: 0
   timeBetweenSync: 3
   crosshairPrefab: {fileID: 9079675973397218163, guid: 55bdefe356e04714ab816b8f17dd7995, type: 3}
@@ -1234,6 +1287,57 @@ MonoBehaviour:
     Object: {fileID: 0}
   - Language: Japanese
     Text: "P2\u30B9\u30B3\u30A2"
+    Object: {fileID: 0}
+--- !u!1 &6755379273455792562
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2322192159948214944}
+  - component: {fileID: 7717310043785550760}
+  m_Layer: 0
+  m_Name: Text/Game Over/Shoot to Continue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2322192159948214944
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6755379273455792562}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6643417500481332681}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7717310043785550760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6755379273455792562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Shoot to Continue
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u9283\u3067\u6483\u3063\u3066\u6B21\u3078"
     Object: {fileID: 0}
 --- !u!1 &7020897779677458612
 GameObject:

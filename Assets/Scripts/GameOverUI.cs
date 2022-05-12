@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using static Facade;
 
 public class GameOverUI : MonoBehaviour, IReloadable
 {
@@ -27,9 +28,9 @@ public class GameOverUI : MonoBehaviour, IReloadable
 
     [SerializeField] TextMeshProUGUI[] winnerText = null;
 
-    [SerializeField] UnityEngine.UI.Image reimuPortrait = null;
+    [SerializeField] UnityEngine.UI.Image player1Portrait = null;
     [SerializeField] Sprite[] reimuSprites;
-    [SerializeField] UnityEngine.UI.Image marisaPortrait = null;
+    [SerializeField] UnityEngine.UI.Image player2Portrait = null;
     [SerializeField] Sprite[] marisaSprites;
 
     [SerializeField] OptimizedCanvas shootToContinue = null;
@@ -44,16 +45,21 @@ public class GameOverUI : MonoBehaviour, IReloadable
     [SerializeField] RailShooterLogic railShooter = null;
 
     bool offline = false;
+    bool gameOverTriggered = false;
 
     public static System.Action OnGameOver;
 
     public void Reinitialize()
     {
+        StopAllCoroutines();
+
+        gameOverTriggered = false;
+
         gameOverScreen.Hide();
 
         gameOverTitle.Hide();
-        reimuPortrait.enabled = false;
-        marisaPortrait.enabled = false;
+        player1Portrait.enabled = false;
+        player2Portrait.enabled = false;
 
         timeCanvas.Hide();
         accuracyCanvas.Hide();
@@ -98,35 +104,58 @@ public class GameOverUI : MonoBehaviour, IReloadable
 
     public void RunGameOverSequence(bool bossDefeated)
     {
+        if (gameOverTriggered) return;
+
+        bool steamAchieved = false;
+        if (!offline)
+        {
+            if (SteamManager.Initialized)
+            {
+                if (Steamworks.SteamUserStats.GetAchievement("ACHIEVE_1", out bool unlocked))
+                {
+                    if (!unlocked)
+                    {
+                        Steamworks.SteamUserStats.SetAchievement("ACHIEVE_1");
+                        steamAchieved = true;
+                    }
+                }
+            }
+        }
+        
         if (bossDefeated)
         {
-            reimuPortrait.sprite = reimuSprites[0];
-            marisaPortrait.sprite = marisaSprites[0];
-            if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
+            player1Portrait.sprite = modifiers.HostIsReimu ? reimuSprites[0] : marisaSprites[0];
+            player2Portrait.sprite = !modifiers.HostIsReimu ? reimuSprites[0] : marisaSprites[0];
+            gameOverTitleText.text = "BOSS CLEAR";
+
+            string achieveText = "ACHIEVE_2";
+            if (!modifiers.HostIsReimu && Photon.Pun.PhotonNetwork.IsMasterClient) achieveText = "ACHIEVE_3";
+            else if (modifiers.HostIsReimu && !Photon.Pun.PhotonNetwork.IsMasterClient) achieveText = "ACHIEVE_3";
+            if (SteamManager.Initialized)
             {
-                gameOverTitleText.text = "BOSS CLEAR";
-            }
-            else if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("Japanese"))
-            {
-                gameOverTitleText.text = "<REPLACE ME>";
+                if (Steamworks.SteamUserStats.GetAchievement(achieveText, out bool unlocked))
+                {
+                    if (!unlocked)
+                    {
+                        Steamworks.SteamUserStats.SetAchievement(achieveText);
+                        steamAchieved = true;
+                    }
+                }
             }
         }
         else
         {
-            reimuPortrait.sprite = reimuSprites[1];
-            marisaPortrait.sprite = marisaSprites[1];
-            if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
-            {
-                gameOverTitleText.text = "GAME OVER";
-            }
-            else if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("Japanese"))
-            {
-                gameOverTitleText.text = "ゲームオーバー";
-            }
+            player1Portrait.sprite = modifiers.HostIsReimu ? reimuSprites[1] : marisaSprites[1];
+            player2Portrait.sprite = !modifiers.HostIsReimu ? reimuSprites[1] : marisaSprites[1];
+            gameOverTitleText.text = "GAME OVER";
         }
 
         if (offline) StartCoroutine(ShowGameOverScreen1P());
         else StartCoroutine(ShowGameOverScreen2P(bossDefeated));
+
+        if (steamAchieved) Steamworks.SteamUserStats.StoreStats();
+
+        gameOverTriggered = true;
 
         OnGameOver?.Invoke();
     }
@@ -142,7 +171,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
         yield return new WaitForSecondsRealtime(0.25f);
 
         gameOverTitle.Show();
-        reimuPortrait.enabled = true;
+        player1Portrait.enabled = true;
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
 
         yield return new WaitForSecondsRealtime(0.8f);
@@ -172,7 +201,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
             float accuracy = localPlayer.AccuracyCounter.Accuracy;
             if (accuracy > 0)
             {
-                accuracyText[0].text = (localPlayer.AccuracyCounter.Accuracy * 100).ToString("#.#") + "%";
+                accuracyText[0].text = (accuracy * 100).ToString("#.#") + "%";
             }
             else
             {
@@ -197,7 +226,8 @@ public class GameOverUI : MonoBehaviour, IReloadable
         int damageTaken = localPlayer.DamageCounter.DamageTaken; 
         damageText[0].text = damageTaken.ToString();
         float damagePenalty = damageTaken * ScoreSystem.DAMAGE_TAKEN_PENALTY;
-        damagePenaltyText[0].text = ((int)damagePenalty).ToString();
+        if (damagePenalty == 0) damagePenaltyText[0].text = "-0";
+        else damagePenaltyText[0].text = ((int)damagePenalty).ToString();
         damageCanvas.Show();
 
         if (!skipResults)
@@ -238,7 +268,8 @@ public class GameOverUI : MonoBehaviour, IReloadable
             }
 
             accuracyBonusText[0].text = "+" + (int)Mathf.Lerp(accuracyBonus, 0, timer / changeTime);
-            damagePenaltyText[0].text = ((int)Mathf.Lerp(damagePenalty, 0, timer / changeTime)).ToString();
+            if (damagePenalty == 0) damagePenaltyText[0].text = "-0";
+            else damagePenaltyText[0].text = ((int)Mathf.Lerp(damagePenalty, 0, timer / changeTime)).ToString();
             scoreText[0].text = ((int)Mathf.Lerp(startScore, finalScore, timer / changeTime)).ToString();
 
             timer += Time.deltaTime;
@@ -282,8 +313,8 @@ public class GameOverUI : MonoBehaviour, IReloadable
         yield return new WaitForSecondsRealtime(0.25f);
 
         gameOverTitle.Show();
-        reimuPortrait.enabled = true;
-        marisaPortrait.enabled = true;
+        player1Portrait.enabled = true;
+        player2Portrait.enabled = true;
         JSAM.AudioManager.PlaySound(TouhouCrisisSounds.Handgun_Fire);
 
         railShooter.OnShoot += SkipResults;
@@ -320,33 +351,28 @@ public class GameOverUI : MonoBehaviour, IReloadable
             float accuracy = hostPlayer.AccuracyCounter.Accuracy;
             accuracyBonus[hostId] = (int)(accuracy * ScoreSystem.MAX_ACCURACY_BONUS);
 
-            if (accuracy > 0)
-            {
-                accuracyText[hostId].text = (hostPlayer.AccuracyCounter.Accuracy * 100).ToString("#.#") + "%";
-            }
-            else
-            {
-                accuracyText[hostId].text = "0";
-            }
-            accuracyBonusText[hostId].text = "+" + accuracyBonus[hostId];
+            if (accuracy > 0) accuracyText[hostId].text = (accuracy * 100).ToString("#.#") + "%";
+            else accuracyText[hostId].text = "0%";
         }
         else
         {
             accuracyText[hostId].text = "-";
         }
+        accuracyBonusText[hostId].text = "+" + accuracyBonus[hostId];
 
         if (clientPlayer.AccuracyCounter.ShotsFired > 0)
         {
             float accuracy = clientPlayer.AccuracyCounter.Accuracy;
             accuracyBonus[clientId] = (int)(accuracy * ScoreSystem.MAX_ACCURACY_BONUS);
 
-            accuracyText[clientId].text = (accuracy * 100).ToString("#.#") + "%";
-            accuracyBonusText[clientId].text = "+" + accuracyBonus[clientId];
+            if (accuracy > 0) accuracyText[clientId].text = (accuracy * 100).ToString("#.#") + "%";
+            else accuracyText[clientId].text = "0%";
         }
         else
         {
             accuracyText[clientId].text = "-";
         }
+        accuracyBonusText[clientId].text = "+" + accuracyBonus[clientId];
 
         accuracyCanvas.Show();
 
@@ -360,12 +386,14 @@ public class GameOverUI : MonoBehaviour, IReloadable
         int damageTaken = hostPlayer.DamageCounter.DamageTaken;
         damageText[hostId].text = damageTaken.ToString();
         damagePenalties[hostId] = damageTaken * ScoreSystem.DAMAGE_TAKEN_PENALTY;
-        damagePenaltyText[hostId].text = ((int)damagePenalties[hostId]).ToString();
+        if (damagePenalties[hostId] == 0) damagePenaltyText[hostId].text = "-0";
+        else damagePenaltyText[hostId].text = ((int)damagePenalties[hostId]).ToString();
 
         damageTaken = clientPlayer.DamageCounter.DamageTaken;
         damageText[clientId].text = damageTaken.ToString();
         damagePenalties[clientId] = damageTaken * ScoreSystem.DAMAGE_TAKEN_PENALTY;
-        damagePenaltyText[clientId].text = ((int)damagePenalties[clientId]).ToString();
+        if (damagePenalties[clientId] == 0) damagePenaltyText[clientId].text = "-0";
+        else damagePenaltyText[clientId].text = ((int)damagePenalties[clientId]).ToString();
 
         damageCanvas.Show();
 
@@ -416,7 +444,8 @@ public class GameOverUI : MonoBehaviour, IReloadable
             for (int i = 0; i < 2; i++)
             {
                 accuracyBonusText[i].text = "+" + (int)Mathf.Lerp(accuracyBonus[i], 0, timer / changeTime);
-                damagePenaltyText[i].text = ((int)Mathf.Lerp(damagePenalties[i], 0, timer / changeTime)).ToString();
+                if (damagePenalties[i] == 0) damagePenaltyText[i].text = "-0";
+                else damagePenaltyText[i].text = ((int)Mathf.Lerp(damagePenalties[i], 0, timer / changeTime)).ToString();
                 scoreText[i].text = ((int)Mathf.Lerp(beginScores[hostId], finalScores[i], timer / changeTime)).ToString();
             }
             timer += Time.deltaTime;
@@ -425,32 +454,40 @@ public class GameOverUI : MonoBehaviour, IReloadable
 
         for (int i = 0; i < 2; i++)
         {
-            accuracyBonusText[i].enabled = false;
-            damagePenaltyText[i].enabled = false;
+            accuracyBonusText[i].text = "+0";
+            damagePenaltyText[i].text = "-0";
             scoreText[i].text = finalScores[i].ToString();
         }
         JSAM.AudioManager.StopSoundIfLooping(TouhouCrisisSounds.ScoreBeeps);
 
-        if (finalScores[hostId] > finalScores[clientId]) // Reimu Wins
+        if (finalScores[hostId] > finalScores[clientId]) // Player 1 Wins
         {
-            if (bossDefeated) reimuPortrait.sprite = reimuSprites[2];
+            if (bossDefeated)
+            {
+                player1Portrait.sprite = modifiers.HostIsReimu ? reimuSprites[2] : marisaSprites[2];
+            }
 
             var rect = winnerText[hostId].transform as RectTransform;
             float targetX = rect.anchoredPosition.x;
 
+            rect.DOKill();
             rect.anchoredPosition = new Vector2(2000, rect.anchoredPosition.y);
             winnerText[hostId].enabled = true;
             rect.DOAnchorPosX(0, 0.1f);
 
             winnerText[clientId].enabled = false;
         }
-        else if (finalScores[hostId] < finalScores[clientId]) // Marisa Wins
+        else if (finalScores[hostId] < finalScores[clientId]) // Player 2 Wins
         {
-            if (bossDefeated) marisaPortrait.sprite = marisaSprites[2];
+            if (bossDefeated)
+            {
+                player2Portrait.sprite = !modifiers.HostIsReimu ? reimuSprites[2] : marisaSprites[2];
+            }
 
             var rect = winnerText[clientId].transform as RectTransform;
             float targetX = rect.anchoredPosition.x;
 
+            rect.DOKill();
             rect.anchoredPosition = new Vector2(-2000, rect.anchoredPosition.y);
             winnerText[clientId].enabled = true;
             rect.DOAnchorPosX(0, 0.1f);

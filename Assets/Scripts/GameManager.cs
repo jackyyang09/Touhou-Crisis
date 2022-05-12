@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
+using static Facade;
 
 public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadable
 {
-    [SerializeField] GameObject hostPrefab = null;
-    [SerializeField] GameObject clientPrefab = null;
+    [SerializeField] GameObject reimuPrefab = null;
+    [SerializeField] GameObject marisaPrefab = null;
 
     [SerializeField] float gameTimer = 0;
     float remoteGameTimer = 0;
@@ -48,24 +49,11 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
         remoteGameTimer = 0;
         rematchRequests = 0;
         gameOverRoutine = null;
-
-        DiscordWrapper.Instance.UpdateActivity(
-            state: PhotonNetwork.OfflineMode ? "Offline Solo" :
-            (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop ? "Online Co-Op" : "Online Versus"),
-            details: "In-Game",
-            largeImageKey: "sakuya",
-            smallImageKey: PhotonNetwork.IsMasterClient ? "reimu_discord" : "marisa_discord",
-            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " +
-                (PhotonNetwork.IsMasterClient ? "Reimu" : "Marisa"),
-            partySize: PhotonNetwork.CurrentRoom.PlayerCount,
-            partyMax: PhotonNetwork.OfflineMode ? 1 : 2,
-            startTime: DateTimeOffset.Now.ToUnixTimeSeconds()
-            );
     }
 
     private void Start()
     {
-        if (hostPrefab == null)
+        if (reimuPrefab == null)
         {
             Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
         }
@@ -76,13 +64,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
                 Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManager.GetActiveScene().name);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
                 GameObject newPlayer;
-                if (PhotonNetwork.IsMasterClient)
+                if ((modifiers.HostIsReimu && PhotonNetwork.IsMasterClient) || 
+                    !modifiers.HostIsReimu && !PhotonNetwork.IsMasterClient)
                 {
-                    newPlayer = PhotonNetwork.Instantiate(hostPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                    newPlayer = PhotonNetwork.Instantiate(reimuPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
                 }
                 else
                 {
-                    newPlayer = PhotonNetwork.Instantiate(clientPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                    newPlayer = PhotonNetwork.Instantiate(marisaPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
                 }
                 player = newPlayer.GetComponent<PlayerBehaviour>();
                 OnSpawnLocalPlayer?.Invoke(player);
@@ -143,9 +132,25 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
     {
         gameTimerEnabled = true;
 
+        string character = "Marisa";
+        if (modifiers.HostIsReimu && PhotonNetwork.IsMasterClient) character = "Reimu";
+        else if (!modifiers.HostIsReimu && !PhotonNetwork.IsMasterClient) character = "Reimu";
+
+        DiscordWrapper.Instance.UpdateActivity(
+            state: PhotonNetwork.OfflineMode ? "Offline Solo" :
+            (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop ? "Online Co-Op" : "Online Versus"),
+            details: "In-Game",
+            largeImageKey: "sakuya",
+            smallImageKey: character.ToLower() + "_discord",
+            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " + character,
+            partySize: PhotonNetwork.CurrentRoom.PlayerCount,
+            partyMax: PhotonNetwork.OfflineMode ? 1 : 2,
+            startTime: DateTimeOffset.Now.ToUnixTimeSeconds()
+            );
+
         if (!PhotonNetwork.IsMasterClient)
         {
-            InvokeRepeating("SyncRemoteProperties", 0, timeBetweenSync);
+            InvokeRepeating(nameof(SyncRemoteProperties), 0, timeBetweenSync);
         }
     }
 
@@ -154,10 +159,10 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
         gameTimerEnabled = false;
 
         // Cancel replication and manually perform it one last time
-        if (IsInvoking("SyncRemoteProperties"))
+        if (IsInvoking(nameof(SyncRemoteProperties)))
         {
-            CancelInvoke("SyncRemoteProperties");
-            InvokeRepeating("SyncRemoteProperties", 0, 1);
+            CancelInvoke(nameof(SyncRemoteProperties));
+            InvokeRepeating(nameof(SyncRemoteProperties), 0, 1);
         }
     }
 
@@ -200,7 +205,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
     IEnumerator SyncWinRoutine()
     {
         yield return new WaitForSecondsRealtime(1f);
-        photonView.RPC("InitiateWinSequence", RpcTarget.All);
+        photonView.RPC(nameof(InitiateWinSequence), RpcTarget.All);
     }
 
     void SyncLoseSequence()
@@ -214,7 +219,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
     IEnumerator SyncLoseRoutine()
     {
         yield return new WaitForSecondsRealtime(1f);
-        photonView.RPC("InitiateLoseSequence", RpcTarget.All);
+        photonView.RPC(nameof(InitiateLoseSequence), RpcTarget.All);
     }
 
     [PunRPC]
@@ -233,7 +238,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
 
     private void DamageRemotePlayer(DamageType obj)
     {
-        photonView.RPC("RPCDamageRemotePlayer", RpcTarget.Others);
+        photonView.RPC(nameof(RPCDamageRemotePlayer), RpcTarget.Others);
     }
     
     [PunRPC]
@@ -244,7 +249,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
 
     public void SyncRequestRematch()
     {
-        photonView.RPC("RequestRematch", RpcTarget.All);
+        photonView.RPC(nameof(RequestRematch), RpcTarget.All);
     }
 
     [PunRPC]

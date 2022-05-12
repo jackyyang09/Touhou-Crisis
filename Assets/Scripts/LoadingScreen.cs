@@ -17,7 +17,7 @@ public class LoadingScreen : MonoBehaviour
 
     [SerializeField] TMPro.TextMeshProUGUI loadingText = null;
     [SerializeField] Image blackImage = null;
-    [SerializeField] OptimizedCanvas loadingAnimation = null;
+    [SerializeField] OptimizedCanvas[] loadingAnimation = null;
     [SerializeField] CanvasGroup loadingAnimationGroup = null;
 
     private void Awake()
@@ -61,16 +61,15 @@ public class LoadingScreen : MonoBehaviour
     {
         if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
         {
-            loadingText.text = "Loading...";
+            loadingAnimation[0].Show();
         }
         else
         {
-            loadingText.text = "少女祈祷中…";
+            loadingAnimation[1].Show();
         }
 
         blackImage.DOFade(1, fadeToBlackTime);
 
-        loadingAnimation.Show();
         loadingAnimationGroup.enabled = true;
 
         DOTween.To(() => loadingAnimationGroup.alpha, x => loadingAnimationGroup.alpha = x, 1f, fadeToBlackTime);
@@ -88,7 +87,15 @@ public class LoadingScreen : MonoBehaviour
         yield return new WaitForSeconds(fadeFromBlackTime);
 
         loadingAnimationGroup.enabled = false;
-        loadingAnimation.Hide();
+
+        if (Lean.Localization.LeanLocalization.CurrentLanguage.Equals("English"))
+        {
+            loadingAnimation[0].Hide();
+        }
+        else
+        {
+            loadingAnimation[1].Hide();
+        }
 
         // Self destruct if OG LoadingScreen is in this scene
         if (FindObjectsOfType<LoadingScreen>().Length > 1)

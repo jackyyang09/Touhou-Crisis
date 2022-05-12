@@ -40,6 +40,9 @@ public class DiscordWrapper : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        transform.SetParent(null);
+
         DontDestroyOnLoad(transform.root.gameObject);
 
         if (discordInstance == null) discordInstance = new Discord.Discord(APP_ID, (ulong)Discord.CreateFlags.Default);
@@ -55,9 +58,9 @@ public class DiscordWrapper : MonoBehaviour
     /// 
     /// </summary>
     /// <param name="state">The user's current party status</param>
-    /// <param name="details"></param>
-    /// <param name="startTime"></param>
-    /// <param name="endTime"></param>
+    /// <param name="details">What the player is currently doing</param>
+    /// <param name="startTime">Epoch seconds for game start - including will show time as "elapsed"</param>
+    /// <param name="endTime">Epoch seconds for game end - including will show time as "remaining"</param>
     /// <param name="largeImageKey"></param>
     /// <param name="largeImageText"></param>
     /// <param name="smallImageKey"></param>
@@ -100,6 +103,7 @@ public class DiscordWrapper : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        Debug.Log("Disposing of Discord instance...");
         discordInstance.Dispose();
     }
 }

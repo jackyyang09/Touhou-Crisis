@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9340f545dec0840479a6b26033680948, type: 3}
   m_Name: DevConsoleSettings
   m_EditorClassIdentifier: 
-  selectedTab: 3
+  selectedTab: 0
   attachedLogLevel: -1
   openKey: 96
   autoCompleteKey: 283
   historyKey: 284
-  autoInstantiate: 1
-  dontDestroyOnLoad: 1
+  autoInstantiate: 0
+  dontDestroyOnLoad: 0
   showTimeStamp: 1
   optimizeForOnGUI: 1
   groupIdenticalEntries: 0

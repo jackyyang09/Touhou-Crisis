@@ -65,6 +65,9 @@ public class GameplayModifiers : MonoBehaviourPun
     [SerializeField] GameModes gameMode = GameModes.Versus;
     public GameModes GameMode { get { return gameMode; } }
 
+    [SerializeField] bool hostIsReimu = true;
+    public bool HostIsReimu { get { return hostIsReimu; } }
+
     bool initialized = false;
 
     static GameplayModifiers instance;
@@ -84,6 +87,7 @@ public class GameplayModifiers : MonoBehaviourPun
     public static System.Action<UFOSpawnRates> OnUFOSpawnRateChanged;
     public static System.Action<BossMoveSpeeds> OnBossMoveSpeedChanged;
     public static System.Action<BossActionSpeeds> OnBossActionSpeedChanged;
+    public static System.Action<bool> OnHostPlayerChanged;
 
     // Start is called before the first frame update
     void Start()
@@ -108,11 +112,12 @@ public class GameplayModifiers : MonoBehaviourPun
         OnUFOSpawnRateChanged?.Invoke(ufoSpawnRate);
         OnBossMoveSpeedChanged?.Invoke(bossMoveSpeed);
         OnBossActionSpeedChanged?.Invoke(bossActionSpeed);
+        OnHostPlayerChanged?.Invoke(hostIsReimu);
     }
 
     public void SyncCycleStartingLives()
     {
-        photonView.RPC("CycleStartingLives", RpcTarget.All);
+        photonView.RPC(nameof(CycleStartingLives), RpcTarget.All);
     }
 
     [PunRPC]
@@ -127,7 +132,7 @@ public class GameplayModifiers : MonoBehaviourPun
 
     public void SyncCycleUFOSpawnRate()
     {
-        photonView.RPC("CycleUFOSpawnRate", RpcTarget.All);
+        photonView.RPC(nameof(CycleUFOSpawnRate), RpcTarget.All);
     }
 
     [PunRPC]
@@ -142,7 +147,7 @@ public class GameplayModifiers : MonoBehaviourPun
 
     public void SyncCycleBossMoveSpeed()
     {
-        photonView.RPC("CycleBossMoveSpeed", RpcTarget.All);
+        photonView.RPC(nameof(CycleBossMoveSpeed), RpcTarget.All);
     }
 
     [PunRPC]
@@ -157,7 +162,7 @@ public class GameplayModifiers : MonoBehaviourPun
 
     public void SyncCycleBossActionSpeed()
     {
-        photonView.RPC("CycleBossActionSpeed", RpcTarget.All);
+        photonView.RPC(nameof(CycleBossActionSpeed), RpcTarget.All);
     }
 
     [PunRPC]
@@ -173,13 +178,26 @@ public class GameplayModifiers : MonoBehaviourPun
     public void SetGameMode(GameModes mode)
     {
         //gameMode = mode;
-        photonView.RPC("SyncGameMode", RpcTarget.All, mode);
+        photonView.RPC(nameof(SyncGameMode), RpcTarget.All, mode);
     }
 
     [PunRPC]
     void SyncGameMode(object newGameMode)
     {
         gameMode = (GameModes)newGameMode;
+    }
+
+    public void SyncCycleHostPlayer()
+    {
+        photonView.RPC(nameof(CycleHostPlayer), RpcTarget.All, !hostIsReimu);
+    }
+
+    [PunRPC]
+    public void CycleHostPlayer(object newFlag)
+    {
+        JSAM.AudioManager.PlaySound(MainMenuSounds.MenuButton);
+        hostIsReimu = (bool)newFlag;
+        OnHostPlayerChanged?.Invoke(hostIsReimu);
     }
 
     /// <summary>
@@ -189,12 +207,13 @@ public class GameplayModifiers : MonoBehaviourPun
     /// <param name="spawnRate"></param>
     /// <param name="actionSpeed"></param>
     /// <param name="moveSpeed"></param>
-    public void ApplyAllProperties(LiveCounts lives, UFOSpawnRates spawnRate, BossActionSpeeds actionSpeed, BossMoveSpeeds moveSpeed, GameModes gameMode)
+    public void ApplyAllProperties(LiveCounts lives, UFOSpawnRates spawnRate, BossActionSpeeds actionSpeed, BossMoveSpeeds moveSpeed, GameModes gameMode, bool player)
     {
         startingLives = lives;
         ufoSpawnRate = spawnRate;
         bossActionSpeed = actionSpeed;
         bossMoveSpeed = moveSpeed;
+        hostIsReimu = player;
     }
 
     public void ResetProperties()
@@ -204,6 +223,7 @@ public class GameplayModifiers : MonoBehaviourPun
         bossActionSpeed = BossActionSpeeds.Normal;
         bossMoveSpeed = BossMoveSpeeds.Normal;
         gameMode = GameModes.Versus;
+        hostIsReimu = true;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode arg1)

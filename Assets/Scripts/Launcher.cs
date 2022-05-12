@@ -46,9 +46,18 @@ public class Launcher : MonoBehaviourPunCallbacks
     }
 
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
-        //RandomizeRoomCode();
+        yield return new WaitUntil(() => SteamManager.Initialized);
+
+        if (Steamworks.SteamApps.GetCurrentGameLanguage() == "english")
+        {
+            Lean.Localization.LeanLocalization.CurrentLanguage = "English";
+        }
+        else if (Steamworks.SteamApps.GetCurrentGameLanguage() == "japanese")
+        {
+            Lean.Localization.LeanLocalization.CurrentLanguage = "Japanese";
+        }
     }
 
     // Update is called once per frame

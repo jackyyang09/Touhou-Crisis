@@ -7,13 +7,7 @@ public class LoadoutSystem : MonoBehaviour, IReloadable
 {
     [SerializeField] float maxCharge = 100;
     float currentCharge = 0;
-    public float ChargePercentage
-    {
-        get
-        {
-            return currentCharge / maxCharge;
-        }
-    }
+    public float ChargePercentage { get { return currentCharge / maxCharge; } }
 
     [SerializeField] RailShooterLogic railShooter = null;
     [SerializeField] PlayerBehaviour player = null;

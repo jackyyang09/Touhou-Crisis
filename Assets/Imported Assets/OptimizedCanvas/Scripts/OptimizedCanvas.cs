@@ -13,15 +13,10 @@ public class OptimizedCanvas : MonoBehaviour
     [SerializeField] bool hideOnAwake = false;
     [SerializeField] bool bakeLayoutOnStart = false;
 
-    public RectTransform rectTransform
-    {
-        get
-        {
-            return transform as RectTransform;
-        }
-    }
+    public RectTransform rectTransform { get { return transform as RectTransform; } }
 
     [SerializeField] GraphicRaycaster caster;
+    public GraphicRaycaster Raycaster { get { return caster; } }
 
     List<OptimizedCanvas> children = new List<OptimizedCanvas>();
     OptimizedCanvas parent = null;
@@ -230,7 +225,7 @@ public class OptimizedCanvas : MonoBehaviour
 
     public void ShowDelayed(float time)
     {
-        Invoke("Show", time);
+        Invoke(nameof(Show), time);
     }
 
     public void Hide() => SetActive(false);
@@ -243,6 +238,14 @@ public class OptimizedCanvas : MonoBehaviour
         if (caster)
         {
             caster.enabled = active;
+        }
+
+        if (!active)
+        {
+            if (IsInvoking(nameof(Show)))
+            {
+                CancelInvoke(nameof(Show));
+            }
         }
 
         // Nothing changed, skip rest

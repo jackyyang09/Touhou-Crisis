@@ -835,7 +835,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Score
+  m_text: SCORE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -1733,7 +1733,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Time
+  m_text: TIME
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -3322,7 +3322,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Ammo
+  m_text: AMMO
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -6693,7 +6693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   translationName: Text/Game Over/Accuracy
-  FallbackText: TIME
+  FallbackText: Accuracy
 --- !u!114 &1518132669023409434
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7127,7 +7127,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Time
+  m_text: TIME
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -8578,7 +8578,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Score
+  m_text: SCORE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -8742,7 +8742,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Damage Taken
+  m_text: DAMAGE TAKEN
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -8824,7 +8824,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   translationName: Text/Game Over/Damage Taken
-  FallbackText: LIVES
+  FallbackText: DAMAGE TAKEN
 --- !u!114 &7696554554162753066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10126,7 +10126,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 1250}
+  m_AnchoredPosition: {x: -0.00012207031, y: 1250}
   m_SizeDelta: {x: 0, y: 166.17493}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1319975326164797039
@@ -11155,7 +11155,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PLACEHOLDER1 has requested a rematch!
+  m_text: <Playername> has invited you to a rematch!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -11299,6 +11299,7 @@ GameObject:
   - component: {fileID: 7314170676054788630}
   - component: {fileID: 116490040851976349}
   - component: {fileID: 6668734882436036918}
+  - component: {fileID: 7377420097022469763}
   m_Layer: 10
   m_Name: Weapon Switch Label
   m_TagString: Untagged
@@ -11357,8 +11358,8 @@ MonoBehaviour:
 
     Shoot to switch weapons!'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 92f9c5792f4474448aa67b45caa184da, type: 2}
-  m_sharedMaterial: {fileID: 21732741549424564, guid: 92f9c5792f4474448aa67b45caa184da, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+  m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11424,6 +11425,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7377420097022469763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2764501830008892880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d52b33a5902e643bced0385fa6840b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Objects/Font
+  FallbackFont: {fileID: 11400000, guid: 92f9c5792f4474448aa67b45caa184da, type: 2}
 --- !u!1 &2972430734083316748
 GameObject:
   m_ObjectHideFlags: 0
@@ -11686,6 +11701,8 @@ GameObject:
   - component: {fileID: 9107853935828268818}
   - component: {fileID: 1492896013630873500}
   - component: {fileID: 3897780037011574860}
+  - component: {fileID: 1953825139710745268}
+  - component: {fileID: 2040356352936108083}
   m_Layer: 10
   m_Name: Shoot to Continue
   m_TagString: Untagged
@@ -11873,6 +11890,34 @@ MonoBehaviour:
   speedModifier: 1
   canvas: {fileID: 1492896013630873500}
   flashTime: 1
+--- !u!114 &1953825139710745268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3083685905053096705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf51be86e70d7941bd40914206e4ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Text/Game Over/Shoot to Continue
+  FallbackText: Shoot to continue
+--- !u!114 &2040356352936108083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3083685905053096705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d52b33a5902e643bced0385fa6840b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Objects/Font
+  FallbackFont: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
 --- !u!1 &3088062925933142598
 GameObject:
   m_ObjectHideFlags: 0
@@ -11884,6 +11929,7 @@ GameObject:
   - component: {fileID: 2414287343459349488}
   - component: {fileID: 6247225288707509391}
   - component: {fileID: 3366727152416469141}
+  - component: {fileID: 1121631680058893440}
   m_Layer: 10
   m_Name: Weapon Switch Label
   m_TagString: Untagged
@@ -11942,8 +11988,8 @@ MonoBehaviour:
 
     Shoot to switch weapons!'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 92f9c5792f4474448aa67b45caa184da, type: 2}
-  m_sharedMaterial: {fileID: 21732741549424564, guid: 92f9c5792f4474448aa67b45caa184da, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+  m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -12009,6 +12055,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1121631680058893440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3088062925933142598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d52b33a5902e643bced0385fa6840b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Objects/Font
+  FallbackFont: {fileID: 11400000, guid: 92f9c5792f4474448aa67b45caa184da, type: 2}
 --- !u!1 &3100161054818082228
 GameObject:
   m_ObjectHideFlags: 0
@@ -13425,7 +13485,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sakuya
+  m_text: SAKUYA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -14006,7 +14066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d52b33a5902e643bced0385fa6840b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  translationName: Objects/Font
+  translationName: Text/Game Over/Sent Request to Retry
   FallbackFont: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
 --- !u!114 &6826902352078651756
 MonoBehaviour:
@@ -15407,7 +15467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   translationName: Text/Game Over/Accuracy
-  FallbackText: TIME
+  FallbackText: Accuracy
 --- !u!114 &1902850800209255678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17045,7 +17105,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Damage Taken
+  m_text: DAMAGE TAKEN
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -17127,7 +17187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   translationName: Text/Game Over/Damage Taken
-  FallbackText: LIVES
+  FallbackText: DAMAGE TAKEN
 --- !u!114 &3754905419698543032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18239,7 +18299,7 @@ GameObject:
   - component: {fileID: 1885106239830845123}
   - component: {fileID: 8521267801853505169}
   m_Layer: 10
-  m_Name: Reimu Portrait
+  m_Name: Player1 Portrait
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18926,7 +18986,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PLACEHOLDER1 has requested a rematch!
+  m_text: Player has invited you to retry!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -18953,7 +19013,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 62.5
+  m_fontSize: 69.25
   m_fontSizeBase: 145
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -20322,7 +20382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -1400}
+  m_AnchoredPosition: {x: -0.00012207031, y: -1400}
   m_SizeDelta: {x: 0, y: -300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1103943557093914613
@@ -21667,7 +21727,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Score
+  m_text: SCORE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -22138,12 +22198,12 @@ MonoBehaviour:
   winnerText:
   - {fileID: 7183415680090591110}
   - {fileID: 178305029089203847}
-  reimuPortrait: {fileID: 6239777451055399053}
+  player1Portrait: {fileID: 6239777451055399053}
   reimuSprites:
   - {fileID: 21300000, guid: 248702d27952b014fa4671ae40faef2f, type: 3}
   - {fileID: 21300000, guid: 38224da068bfbea4984dd2e94e9cac7b, type: 3}
   - {fileID: 21300000, guid: 15c87e2ef2a918a4c8ffd6f2d9512ccf, type: 3}
-  marisaPortrait: {fileID: 6897140497193296722}
+  player2Portrait: {fileID: 6897140497193296722}
   marisaSprites:
   - {fileID: 21300000, guid: 6e249a9ed5bc8b54b8c6ece61df663a7, type: 3}
   - {fileID: 21300000, guid: 678dc1966b3522d4ca34109f910d6eee, type: 3}
@@ -23713,6 +23773,8 @@ GameObject:
   - component: {fileID: 2038077561864885068}
   - component: {fileID: 572790378742369137}
   - component: {fileID: 542140301352803355}
+  - component: {fileID: 3088477056100787223}
+  - component: {fileID: 750266024187929113}
   m_Layer: 10
   m_Name: Shoot to Continue
   m_TagString: Untagged
@@ -23900,6 +23962,34 @@ MonoBehaviour:
   speedModifier: 1
   canvas: {fileID: 572790378742369137}
   flashTime: 1
+--- !u!114 &3088477056100787223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7483945903345258818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf51be86e70d7941bd40914206e4ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Text/Game Over/Shoot to Continue
+  FallbackText: Shoot to continue
+--- !u!114 &750266024187929113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7483945903345258818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d52b33a5902e643bced0385fa6840b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Objects/Font
+  FallbackFont: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
 --- !u!1 &7498226610380703420
 GameObject:
   m_ObjectHideFlags: 0
@@ -24167,7 +24257,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Life
+  m_text: LIVES
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -24275,7 +24365,7 @@ GameObject:
   - component: {fileID: 3122235732403152660}
   - component: {fileID: 2664428371753146531}
   m_Layer: 10
-  m_Name: Marisa Portrait
+  m_Name: Player2 Portrait
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27301,12 +27391,12 @@ MonoBehaviour:
   winnerText:
   - {fileID: 7183415680090591110}
   - {fileID: 178305029089203847}
-  reimuPortrait: {fileID: 6239777451055399053}
+  player1Portrait: {fileID: 6239777451055399053}
   reimuSprites:
   - {fileID: 21300000, guid: 248702d27952b014fa4671ae40faef2f, type: 3}
   - {fileID: 21300000, guid: 38224da068bfbea4984dd2e94e9cac7b, type: 3}
   - {fileID: 21300000, guid: 15c87e2ef2a918a4c8ffd6f2d9512ccf, type: 3}
-  marisaPortrait: {fileID: 6897140497193296722}
+  player2Portrait: {fileID: 6897140497193296722}
   marisaSprites:
   - {fileID: 21300000, guid: 6e249a9ed5bc8b54b8c6ece61df663a7, type: 3}
   - {fileID: 21300000, guid: 678dc1966b3522d4ca34109f910d6eee, type: 3}
@@ -27483,7 +27573,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Time
+  m_text: TIME
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -29785,7 +29875,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_text
-      value: Return to Title
+      value: RETURN TO TITLE
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
@@ -30084,11 +30174,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 534.1432
+      value: 620.36865
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 887.33093
+      value: 720
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -30120,11 +30210,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 564.1432
+      value: 650.36865
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -473.66547
+      value: -390
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -30172,11 +30262,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_text
-      value: Wait for host to start
+      value: Sent Request for Rematch
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 116.55
+      value: 91.25
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset
@@ -30712,7 +30802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_text
-      value: Retry
+      value: RETRY
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
@@ -30748,6 +30838,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+--- !u!1 &7462864828605758840 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 308436146709176944, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+  m_PrefabInstance: {fileID: 7194118939078614792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7462864828540609518 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 308436146908282086, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
@@ -30756,11 +30851,6 @@ GameObject:
 --- !u!224 &7462864828605758841 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
-  m_PrefabInstance: {fileID: 7194118939078614792}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7462864828605758840 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 308436146709176944, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
   m_PrefabInstance: {fileID: 7194118939078614792}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7199121012212202485
@@ -30828,12 +30918,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1424315259817906613, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: Return to Title
+      value: QUIT
       objectReference: {fileID: 0}
     - target: {fileID: 1424315259817906613, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontSize
-      value: 75
+      value: 120
       objectReference: {fileID: 0}
+    - target: {fileID: 1424315259817906613, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 1424315259817906613, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
     - target: {fileID: 1424315259886980896, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -31307,6 +31405,10 @@ PrefabInstance:
       value: Master
       objectReference: {fileID: 0}
     - target: {fileID: 4514624845253452213, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4514624845253452213, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -31318,6 +31420,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 4514624845253452213, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4559424852664628752, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -31355,6 +31461,10 @@ PrefabInstance:
       value: Music
       objectReference: {fileID: 0}
     - target: {fileID: 5085088700770880823, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5085088700770880823, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -31366,6 +31476,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 5085088700770880823, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5250994054132613799, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -31420,8 +31534,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6091400037476837793, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: Options
+      value: SETTINGS
       objectReference: {fileID: 0}
+    - target: {fileID: 6091400037476837793, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 6091400037476837793, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
     - target: {fileID: 6276733180350292441, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
       value: Return to Game
@@ -31472,12 +31594,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6362171189326947413, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: Return to Game
+      value: RETURN TO GAME
       objectReference: {fileID: 0}
     - target: {fileID: 6362171189326947413, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontSize
       value: 75
       objectReference: {fileID: 0}
+    - target: {fileID: 6362171189326947413, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 6362171189326947413, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
     - target: {fileID: 6663759221685009676, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -31540,12 +31670,20 @@ PrefabInstance:
       objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
     - target: {fileID: 7132545846762235523, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: Retry
+      value: RETURN TO GAME
       objectReference: {fileID: 0}
     - target: {fileID: 7132545846762235523, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontSize
-      value: 120
+      value: 75
       objectReference: {fileID: 0}
+    - target: {fileID: 7132545846762235523, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 7132545846762235523, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
     - target: {fileID: 7132545846827382806, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -31616,6 +31754,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7680615006026960688, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699008348711221541, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_text
+      value: Sound
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699008348711221541, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699008348711221541, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 7699008348711221541, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 7699008348711221541, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+      propertyPath: m_enableAutoSizing
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7894483951473310113, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
@@ -31792,11 +31950,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
---- !u!1 &1879024287134717282 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8789839864247512727, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
-  m_PrefabInstance: {fileID: 7199121012212202485}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &77562588570846178 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7132545846827382807, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
@@ -31816,6 +31969,11 @@ MonoBehaviour:
 --- !u!224 &6509336540921087255 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4160663546631765730, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
+  m_PrefabInstance: {fileID: 7199121012212202485}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1879024287134717282 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8789839864247512727, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
   m_PrefabInstance: {fileID: 7199121012212202485}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7844639193199126340

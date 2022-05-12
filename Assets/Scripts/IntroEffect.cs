@@ -12,6 +12,8 @@ public class IntroEffect : MonoBehaviour
 
     [SerializeField] UnityEngine.UI.Image image;
 
+    [SerializeField] float timeToAttract = 5;
+
     [SerializeField] float holdBlackTime = 1;
     [SerializeField] float fadeToWhiteTime = 0.5f;
     [SerializeField] float holdWhiteTime = 2;
@@ -20,18 +22,32 @@ public class IntroEffect : MonoBehaviour
     [SerializeField] OptimizedCanvas titleCanvas = null;
     [SerializeField] OptimizedCanvas menuCanvas = null;
 
+    [SerializeField] AttractModeUI attractUI;
+
     [SerializeField] TMPro.TextMeshProUGUI shootToStart = null;
     [SerializeField] float textFlashTime = 1;
 
-    private void Awake()
+    Coroutine fadeRoutine;
+
+    bool nowAttracting = false;
+    bool openingSkipped = false;
+
+    private IEnumerator Start()
     {
-        image.DOColor(Color.black, 0);
+        fadeRoutine = StartCoroutine(FadeIn(null));
 
-        image.DOColor(Color.clear, fadeToClearTime).SetDelay(holdBlackTime);
+        yield return new WaitForSeconds(holdBlackTime);
 
-        Invoke("UnsubscribeSkipOpening", fadeToClearTime + holdBlackTime);
+        AudioManager.PlaySound(MainMenuSounds.TitleVO);
 
-        StartCoroutine(FlashShootToStart());
+        yield return new WaitForSeconds(fadeToClearTime);
+
+        if (!openingSkipped)
+        {
+            UnsubscribeSkipOpening();
+            Invoke(nameof(StartAttracting), timeToAttract);
+            StartCoroutine(FlashShootToStart());
+        }
     }
 
     IEnumerator FlashShootToStart()
@@ -55,25 +71,43 @@ public class IntroEffect : MonoBehaviour
 
     void UnsubscribeSkipOpening()
     {
+        openingSkipped = true;
         railShooter.OnShoot -= SkipOpening;
         railShooter.OnShoot += ShootToStart;
     }
 
     private void SkipOpening(Ray obj, Vector2 pos)
     {
-        if (IsInvoking("UnsubscribeSkipOpening")) CancelInvoke("UnsubscribeSkipOpening");
+        if (IsInvoking(nameof(UnsubscribeSkipOpening))) CancelInvoke(nameof(UnsubscribeSkipOpening));
+        if (IsInvoking(nameof(StartAttracting))) CancelInvoke(nameof(StartAttracting));
+        Invoke(nameof(StartAttracting), timeToAttract);
+
+        if (fadeRoutine != null) StopCoroutine(fadeRoutine);
         image.DOComplete();
         image.color = Color.clear;
-        railShooter.OnShoot -= SkipOpening;
-        railShooter.OnShoot += ShootToStart;
+
+        if (!openingSkipped) UnsubscribeSkipOpening();
+        StartCoroutine(FlashShootToStart());
     }
 
     void ShootToStart(Ray obj, Vector2 pos)
     {
-        railShooter.OnShoot -= ShootToStart;
-        AudioManager.PlaySound(MainMenuSounds.MenuButton);
+        attractUI.OptimizedCanvas.Hide();
+        if (nowAttracting)
+        {
+            OnAttractionEnded();
+        }
+        else
+        {
+            if (IsInvoking(nameof(StartAttracting))) CancelInvoke(nameof(StartAttracting));
+            StopAllCoroutines();
+            image.DOKill();
+            image.color = Color.clear;
+            railShooter.OnShoot -= ShootToStart;
+            AudioManager.PlaySound(MainMenuSounds.MenuButton);
 
-        StartCoroutine(StartTransition());
+            StartCoroutine(StartTransition());
+        }
     }
 
     IEnumerator StartTransition()
@@ -87,5 +121,49 @@ public class IntroEffect : MonoBehaviour
         AudioManager.PlayMusic(MainMenuMusic.MenuMusic);
         titleCanvas.Hide();
         menuCanvas.Show();
+    }
+
+
+    IEnumerator FadeIn(System.Action onEnd)
+    {
+        image.DOKill();
+        image.DOColor(Color.black, 0);
+        yield return new WaitForSeconds(holdBlackTime);
+        image.DOColor(Color.clear, fadeToClearTime);
+        yield return new WaitForSeconds(fadeToClearTime);
+        onEnd?.Invoke();
+    }
+
+    IEnumerator FadeOut(System.Action onEnd)
+    {
+        image.DOKill();
+        image.DOColor(Color.black, fadeToClearTime);
+        yield return new WaitForSeconds(fadeToClearTime);
+        onEnd?.Invoke();
+    }
+
+    void StartAttracting()
+    {
+        if (fadeRoutine != null) StopCoroutine(fadeRoutine);
+        fadeRoutine = StartCoroutine(FadeOut(() =>
+        {
+            attractUI.OptimizedCanvas.ShowDelayed(holdBlackTime);
+            StartCoroutine(FadeIn(null));
+            nowAttracting = true;
+        }));
+    }
+
+    public void OnAttractionEnded()
+    {
+        nowAttracting = false;
+        image.color = Color.black;
+        if (fadeRoutine != null) StopCoroutine(fadeRoutine);
+        fadeRoutine = StartCoroutine(FadeIn(() =>
+        {
+            if (IsInvoking(nameof(StartAttracting))) CancelInvoke(nameof(StartAttracting));
+            Invoke(nameof(StartAttracting), timeToAttract);
+        }));
+
+        AudioManager.PlaySound(MainMenuSounds.TitleVO);
     }
 }

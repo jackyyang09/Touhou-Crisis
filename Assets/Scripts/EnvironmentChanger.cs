@@ -45,6 +45,8 @@ public class EnvironmentChanger : MonoBehaviour, IReloadable
     int exposureID;
     int tintColorID;
 
+    int tweenerID;
+
     public void Reinitialize()
     {
         ChangePhase(0);
@@ -110,18 +112,20 @@ public class EnvironmentChanger : MonoBehaviour, IReloadable
 
         if (currentPhase == 3)
         {
-            DOTween.To(() => normalVolume.weight, x => normalVolume.weight = x, 0f, environmentChangeTime);
-            DOTween.To(() => finalVolume.weight, x => finalVolume.weight = x, 1, environmentChangeTime);
+            tweenerID = (int)Time.time;
+
+            DOTween.To(() => normalVolume.weight, x => normalVolume.weight = x, 0f, environmentChangeTime).SetId(tweenerID);
+            DOTween.To(() => finalVolume.weight, x => finalVolume.weight = x, 1, environmentChangeTime).SetId(tweenerID);
 
             DOTween.To(() => activeSkybox.GetColor(tintColorID), 
                 x => activeSkybox.SetColor(tintColorID, x), 
                 skyboxes[currentPhase].GetColor(tintColorID), 
-                environmentChangeTime);
+                environmentChangeTime).SetId(tweenerID);
 
             DOTween.To(() => activeSkybox.GetFloat(exposureID),
                 x => activeSkybox.SetFloat(exposureID, x),
                 skyboxes[currentPhase].GetFloat(exposureID),
-                environmentChangeTime);
+                environmentChangeTime).SetId(tweenerID);
         }
     }
 }

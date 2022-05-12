@@ -5,6 +5,7 @@ using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
 using JSAM;
+using static Facade;
 
 public class MainMenuUI : MonoBehaviourPunCallbacks
 {
@@ -36,11 +37,13 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     [SerializeField] OptimizedCanvas[] multiplayerMask = null;
     [SerializeField] OptimizedCanvas[] hostPrivilegeMask = null;
 
-    [SerializeField] OptimizedCanvas player1NamePlate = null;
-    RectTransform player1NameRect { get { return player1NamePlate.transform as RectTransform; } }
+    [SerializeField] OptimizedCanvas player1ReimuPlate = null;
+    [SerializeField] OptimizedCanvas player1MarisaPlate = null;
+    RectTransform player1NameRect;
     float player1NameDest;
-    [SerializeField] OptimizedCanvas player2NamePlate = null;
-    RectTransform player2NameRect { get { return player2NamePlate.transform as RectTransform; } }
+    [SerializeField] OptimizedCanvas player2MarisaPlate = null;
+    [SerializeField] OptimizedCanvas player2ReimuPlate = null;
+    RectTransform player2NameRect;
     float player2NameDest;
 
     [SerializeField] GameObject startGameClientBlock = null;
@@ -52,6 +55,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     Coroutine gameStartRoutine = null;
 
+    string player2Name;
+
     // Start is called before the first frame update
     IEnumerator Start()
     {
@@ -59,10 +64,27 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
         yield return null;
 
+        player1NameRect = player1ReimuPlate.transform as RectTransform;
+        player2NameRect = player2MarisaPlate.transform as RectTransform;
+
         player1NameDest = player1NameRect.anchoredPosition.x;
         player2NameDest = player2NameRect.anchoredPosition.x;
 
         UpdateDiscordToMenu();
+    }
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+
+        GameplayModifiers.OnHostPlayerChanged += SwapNameLabels;
+    }
+
+    public override void OnDisable()
+    {
+        base.OnDisable();
+
+        GameplayModifiers.OnHostPlayerChanged -= SwapNameLabels;
     }
 
     public void PlayButtonSound()
@@ -90,6 +112,12 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         twoPlayerButtons.SetActive(false);
         
         launcher.EnterSinglePlayerMode();
+
+        if (modifiers.HostIsReimu) Lean.Localization.LeanLocalization.SetToken("Tokens/ReimuName", PhotonNetwork.MasterClient.NickName);
+        else Lean.Localization.LeanLocalization.SetToken("Tokens/MarisaName", PhotonNetwork.MasterClient.NickName);
+
+        player2ReimuPlate.Hide();
+        player2MarisaPlate.Hide();
     }
 
     public void CoOpPlay()
@@ -121,11 +149,12 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         photonView.RPC(nameof(SyncGameplayModifiersRPC), RpcTarget.All, new object[]
         {
-            GameplayModifiers.Instance.StartingLives,
-            GameplayModifiers.Instance.UFOSpawnRate,
-            GameplayModifiers.Instance.BossActionSpeed,
-            GameplayModifiers.Instance.BossMoveSpeed,
-            GameplayModifiers.Instance.GameMode
+            modifiers.StartingLives,
+            modifiers.UFOSpawnRate,
+            modifiers.BossActionSpeed,
+            modifiers.BossMoveSpeed,
+            modifiers.GameMode,
+            modifiers.HostIsReimu
         });
     }
 
@@ -137,10 +166,11 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
             (GameplayModifiers.UFOSpawnRates)data[1],
             (GameplayModifiers.BossActionSpeeds)data[2],
             (GameplayModifiers.BossMoveSpeeds)data[3],
-            (GameplayModifiers.GameModes)data[4]
+            (GameplayModifiers.GameModes)data[4],
+            (bool)data[5]
             );
 
-        GameplayModifiers.Instance.ForceRefreshProperties();
+        modifiers.ForceRefreshProperties();
     }
 
     [PunRPC]
@@ -150,14 +180,19 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         lobbyScreen.Hide();
         gameSetup.ShowDelayed(0.1f);
 
+        startGameClientBlock.SetActive(!PhotonNetwork.IsMasterClient);
+
+        string character = "Marisa";
+        if (modifiers.HostIsReimu && PhotonNetwork.IsMasterClient) character = "Reimu";
+        else if (!modifiers.HostIsReimu && !PhotonNetwork.IsMasterClient) character = "Reimu";
+
         DiscordWrapper.Instance.UpdateActivity(
             state: "Game Setup",
             details: PhotonNetwork.OfflineMode ? "Offline Solo" : 
             (GameplayModifiers.Instance.GameMode == GameplayModifiers.GameModes.Coop ? "Online Co-Op" : "Online Versus"),
             largeImageKey: "sakuya",
-            smallImageKey: PhotonNetwork.IsMasterClient ? "reimu_discord" : "marisa_discord",
-            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " + 
-            (PhotonNetwork.IsMasterClient ? "Reimu" : "Marisa"),
+            smallImageKey: character.ToLower() + "_discord",
+            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " + character,
             partySize: PhotonNetwork.OfflineMode ? 1 : 2, 
             partyMax: PhotonNetwork.OfflineMode ? 1 : 2
         );
@@ -165,13 +200,14 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     public void SyncEnterGame()
     {
-        photonView.RPC("EnterGame", RpcTarget.All, new object[] 
+        photonView.RPC(nameof(EnterGame), RpcTarget.All, new object[] 
         {
-            GameplayModifiers.Instance.StartingLives,
-            GameplayModifiers.Instance.UFOSpawnRate,
-            GameplayModifiers.Instance.BossActionSpeed,
-            GameplayModifiers.Instance.BossMoveSpeed,
-            GameplayModifiers.Instance.GameMode
+            modifiers.StartingLives,
+            modifiers.UFOSpawnRate,
+            modifiers.BossActionSpeed,
+            modifiers.BossMoveSpeed,
+            modifiers.GameMode,
+            modifiers.HostIsReimu
         });
     }
 
@@ -195,12 +231,13 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         if (gameStartRoutine != null) return;
 
-        GameplayModifiers.Instance.ApplyAllProperties(
+        modifiers.ApplyAllProperties(
             (GameplayModifiers.LiveCounts)data[0],
             (GameplayModifiers.UFOSpawnRates)data[1],
             (GameplayModifiers.BossActionSpeeds)data[2],
             (GameplayModifiers.BossMoveSpeeds)data[3],
-            (GameplayModifiers.GameModes)data[4]
+            (GameplayModifiers.GameModes)data[4],
+            (bool)data[5]
             );
 
         PlayButtonSound();
@@ -229,7 +266,8 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.Instantiate(onlineCrosshair.name, transform.position, Quaternion.identity);
 
-        Lean.Localization.LeanLocalization.SetToken("Tokens/Player1Name", PhotonNetwork.MasterClient.NickName);
+        if (modifiers.HostIsReimu) Lean.Localization.LeanLocalization.SetToken("Tokens/ReimuName", PhotonNetwork.MasterClient.NickName);
+        else Lean.Localization.LeanLocalization.SetToken("Tokens/MarisaName", PhotonNetwork.MasterClient.NickName);
         if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
         {
             OnPlayerTwoJoin(PhotonNetwork.LocalPlayer.NickName);
@@ -244,7 +282,6 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
                     twoPlayerButtonListener[i].SetActive(false);
                 }
             }
-            player2NamePlate.Hide();
 
             UpdateDiscordWithRoomState(1);
         }
@@ -278,20 +315,38 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player other)
     {
+        if (modifiers.HostIsReimu)
+        {
+            player1ReimuPlate.SetActive(true);
+            player1MarisaPlate.SetActive(false);
+            Lean.Localization.LeanLocalization.SetToken("Tokens/ReimuName", PhotonNetwork.LocalPlayer.NickName);
+        }
+        else
+        {
+            player1ReimuPlate.SetActive(false);
+            player1MarisaPlate.SetActive(true);
+            Lean.Localization.LeanLocalization.SetToken("Tokens/MarisaName", PhotonNetwork.LocalPlayer.NickName);
+        }
+
         if (PhotonNetwork.IsMasterClient)
         {
             OnPlayerTwoLeave();
         }
+
+        Lean.Localization.LeanLocalization.UpdateTranslations();
     }
 
     public void OnPlayerTwoJoin(string name)
     {
-        player2NamePlate.Show();
+        player2Name = name;
+
+        player2MarisaPlate.Show();
 
         player2NameRect.anchoredPosition = new Vector2(player2NameDest + 2000, 0);
         player2NameRect.DOAnchorPosX(player2NameDest, uiMoveSpeed).SetEase(easeType);
 
-        Lean.Localization.LeanLocalization.SetToken("Tokens/Player2Name", name);
+        if (modifiers.HostIsReimu) Lean.Localization.LeanLocalization.SetToken("Tokens/MarisaName", name);
+        else Lean.Localization.LeanLocalization.SetToken("Tokens/ReimuName", name);
 
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -303,12 +358,11 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
             marisaBG.DOKill();
             marisaBG.DOFade(1, bgFadeTime);
 
-            startGameClientBlock.SetActive(true);
-
             player1NameRect.anchoredPosition = new Vector2(player1NameDest - 2000, 0);
             player1NameRect.DOAnchorPosX(player1NameDest, uiMoveSpeed).SetEase(easeType);
 
-            Lean.Localization.LeanLocalization.SetToken("Tokens/Player1Name", PhotonNetwork.MasterClient.NickName);
+            if (modifiers.HostIsReimu) Lean.Localization.LeanLocalization.SetToken("Tokens/ReimuName", PhotonNetwork.MasterClient.NickName);
+            else Lean.Localization.LeanLocalization.SetToken("Tokens/MarisaName", PhotonNetwork.MasterClient.NickName);
         }
         else
         {
@@ -353,6 +407,50 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
         UpdateDiscordWithRoomState(1);
     }
 
+    public void SwitchPlayers()
+    {
+        modifiers.SyncCycleHostPlayer();
+    }
+
+    public void SwapNameLabels(bool hostIsReimu)
+    {
+        player1NameRect.gameObject.SetActive(false);
+        player2NameRect.gameObject.SetActive(false);
+
+        if (hostIsReimu)
+        {
+            player1NameRect = player1ReimuPlate.transform as RectTransform;
+            player2NameRect = player2MarisaPlate.transform as RectTransform;
+            Lean.Localization.LeanLocalization.SetToken("Tokens/ReimuName", PhotonNetwork.MasterClient.NickName);
+            Lean.Localization.LeanLocalization.SetToken("Tokens/MarisaName", player2Name);
+        }
+        else
+        {
+            player1NameRect = player1MarisaPlate.transform as RectTransform;
+            player2NameRect = player2ReimuPlate.transform as RectTransform;
+            Lean.Localization.LeanLocalization.SetToken("Tokens/ReimuName", player2Name);
+            Lean.Localization.LeanLocalization.SetToken("Tokens/MarisaName", PhotonNetwork.MasterClient.NickName);
+        }
+        
+        player1NameRect.gameObject.SetActive(true);
+        player2NameRect.gameObject.SetActive(true);
+
+        player1ReimuPlate.SetActive(hostIsReimu);
+        player1MarisaPlate.SetActive(!hostIsReimu);
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
+        {
+            player2MarisaPlate.SetActive(hostIsReimu);
+            player2ReimuPlate.SetActive(!hostIsReimu);
+        }
+        else
+        {
+            player2ReimuPlate.Hide();
+            player2MarisaPlate.Hide();
+        }
+
+        UpdateDiscordWithRoomState(PhotonNetwork.CurrentRoom.PlayerCount);
+    }
+
     public void QuitGame()
     {
         PlayButtonSound();
@@ -369,14 +467,17 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     void UpdateDiscordWithRoomState(int playersConnected)
     {
+        string character = "Marisa";
+        if (modifiers.HostIsReimu && PhotonNetwork.IsMasterClient) character = "Reimu";
+        else if (!modifiers.HostIsReimu && !PhotonNetwork.IsMasterClient) character = "Reimu";
+
         DiscordWrapper.Instance.UpdateActivity(
             details: playersConnected == 1 ? 
             (PhotonNetwork.OfflineMode ? "Offline Solo" : "Hosting Room w/ ID: " + PhotonNetwork.CurrentRoom.Name) : "Choosing Game Mode",
             state: "Waiting for Players",
             largeImageKey: "sakuya",
-            smallImageKey: PhotonNetwork.IsMasterClient ? "reimu_discord" : "marisa_discord",
-            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " +
-                (PhotonNetwork.IsMasterClient ? "Reimu" : "Marisa"),
+            smallImageKey: character.ToLower() + "_discord",
+            smallImageText: PhotonNetwork.LocalPlayer.NickName + " playing as " + character,
             partySize: playersConnected,
             partyMax: PhotonNetwork.OfflineMode ? 1 : 2
             );
