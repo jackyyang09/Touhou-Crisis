@@ -55,6 +55,7 @@ public class LoadoutSystemUI : MonoBehaviour, IReloadable
         player.OnRoundExpended += UpdateAmmoUI;
         player.OnSwapWeapon += OnSwapWeapon;
         loadoutSystem.OnChargeChanged += UpdateChargeUI;
+        GameOverUI.OnGameOver += HideWeaponSwitchCanvas;
     }
 
     private void OnDisable()
@@ -64,6 +65,7 @@ public class LoadoutSystemUI : MonoBehaviour, IReloadable
         player.OnRoundExpended -= UpdateAmmoUI;
         player.OnSwapWeapon -= OnSwapWeapon;
         loadoutSystem.OnChargeChanged -= UpdateChargeUI;
+        GameOverUI.OnGameOver -= HideWeaponSwitchCanvas;
     }
 
     public void Reinitialize()

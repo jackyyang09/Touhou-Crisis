@@ -490,10 +490,39 @@ public class Sakuya : BaseEnemy, IReloadable
         }
     }
 
+    void SpawnKnifeBundlePointBlank()
+    {
+        AudioManager.PlaySound(TouhouCrisisSounds.KnifePlace);
+        
+        for (int i = 0; i < 5; i++)
+        {
+            Vector3 pos = Vector3.Lerp(
+                knifeBox.GetRandomPointInBox(),
+                AreaLogic.Instance.Player1FireTransform.position, 0.7f);
+
+            SpecialBullet newKnife = pools[2].GetObject().GetComponent<SpecialBullet>();
+            newKnife.transform.position = pos;
+            newKnife.gameObject.SetActive(true);
+            newKnife.transform.SetParent(null);
+            newKnife.moveDelay = 0;
+
+            target.position = AreaLogic.Instance.Player1FireTransform.position;
+            target.position += targetOffset;
+
+            newKnife.transform.LookAt(target.position);
+
+            if (i == 4) newKnife.playSound = true;
+            else newKnife.playSound = false;
+
+            newKnife.SpecialInit(target);
+        }
+    }
+
     void SpawnKnifeBundle(float moveDelay)
     {
         AudioManager.PlaySound(TouhouCrisisSounds.KnifePlace);
         Vector3 referencePosition = knifeBox.GetRandomPointInBox();
+
         for (int i = 0; i < 5; i++)
         {
             Vector3 pos = referencePosition + Random.insideUnitSphere * 1.5f;
@@ -552,7 +581,10 @@ public class Sakuya : BaseEnemy, IReloadable
 
         yield return new WaitForSecondsRealtime(4.5f);
 
-        for (int i = 0; i < knifeThrows; i++)
+        SpawnKnifeBundlePointBlank();
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        for (int i = 1; i < knifeThrows; i++)
         {
             float delay = i * 0.5f;
             SpawnKnifeBundle(delay);
