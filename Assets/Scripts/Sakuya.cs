@@ -548,6 +548,7 @@ public class Sakuya : BaseEnemy, IReloadable
     {
         if (SteamManager.Initialized)
         {
+#if UNITY_STANDALONE
             if (Steamworks.SteamUserStats.GetAchievement("ACHIEVE_4", out bool unlocked))
             {
                 if (!unlocked)
@@ -559,6 +560,7 @@ public class Sakuya : BaseEnemy, IReloadable
                     }
                 }
             }
+#endif
         }
 
         Time.timeScale = 0;

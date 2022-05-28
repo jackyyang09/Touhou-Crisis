@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponType: 1
   bulletDamage: 1
-  ammoCapacity: 30
+  ammoCapacity: 40
   infiniteAmmo: 0
-  fireDelay: 0.085
+  fireDelay: 0.075
   pellets: 0
   bulletSpread: 0
   hitFlashPrefab: {fileID: 1367978030930376534, guid: 2880589ddbe8e2d4d9044910d7604b1c, type: 3}

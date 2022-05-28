@@ -49,7 +49,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     IEnumerator Start()
     {
         yield return new WaitUntil(() => SteamManager.Initialized);
-
+#if UNITY_STANDALONE
         if (Steamworks.SteamApps.GetCurrentGameLanguage() == "english")
         {
             Lean.Localization.LeanLocalization.CurrentLanguage = "English";
@@ -58,6 +58,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             Lean.Localization.LeanLocalization.CurrentLanguage = "Japanese";
         }
+#endif
     }
 
     // Update is called once per frame

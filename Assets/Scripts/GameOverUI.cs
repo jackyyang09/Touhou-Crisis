@@ -111,6 +111,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
         {
             if (SteamManager.Initialized)
             {
+#if UNITY_STANDALONE
                 if (Steamworks.SteamUserStats.GetAchievement("ACHIEVE_1", out bool unlocked))
                 {
                     if (!unlocked)
@@ -119,6 +120,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
                         steamAchieved = true;
                     }
                 }
+#endif
             }
         }
         
@@ -133,6 +135,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
             else if (modifiers.HostIsReimu && !Photon.Pun.PhotonNetwork.IsMasterClient) achieveText = "ACHIEVE_3";
             if (SteamManager.Initialized)
             {
+#if UNITY_STANDALONE
                 if (Steamworks.SteamUserStats.GetAchievement(achieveText, out bool unlocked))
                 {
                     if (!unlocked)
@@ -141,6 +144,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
                         steamAchieved = true;
                     }
                 }
+#endif
             }
         }
         else
@@ -153,7 +157,9 @@ public class GameOverUI : MonoBehaviour, IReloadable
         if (offline) StartCoroutine(ShowGameOverScreen1P());
         else StartCoroutine(ShowGameOverScreen2P(bossDefeated));
 
+#if UNITY_STANDALONE
         if (steamAchieved) Steamworks.SteamUserStats.StoreStats();
+#endif
 
         gameOverTriggered = true;
 

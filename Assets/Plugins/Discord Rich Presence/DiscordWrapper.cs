@@ -6,7 +6,9 @@ public class DiscordWrapper : MonoBehaviour
 {
     public long APP_ID = 969259375556452405;
 
+#if UNITY_STANDALONE
     static Discord.Discord discordInstance;
+#endif
 
     public static DiscordWrapper Instance
     {
@@ -44,14 +46,17 @@ public class DiscordWrapper : MonoBehaviour
         transform.SetParent(null);
 
         DontDestroyOnLoad(transform.root.gameObject);
-
-        if (discordInstance == null) discordInstance = new Discord.Discord(APP_ID, (ulong)Discord.CreateFlags.Default);
+#if UNITY_STANDALONE
+        if (discordInstance == null) discordInstance = new Discord.Discord(APP_ID, (ulong)Discord.CreateFlags.NoRequireDiscord);
+#endif
     }
 
     // Update is called once per frame
     void Update()
     {
+#if UNITY_STANDALONE
         discordInstance.RunCallbacks();
+#endif
     }
 
     /// <summary>
@@ -78,6 +83,7 @@ public class DiscordWrapper : MonoBehaviour
         string joinSecret = ""
         )
     {
+#if UNITY_STANDALONE
         var a = new Discord.Activity
         {
             State = state, Details = details,
@@ -86,6 +92,12 @@ public class DiscordWrapper : MonoBehaviour
             Party = new Discord.ActivityParty { Id = partyID, Size = new Discord.PartySize { CurrentSize = partySize, MaxSize = partyMax } },
             Secrets = new Discord.ActivitySecrets { Join = joinSecret }
         };
+
+        if (discordInstance == null)
+        {
+            Debug.LogWarning("Discord is not running!");
+            return;
+        }
 
         discordInstance.GetActivityManager().UpdateActivity(a, (result) =>
         {
@@ -99,11 +111,14 @@ public class DiscordWrapper : MonoBehaviour
             }
         }
         );
+#endif
     }
 
+#if UNITY_STANDALONE
     private void OnApplicationQuit()
     {
         Debug.Log("Disposing of Discord instance...");
-        discordInstance.Dispose();
+        if (discordInstance != null) discordInstance.Dispose();
     }
+#endif
 }

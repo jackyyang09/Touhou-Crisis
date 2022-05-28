@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponType: 0
   bulletDamage: 1
-  ammoCapacity: 8
+  ammoCapacity: 6
   infiniteAmmo: 0
   fireDelay: 0.1
   pellets: 5

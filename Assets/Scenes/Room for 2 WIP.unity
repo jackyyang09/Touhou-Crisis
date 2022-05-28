@@ -2112,7 +2112,7 @@ MonoBehaviour:
   animator: {fileID: 1288670848}
   photonView: {fileID: 1288670847}
   canTakeDamage: 1
-  healthPhases: 320000007d000000af000000c8000000
+  healthPhases: 320000007d000000c800000013010000
   renderer: {fileID: 1193451099}
   damagedColour: {r: 1, g: 0.23113209, b: 0.23113209, a: 1}
   box: {fileID: 1180432540}

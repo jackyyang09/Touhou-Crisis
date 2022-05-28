@@ -23,6 +23,7 @@ using Steamworks;
 [DisallowMultipleComponent]
 public class SteamManager : MonoBehaviour
 {
+	[SerializeField] bool disableInEditor = false;
 	[SerializeField] long appID;
 
 #if !DISABLESTEAMWORKS
@@ -126,6 +127,10 @@ public class SteamManager : MonoBehaviour
 			Application.Quit();
 			return;
 		}
+
+#if UNITY_EDITOR
+		if (Application.isEditor && disableInEditor) return;
+#endif
 
 		// Initializes the Steamworks API.
 		// If this returns false then this indicates one of the following conditions:

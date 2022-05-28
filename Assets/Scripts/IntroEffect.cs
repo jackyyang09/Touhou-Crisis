@@ -92,7 +92,7 @@ public class IntroEffect : MonoBehaviour
 
     void ShootToStart(Ray obj, Vector2 pos)
     {
-        attractUI.OptimizedCanvas.Hide();
+        if (attractUI) attractUI.OptimizedCanvas.Hide();
         if (nowAttracting)
         {
             OnAttractionEnded();
@@ -144,6 +144,7 @@ public class IntroEffect : MonoBehaviour
 
     void StartAttracting()
     {
+#if UNITY_STANDALONE
         if (fadeRoutine != null) StopCoroutine(fadeRoutine);
         fadeRoutine = StartCoroutine(FadeOut(() =>
         {
@@ -151,6 +152,7 @@ public class IntroEffect : MonoBehaviour
             StartCoroutine(FadeIn(null));
             nowAttracting = true;
         }));
+#endif
     }
 
     public void OnAttractionEnded()
