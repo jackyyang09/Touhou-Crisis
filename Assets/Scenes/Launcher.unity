@@ -9203,7 +9203,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 369940227}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: abc3bafd940a7e647b3b8d2a43e6327e, type: 3}
+  m_VideoClip: {fileID: 0}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -9213,7 +9213,7 @@ VideoPlayer:
   m_TargetMaterialProperty: _MainTex
   m_RenderMode: 2
   m_AspectRatio: 2
-  m_DataSource: 0
+  m_DataSource: 1
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 2
   m_TargetAudioSources:
@@ -16136,8 +16136,6 @@ MonoBehaviour:
   textScrollTime: 5
   textScrollSpeed: 500
   fadeOutBuffer: 1
-  clips:
-  - {fileID: 32900000, guid: 8cb257bf64ac9b64ebe5f086ae77ba6a, type: 3}
   videoPlayer: {fileID: 369940229}
   scrollingText:
   - {fileID: 1972103137}

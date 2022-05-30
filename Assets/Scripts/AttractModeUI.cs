@@ -10,10 +10,18 @@ public class AttractModeUI : BaseGameUI
     [SerializeField] float textScrollSpeed;
     [SerializeField] float fadeOutBuffer;
 
-    [SerializeField] VideoClip[] clips;
     [SerializeField] VideoPlayer videoPlayer;
     [SerializeField] TMPro.TextMeshProUGUI[] scrollingText;
     [SerializeField] IntroEffect introEffect;
+
+    private void Awake()
+    {
+#if UNITY_STANDALONE
+        videoPlayer.url = System.IO.Path.Combine(Application.dataPath, "Attract Footage.mp4");
+#else
+        Destroy(gameObject);
+#endif
+    }
 
     IEnumerator AttractRoutine()
     {
@@ -46,7 +54,6 @@ public class AttractModeUI : BaseGameUI
 
     public override void ShowUI()
     {
-        videoPlayer.clip = clips[0];
         videoPlayer.time = 0;
         enabled = true;
         StartCoroutine(AttractRoutine());

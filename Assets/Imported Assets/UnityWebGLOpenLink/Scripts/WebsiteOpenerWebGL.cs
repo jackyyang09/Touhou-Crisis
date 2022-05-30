@@ -11,6 +11,7 @@ public class WebsiteOpenerWebGL : MonoBehaviour
 #else
 		Application.OpenURL(link);
 #endif
+		JSAM.AudioManager.PlaySound(MainMenuSounds.MenuButton);
 	}
 
 	[DllImport("__Internal")]

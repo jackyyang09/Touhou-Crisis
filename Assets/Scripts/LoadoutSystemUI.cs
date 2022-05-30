@@ -71,7 +71,7 @@ public class LoadoutSystemUI : MonoBehaviour, IReloadable
     public void Reinitialize()
     {
         StopPulsing();
-
+        icon.color = Color.black;
         weaponSwitchCanvas.Hide();
     }
 

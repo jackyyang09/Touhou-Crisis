@@ -835,7 +835,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SCORE
+  m_text: Score
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -1733,7 +1733,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TIME
+  m_text: Time
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -2478,7 +2478,7 @@ MonoBehaviour:
   - weapon: {fileID: 11400000, guid: c2def6414b62a0747a29cd1b43426dad, type: 2}
     bulletPrefab: {fileID: 8591692505813508856, guid: a93789a0bc7e55b4ba18edb9d5564339, type: 3}
     casingPrefab: {fileID: 3259689145574611082, guid: 751a1623bb101944e9fa646032e96d6f, type: 3}
-    uiSpacing: 50
+    uiSpacing: 60
     bulletsToShow: 8
     casingPoolSize: 5
 --- !u!114 &1512368136
@@ -3322,7 +3322,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: AMMO
+  m_text: Ammo
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -7127,7 +7127,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TIME
+  m_text: Time
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -8578,7 +8578,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SCORE
+  m_text: Score
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -8742,7 +8742,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: DAMAGE TAKEN
+  m_text: Damage Taken
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -11155,7 +11155,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <Playername> has invited you to a rematch!
+  m_text: PLACEHOLDER1 has requested a rematch!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -11757,7 +11757,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Shoot to continue
+  m_text: Shoot to Continue
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -13485,7 +13485,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SAKUYA
+  m_text: Sakuya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -17105,7 +17105,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: DAMAGE TAKEN
+  m_text: Damage Taken
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -18986,7 +18986,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Player has invited you to retry!
+  m_text: PLACEHOLDER1 has requested a rematch!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -19013,7 +19013,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 69.25
+  m_fontSize: 62.5
   m_fontSizeBase: 145
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -21727,7 +21727,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SCORE
+  m_text: Score
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -23829,7 +23829,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Shoot to continue
+  m_text: Shoot to Continue
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -24257,7 +24257,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LIVES
+  m_text: Life
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -27573,7 +27573,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TIME
+  m_text: Time
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
   m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
@@ -29875,7 +29875,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_text
-      value: RETURN TO TITLE
+      value: Return to Title
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
@@ -30802,7 +30802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_text
-      value: RETRY
+      value: Retry
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
@@ -30918,11 +30918,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1424315259817906613, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: QUIT
+      value: Return to Title
       objectReference: {fileID: 0}
     - target: {fileID: 1424315259817906613, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontSize
-      value: 120
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 1424315259817906613, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontAsset
@@ -31534,7 +31534,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6091400037476837793, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: SETTINGS
+      value: Options
       objectReference: {fileID: 0}
     - target: {fileID: 6091400037476837793, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontAsset
@@ -31594,7 +31594,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6362171189326947413, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: RETURN TO GAME
+      value: Return to Game
       objectReference: {fileID: 0}
     - target: {fileID: 6362171189326947413, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontSize
@@ -31670,11 +31670,11 @@ PrefabInstance:
       objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
     - target: {fileID: 7132545846762235523, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_text
-      value: RETURN TO GAME
+      value: Retry
       objectReference: {fileID: 0}
     - target: {fileID: 7132545846762235523, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontSize
-      value: 75
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 7132545846762235523, guid: 4cfa1ca5455ffe34da1411e0c691e03b, type: 3}
       propertyPath: m_fontAsset

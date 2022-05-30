@@ -133,7 +133,13 @@ public class PlayerBehaviour : MonoBehaviour, IReloadable
 
         activeWeaponIndex = 0;
 
-        OnSwapWeapon?.Invoke(ActiveWeapon);
+        railShooter.OnShoot -= HandleShooting;
+        if (weapons[activeWeaponIndex].weaponType == FireType.SemiAuto)
+        {
+            railShooter.OnShoot += HandleShooting;
+        }
+        OnSwapWeapon?.Invoke(weapons[activeWeaponIndex]);
+
         OnAmmoChanged?.Invoke();
         EnterTransit();
         ResumePlayerControl();
