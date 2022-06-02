@@ -9,7 +9,7 @@
 #define DISABLESTEAMWORKS
 #endif
 
-//#define DISABLESTEAMWORKS
+#define DISABLESTEAMWORKS
 
 using UnityEngine;
 #if !DISABLESTEAMWORKS

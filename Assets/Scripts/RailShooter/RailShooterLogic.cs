@@ -8,6 +8,12 @@ public class RailShooterLogic : MonoBehaviour
     [SerializeField] bool offlineMode = false;
 
     [SerializeField] KeyCode fireKey = KeyCode.Mouse0;
+    public KeyCode FireKey { get { return fireKey; } }
+
+    [SerializeField] float fullAutoAssistFireDelay = 0.5f;
+    public bool EnableFullAutoAssist = false;
+    bool canShoot = true;
+    void ReEnableShooting() => canShoot = true;
 
     [Header("Object References")]
 
@@ -60,9 +66,26 @@ public class RailShooterLogic : MonoBehaviour
             ShootBehaviour();
         }
 #else
-        if (Input.GetKeyDown(fireKey))
+        if (canShoot)
         {
-            ShootBehaviour();
+            if (Input.GetKeyDown(fireKey))
+            {
+                ShootBehaviour();
+            }
+
+            if (EnableFullAutoAssist)
+            {
+                if (Input.GetKey(fireKey) && canShoot)
+                {
+                    ShootBehaviour();
+                }
+            }
+        }
+
+        if (Input.GetKeyUp(fireKey))
+        {
+            CancelInvoke(nameof(ReEnableShooting));
+            canShoot = true;
         }
 
         if (Input.GetKey(fireKey))
@@ -106,6 +129,11 @@ public class RailShooterLogic : MonoBehaviour
     {
         Vector2 screenPoint = GetCursorPosition();
         OnShoot?.Invoke(FireRay(), screenPoint);
+        if (EnableFullAutoAssist)
+        {
+            canShoot = false;
+            Invoke(nameof(ReEnableShooting), fullAutoAssistFireDelay);
+        }
     }
 
     public void RebindFireKey(KeyCode newKey)

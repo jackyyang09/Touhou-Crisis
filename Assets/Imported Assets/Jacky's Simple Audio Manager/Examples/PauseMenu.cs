@@ -15,6 +15,7 @@ public class PauseMenu : MonoBehaviour
     public const string HideCursorKey = "HIDE_CURSOR";
     public const string FireInputKey = "FIRE_KEYBIND";
     public const string CoverInputKey = "COVER_KEYBIND";
+    public const string FULLAUTO_KEY = "USE_FULLAUTOASSIST";
 
     [SerializeField] Slider masterSlider = null;
     [SerializeField] Slider musicSlider = null;
@@ -34,6 +35,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] Image crossHairButton = null;
     [SerializeField] Image screenFlashButton = null;
     [SerializeField] Image hideCursorButton = null;
+    [SerializeField] Image fullAutoButton = null;
 
     [SerializeField] OptimizedCanvas rebindInterface = null;
     [SerializeField] TMPro.TextMeshProUGUI rebindText = null;
@@ -185,6 +187,8 @@ public class PauseMenu : MonoBehaviour
 
         KeyCode newCoverKey = (KeyCode)PlayerPrefs.GetInt(CoverInputKey);
         Lean.Localization.LeanLocalization.SetToken("Tokens/CoverKey", newCoverKey.ToString());
+
+        FindObjectOfType<RailShooterLogic>().EnableFullAutoAssist = System.Convert.ToBoolean(PlayerPrefs.GetInt(FULLAUTO_KEY));
     }
 
     /// <summary>
@@ -205,6 +209,11 @@ public class PauseMenu : MonoBehaviour
         if (PlayerPrefs.HasKey(HideCursorKey))
         {
             hideCursorButton.color = PlayerPrefs.GetInt(HideCursorKey) == 1 ? Color.red : Color.white;
+        }
+
+        if (PlayerPrefs.HasKey(FULLAUTO_KEY))
+        {
+            if (fullAutoButton) fullAutoButton.color = PlayerPrefs.GetInt(FULLAUTO_KEY) == 1 ? Color.red : Color.white;
         }
     }
 
@@ -266,6 +275,14 @@ public class PauseMenu : MonoBehaviour
         PlayerPrefs.SetInt(HideCursorKey, (int)Mathf.Repeat(PlayerPrefs.GetInt(HideCursorKey) + 1, 2f));
         PlayerPrefs.Save();
         Cursor.visible = !(PlayerPrefs.GetInt(HideCursorKey) == 1);
+        LoadToggleSettings();
+    }
+
+    public void ToggleFullAutoAssist()
+    {
+        PlayerPrefs.SetInt(FULLAUTO_KEY, (int)Mathf.Repeat(PlayerPrefs.GetInt(FULLAUTO_KEY) + 1, 2f));
+        PlayerPrefs.Save();
+        FindObjectOfType<RailShooterLogic>().EnableFullAutoAssist = System.Convert.ToBoolean(PlayerPrefs.GetInt(FULLAUTO_KEY));
         LoadToggleSettings();
     }
 
