@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d15ae218647a2d4f85e14306846c10c, type: 3}
   m_Name: ScoreBeeps
   m_EditorClassIdentifier: 
+  safeName: 
   presetDescription: '<Default Preset>
 
     - Sound meant to be played in the game''s
@@ -23,20 +24,22 @@ MonoBehaviour:
 
     - Ignores
     time scale'
-  category: UI Sounds
-  file: {fileID: 8300000, guid: a2372e4997d66f5468fc3ebff4f5672f, type: 3}
-  files: []
-  useLibrary: 0
+  files:
+  - {fileID: 8300000, guid: a2372e4997d66f5468fc3ebff4f5672f, type: 3}
+  loopStart: 0
+  loopEnd: 0.0451875
+  bpm: 120
   relativeVolume: 1
   spatialize: 0
   maxDistance: 0
   priority: 128
   startingPitch: 1
   pitchShift: 0
-  playReversed: 0
+  loopMode: 1
   delay: 0
   ignoreTimeScale: 1
-  fadeMode: 0
+  mixerGroupOverride: {fileID: 0}
+  fadeInOut: 0
   fadeInDuration: 0
   fadeOutDuration: 0
   bypassEffects: 0

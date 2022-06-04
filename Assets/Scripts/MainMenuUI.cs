@@ -11,7 +11,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 {
     [SerializeField] public const string playerNamePrefKey = "PlayerName";
 
-    [SerializeField] AudioFileSoundObject buttonShoot = null;
+    [SerializeField] JSAMSoundFileObject buttonShoot = null;
     [SerializeField] RailShooterLogic railShooter = null;
 
     [SerializeField] Launcher launcher = null;
@@ -89,7 +89,7 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 
     public void PlayButtonSound()
     {
-        AudioManager.Instance.PlaySoundInternal(buttonShoot);
+        AudioManager.PlaySound(buttonShoot);
     }
 
     public void JoinOrCreateGame(float delay)

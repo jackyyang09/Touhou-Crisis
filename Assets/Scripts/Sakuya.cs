@@ -451,7 +451,8 @@ public class Sakuya : BaseEnemy, IReloadable
                 case 3:
                     magicCircleSecondary.enabled = true;
                     animator.Play("Secondary MagicCircle Intro");
-                    AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 5);
+                    AudioManager.FadeMainMusicOut(5);
+                    AudioManager.FadeMusicIn(TouhouCrisisMusic.LunaDial, 5, true);
                     break;
             }
 
@@ -475,7 +476,7 @@ public class Sakuya : BaseEnemy, IReloadable
                 behaviourRoutine = null;
             }
 
-            AudioManager.FadeMusicOut(3);
+            AudioManager.FadeMainMusicOut(3);
 
             canTakeDamage = false;
 
@@ -564,7 +565,8 @@ public class Sakuya : BaseEnemy, IReloadable
         }
 
         Time.timeScale = 0;
-        AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDialLowPass, 0.1f, true);
+        var time = AudioManager.FadeMainMusicOut(0.1f).AudioSource.time;
+        AudioManager.FadeMusicIn(TouhouCrisisMusic.LunaDialLowPass, 0.1f, true).AudioSource.time = time;
         AudioManager.PlaySound(TouhouCrisisSounds.TimeStop);
         timeStopAnim.Play("Time Stop");
     }
@@ -600,7 +602,8 @@ public class Sakuya : BaseEnemy, IReloadable
         AudioManager.PlaySound(TouhouCrisisSounds.TimeResumes);
         float timer = 0;
         float timeToFlowAgain = 2;
-        AudioManager.CrossfadeMusic(TouhouCrisisMusic.LunaDial, 2, true);
+        var time = AudioManager.FadeMainMusicOut(2).AudioSource.time;
+        AudioManager.FadeMusicIn(TouhouCrisisMusic.LunaDial, 2, true).AudioSource.time = time;
         while (timer < timeToFlowAgain)
         {
             Time.timeScale = Mathf.Lerp(0, 1, timer / timeToFlowAgain);

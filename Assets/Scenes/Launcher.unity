@@ -2644,11 +2644,11 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: "You have infinite ammo, but you must reload every 9 shots. \nRelease {Tokens/CoverKey}
+    Text: "You have infinite ammo, but you must reload every 8 shots. \nRelease {Tokens/CoverKey}
       to enter cover"
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u6B8B\u5F3E\u6570\u306F\u7121\u9650\u3067\u3059\u304C\u30019\u767A\u3054\u3068\u306B\u30EA\u30ED\u30FC\u30C9\u3057\u306A\u3051\u308C\u3070\u306A\u308A\u307E\u305B\u3093\n{Tokens/CoverKey}\u3092\u96E2\u3059\u3068\u7269\u9670\u306B\u96A0\u308C\u3066\u30EA\u30ED\u30FC\u30C9\u3067\u304D\u307E\u3059"
+    Text: "\u6B8B\u5F3E\u6570\u306F\u7121\u9650\u3067\u3059\u304C\u30018\u767A\u3054\u3068\u306B\u30EA\u30ED\u30FC\u30C9\u3057\u306A\u3051\u308C\u3070\u306A\u308A\u307E\u305B\u3093\n{Tokens/CoverKey}\u3092\u96E2\u3059\u3068\u7269\u9670\u306B\u96A0\u308C\u3066\u30EA\u30ED\u30FC\u30C9\u3067\u304D\u307E\u3059"
     Object: {fileID: 0}
 --- !u!1 &90471393
 GameObject:
@@ -6553,7 +6553,7 @@ GameObject:
   - component: {fileID: 228189397}
   - component: {fileID: 228189398}
   m_Layer: 0
-  m_Name: Text/Arcade Options/FullAutoAssist
+  m_Name: Text/Arcade Options/FullAutoAssist - Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6588,10 +6588,12 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: Full auto when mouse held
+    Text: 'Full-Auto
+
+      Mode'
     Object: {fileID: 0}
   - Language: Japanese
-    Text: MISSING
+    Text: "\u30D5\u30EB\u30AA\u30FC\u30C8\u30E2\u30FC\u30C9"
     Object: {fileID: 0}
 --- !u!1 &238052063
 GameObject:
@@ -9225,6 +9227,7 @@ GameObject:
   m_Component:
   - component: {fileID: 369940228}
   - component: {fileID: 369940229}
+  - component: {fileID: 369940230}
   m_Layer: 0
   m_Name: Video Player
   m_TagString: Untagged
@@ -9282,6 +9285,21 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
+--- !u!114 &369940230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369940227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dbd03e7bd4520345b3b21d70515adca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useMusicVolume: 0
+  relativeVolume: 1
+  videoPlayer: {fileID: 369940229}
 --- !u!1 &370484917
 GameObject:
   m_ObjectHideFlags: 0
@@ -13807,6 +13825,57 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   APP_ID: 969259375556452405
+--- !u!1 &620445788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 620445789}
+  - component: {fileID: 620445790}
+  m_Layer: 0
+  m_Name: Text/Arcade Options/FullAutoAssist - Desc
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &620445789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620445788}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1575330475}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &620445790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620445788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Auto fire while the fire key is held regardless of weapon type
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u3059\u3079\u3066\u306E\u6B66\u5668\u306F\u5C04\u6483\u30AD\u30FC\u3092\u62BC\u3057\u3063\u3071\u306A\u3057\u3057\u3066\u3044\u308B\u9593\u3001\u5F3E\u306E\u3042\u308B\u9650\u308A\u9023\u5C04\u3059\u308B"
+    Object: {fileID: 0}
 --- !u!1 &624001452
 GameObject:
   m_ObjectHideFlags: 0
@@ -21581,7 +21650,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1030633846}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d271da891608f40468ba9048deec2ee0, type: 3}
+  m_Script: {fileID: 11500000, guid: df1970441b54dca4c811835add58d8ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   masterSlider: {fileID: 760433912}
@@ -21885,6 +21954,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Lightgun Flash
       objectReference: {fileID: 0}
+    - target: {fileID: 308436146709176944, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -21903,7 +21976,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchorMin.x
@@ -21911,15 +21984,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 344.17343
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 829.6113
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -21951,11 +22024,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 920.4336
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -414.80566
       objectReference: {fileID: 0}
     - target: {fileID: 308436146709176945, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -24401,7 +24474,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -125.00012, y: -33}
+  m_AnchoredPosition: {x: -125, y: -33}
   m_SizeDelta: {x: 827.58923, y: 1103.4521}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1165699229
@@ -26448,6 +26521,170 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241549382}
+  m_CullTransparentMesh: 0
+--- !u!1 &1246049066
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1246049067}
+  - component: {fileID: 1246049071}
+  - component: {fileID: 1246049070}
+  - component: {fileID: 1246049069}
+  - component: {fileID: 1246049068}
+  m_Layer: 5
+  m_Name: Text (TMP) (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1246049067
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246049066}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1610832047}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 218.85838, y: -672.7}
+  m_SizeDelta: {x: 337.71677, y: 278.99435}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1246049068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246049066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf51be86e70d7941bd40914206e4ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Text/Arcade Options/FullAutoAssist - Desc
+  FallbackText: lightgun screen flash
+--- !u!114 &1246049069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246049066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9d52b33a5902e643bced0385fa6840b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  translationName: Objects/Font
+  FallbackFont: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+--- !u!114 &1246049070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246049066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Auto fire while the fire key is held regardless of weapon type
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+  m_sharedMaterial: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 35.15
+  m_fontSizeBase: 53
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 18
+  m_fontSizeMax: 80
+  m_fontStyle: 16
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 1
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1246049071
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246049066}
   m_CullTransparentMesh: 0
 --- !u!1 &1248495628
 GameObject:
@@ -29806,7 +30043,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1394940204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32353,6 +32590,7 @@ Transform:
   - {fileID: 206398568}
   - {fileID: 27367433}
   - {fileID: 228189397}
+  - {fileID: 620445789}
   m_Father: {fileID: 992478890}
   m_RootOrder: 36
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -33531,11 +33769,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_text
-      value: Full auto when mouse held
+      value: Full-Auto\nMode
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontSize
-      value: 62.3
+      value: 38.95
       objectReference: {fileID: 0}
     - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_fontAsset
@@ -33557,9 +33795,41 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 21732741549424564, guid: d87e7b8af5c2744408d3367a08ad62fc, type: 2}
+    - target: {fileID: 308436146908282084, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 308436146908282086, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 308436146908282087, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 308436146908282087, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 308436146908282087, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 308436146908282087, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 337.71677
+      objectReference: {fileID: 0}
+    - target: {fileID: 308436146908282087, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 345.48666
+      objectReference: {fileID: 0}
+    - target: {fileID: 308436146908282087, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 218.85838
+      objectReference: {fileID: 0}
     - target: {fileID: 308436146908282087, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.19018555
+      value: -202.74333
       objectReference: {fileID: 0}
     - target: {fileID: 308436148198536343, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -33607,8 +33877,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbf51be86e70d7941bd40914206e4ddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  translationName: Text/Arcade Options/FullAutoAssist
+  translationName: Text/Arcade Options/FullAutoAssist - Name
   FallbackText: lightgun screen flash
+--- !u!224 &1610832047 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 308436148198536343, guid: fc6406c3dd741ca4b8be2b82468d95f0, type: 3}
+  m_PrefabInstance: {fileID: 1610832042}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1621019883
 GameObject:
   m_ObjectHideFlags: 0
@@ -37363,12 +37638,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7241a3e106230140bd9d59ff2d17ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  masterVolume: 1
-  masterMuted: 0
-  soundVolume: 1
-  soundMuted: 0
-  musicVolume: 1
-  musicMuted: 0
   settings: {fileID: 11400000, guid: 6b6fa5823069a2b4d91294064912048b, type: 2}
   library: {fileID: 11400000, guid: af359c3e927b50d44b2b5527da2bc85b, type: 2}
   listener: {fileID: 1937298704}

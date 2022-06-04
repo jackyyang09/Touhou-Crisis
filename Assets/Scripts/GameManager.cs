@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable, IReloadabl
     
     public void Reinitialize()
     {
+        StopGameTimer();
         gameTimer = 0;
         remoteGameTimer = 0;
         rematchRequests = 0;

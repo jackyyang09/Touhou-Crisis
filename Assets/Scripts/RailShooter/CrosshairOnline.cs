@@ -76,10 +76,15 @@ public class CrosshairOnline : MonoBehaviourPun, IPunObservable
         photonView.RPC("SpawnEffectGame", RpcTarget.Others, new object[] { hit, hitPosition });
     }
 
+    /// <summary>
+    /// This method can fail if shooting the back button to leave a room
+    /// </summary>
+    /// <param name="arg1"></param>
+    /// <param name="arg2"></param>
     private void SpawnRemoteEffect(Ray arg1, Vector2 arg2)
     {
         arg2 = new Vector2(arg2.x / Screen.width, arg2.y / Screen.height);
-        photonView.RPC("SpawnEffect", RpcTarget.Others, new object[] { arg2 });
+        if (PhotonNetwork.IsConnected) photonView.RPC(nameof(SpawnEffect), RpcTarget.Others, new object[] { arg2 });
     }
 
     [PunRPC]

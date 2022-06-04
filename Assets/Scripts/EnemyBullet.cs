@@ -17,7 +17,7 @@ public class EnemyBullet : MonoBehaviour, IReloadable
 
     [SerializeField] protected bool collideWithEnvironment = true;
 
-    [SerializeField] AudioFileSoundObject bulletSound;
+    [SerializeField] JSAMSoundFileObject bulletSound;
     public bool playSound;
 
     protected Vector3 ogPos;
@@ -65,7 +65,7 @@ public class EnemyBullet : MonoBehaviour, IReloadable
 
         if (playSound)
         {
-            AudioManager.Instance.PlaySoundInternal(bulletSound);
+            AudioManager.PlaySound(bulletSound);
         }
 
         Invoke(nameof(DisableSelf), lifeTime);

@@ -31,6 +31,6 @@ public class WeaponObject : ScriptableObject
     [Header("Object References")]
     public GameObject hitFlashPrefab = null;
     public GameObject missFlashPrefab = null;
-    public JSAM.AudioFileSoundObject fireSound = null;
-    public JSAM.AudioFileSoundObject casingSound = null;
+    public JSAM.JSAMSoundFileObject fireSound = null;
+    public JSAM.JSAMSoundFileObject casingSound = null;
 }

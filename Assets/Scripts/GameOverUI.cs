@@ -265,14 +265,9 @@ public class GameOverUI : MonoBehaviour, IReloadable
         changeTime = 1;
         timer = 0;
 
-        JSAM.AudioManager.PlaySoundLoop(TouhouCrisisSounds.ScoreBeeps);
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.ScoreBeeps);
         while ((timer < changeTime) && !skipResults)
         {
-            if (!JSAM.AudioManager.IsSoundLooping(TouhouCrisisSounds.ScoreBeeps))
-            {
-                JSAM.AudioManager.PlaySoundLoop(TouhouCrisisSounds.ScoreBeeps);
-            }
-
             accuracyBonusText[0].text = "+" + (int)Mathf.Lerp(accuracyBonus, 0, timer / changeTime);
             if (damagePenalty == 0) damagePenaltyText[0].text = "-0";
             else damagePenaltyText[0].text = ((int)Mathf.Lerp(damagePenalty, 0, timer / changeTime)).ToString();
@@ -281,7 +276,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
             timer += Time.deltaTime;
             yield return null;
         }
-        JSAM.AudioManager.StopSoundIfLooping(TouhouCrisisSounds.ScoreBeeps);
+        JSAM.AudioManager.StopSoundIfPlaying(TouhouCrisisSounds.ScoreBeeps);
 
         accuracyBonusText[0].text = "+0";
         damagePenaltyText[0].text = "-0";
@@ -440,13 +435,9 @@ public class GameOverUI : MonoBehaviour, IReloadable
         changeTime = 1;
         timer = 0;
 
+        JSAM.AudioManager.PlaySound(TouhouCrisisSounds.ScoreBeeps);
         while ((timer < changeTime) && !skipResults)
         {
-            if (!JSAM.AudioManager.IsSoundLooping(TouhouCrisisSounds.ScoreBeeps))
-            {
-                JSAM.AudioManager.PlaySoundLoop(TouhouCrisisSounds.ScoreBeeps);
-            }
-
             for (int i = 0; i < 2; i++)
             {
                 accuracyBonusText[i].text = "+" + (int)Mathf.Lerp(accuracyBonus[i], 0, timer / changeTime);
@@ -464,7 +455,7 @@ public class GameOverUI : MonoBehaviour, IReloadable
             damagePenaltyText[i].text = "-0";
             scoreText[i].text = finalScores[i].ToString();
         }
-        JSAM.AudioManager.StopSoundIfLooping(TouhouCrisisSounds.ScoreBeeps);
+        JSAM.AudioManager.StopSoundIfPlaying(TouhouCrisisSounds.ScoreBeeps);
 
         if (finalScores[hostId] > finalScores[clientId]) // Player 1 Wins
         {

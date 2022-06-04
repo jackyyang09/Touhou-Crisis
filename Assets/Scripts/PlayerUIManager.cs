@@ -409,7 +409,7 @@ public class PlayerUIManager : BasicSingleton<PlayerUIManager>, IReloadable
     {
         GameOverSequence();
 
-        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin);
+        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverWin, true);
 
         if (Photon.Pun.PhotonNetwork.OfflineMode) gameOverUI1P.RunGameOverSequence(true);
         else gameOverUI2P.RunGameOverSequence(true);
@@ -419,7 +419,7 @@ public class PlayerUIManager : BasicSingleton<PlayerUIManager>, IReloadable
     {
         GameOverSequence();
 
-        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose);
+        JSAM.AudioManager.PlayMusic(TouhouCrisisMusic.GameOverLose, true);
 
         if (Photon.Pun.PhotonNetwork.OfflineMode) gameOverUI1P.RunGameOverSequence(false);
         else gameOverUI2P.RunGameOverSequence(false);

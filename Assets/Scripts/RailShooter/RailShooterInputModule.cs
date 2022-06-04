@@ -48,11 +48,6 @@ public class RailShooterInputModule : BaseInputModule
         pointerData.pointerCurrentRaycast = FindFirstRaycast(m_RaycastResultCache);
         selectedObject = pointerData.pointerCurrentRaycast.gameObject;
 
-        if (Input.GetKeyUp(shooterLogic.FireKey))
-        {
-            ProcessRelease(pointerData);
-        }
-
         m_RaycastResultCache.Clear();
 
         HandlePointerExitAndEnter(pointerData, selectedObject);
@@ -81,6 +76,8 @@ public class RailShooterInputModule : BaseInputModule
         data.pressPosition = data.position;
         data.pointerPress = newPointerPress;
         data.rawPointerPress = selectedObject;
+
+        ProcessRelease(pointerData);
     }
 
     private void ProcessRelease(PointerEventData data)

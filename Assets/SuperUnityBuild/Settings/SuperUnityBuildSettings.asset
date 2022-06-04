@@ -14,34 +14,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _basicSettings:
     baseBuildFolder: Builds
-    buildPath: $VERSION/$RELEASE_TYPE/$PLATFORM/$ARCHITECTURE
+    buildPath: $PLATFORM/
     openFolderPostBuild: 1
   _productParameters:
     buildCounter: 0
-    buildVersion: 
-    versionTemplate: 1.0.0.$BUILD
-    autoGenerate: 1
-    syncWithPlayerSettings: 0
+    buildVersion: 1.1.0
+    versionTemplate: 1.1.0
+    autoGenerate: 0
+    syncWithPlayerSettings: 1
   _releaseTypeList:
-    releaseTypes: []
+    releaseTypes:
+    - typeName: Default
+      bundleIdentifier: com.Brogrammist.TouhouCrisis
+      companyName: Brogrammist
+      productName: Touhou Crisis
+      buildOptions: 0
+      customDefines: 
+      sceneList:
+        enabledScenes:
+        - fileGUID: 95816e02da8656847852d8a18fedd2bf
+        - fileGUID: ee95a1da1f45c7547afa7f90a810ece4
   _platformList:
-    platforms: []
+    platforms:
+    - {fileID: 5844157494565631988}
+    - {fileID: 6781784646686842324}
   _projectConfigurations:
     configSet:
-      _Buckets: ffffffffffffffffffffffff
-      _HashCodes: 000000000000000000000000
-      _Next: 000000000000000000000000
-      _Count: 0
-      _Version: 0
+      _Buckets: ffffffff0100000003000000ffffffff04000000ffffffffffffffff
+      _HashCodes: 6194176a5b383057718bc92c728b5e7c47dd90540000000000000000
+      _Next: ffffffff00000000ffffffff02000000ffffffff0000000000000000
+      _Count: 5
+      _Version: 5
       _FreeList: -1
       _FreeCount: 0
       _Keys:
-      - 
+      - Default/PC/Windows x64 (App)
+      - Default/PC
+      - Default/Linux/Linux x64
+      - Default/Linux
+      - Default
       - 
       - 
       _Values:
       - enabled: 1
         childKeys: []
+      - enabled: 1
+        childKeys:
+        - Default/PC/Windows x64 (App)
+      - enabled: 1
+        childKeys: []
+      - enabled: 1
+        childKeys:
+        - Default/Linux/Linux x64
+      - enabled: 1
+        childKeys:
+        - Default/PC
+        - Default/Linux
       - enabled: 1
         childKeys: []
       - enabled: 1
@@ -56,3 +84,60 @@ MonoBehaviour:
     buildActions: []
   _postBuildActions:
     buildActions: []
+--- !u!114 &5844157494565631988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2786f6b2301a94f4288672ff5305244c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabled: 1
+  distributionList:
+    distributions: []
+  architectures:
+  - target: 5
+    name: Windows x86
+    enabled: 0
+    binaryNameFormat: '{0}.exe'
+  - target: 19
+    name: Windows x64
+    enabled: 1
+    binaryNameFormat: '{0}.exe'
+  variants:
+  - variantName: Build Output
+    selectedIndex: 0
+    values:
+    - App
+    - Visual Studio Solution
+  platformName: PC
+  dataDirNameFormat: '{0}_Data'
+  targetGroup: 1
+--- !u!114 &6781784646686842324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dc439ce9d1bfb34a821f7d6fabc4fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enabled: 1
+  distributionList:
+    distributions: []
+  architectures:
+  - target: 24
+    name: Linux x64
+    enabled: 1
+    binaryNameFormat: '{0}.x86_64'
+  variants: []
+  platformName: Linux
+  dataDirNameFormat: '{0}_Data'
+  targetGroup: 1

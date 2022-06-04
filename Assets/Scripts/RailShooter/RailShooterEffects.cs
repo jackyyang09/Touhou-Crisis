@@ -12,7 +12,7 @@ public class RailShooterEffects : MonoBehaviour
 
     [SerializeField] RailShooterLogic railShooter = null;
     [SerializeField] PlayerBehaviour player = null;
-    [SerializeField] AudioFileSoundObject shootSound = null;
+    [SerializeField] JSAMSoundFileObject shootSound = null;
 
     [SerializeField] Color flashColor = new Color(0.7f, 0.7f, 0.7f);
     [SerializeField] UnityEngine.UI.Image screenFlash = null;
@@ -75,7 +75,7 @@ public class RailShooterEffects : MonoBehaviour
 
         if (PlaySound)
         {
-            AudioManager.Instance.PlaySoundInternal(shootSound);
+            AudioManager.PlaySound(shootSound);
         }
     }
 

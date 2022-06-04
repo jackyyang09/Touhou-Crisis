@@ -1,0 +1,32 @@
+    public enum TouhouCrisisSounds {
+        EnemySword,
+        DeflectLast,
+        PuckChange,
+        WaitBeep,
+        KnifePlace,
+        SpellcardBreak,
+        TimeStop,
+        TimeResumes,
+        BulletCasings,
+        MenuButton,
+        EnemyDeath,
+        UFOBullet,
+        PlayerHurt,
+        Reload,
+        ReloadVO,
+        Handgun_Fire,
+        Handgun_Dryfire,
+        PlayerHurtRemote,
+        PlayerJoin,
+        ScoreBeeps,
+        Weapon_Unlock,
+        WeaponChange,
+        ActionVO
+    }
+    public enum TouhouCrisisMusic {
+        FloweringNight,
+        LunaDial,
+        LunaDialLowPass,
+        GameOverLose,
+        GameOverWin
+    }

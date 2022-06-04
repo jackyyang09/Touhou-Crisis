@@ -14,20 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   safeName: 
   presetDescription: 
-  category: 
-  file: {fileID: 8300000, guid: 7cc932707eff9a4439bd6b132f6a553f, type: 3}
-  files: []
-  useLibrary: 0
+  files:
+  - {fileID: 8300000, guid: 7cc932707eff9a4439bd6b132f6a553f, type: 3}
+  loopStart: 1.5
+  loopEnd: 145.5
+  bpm: 120
   relativeVolume: 1
   spatialize: 0
   maxDistance: 0
   priority: 128
   startingPitch: 1
   pitchShift: 0
-  playReversed: 0
+  loopMode: 0
   delay: 0
   ignoreTimeScale: 0
-  fadeMode: 0
+  mixerGroupOverride: {fileID: 0}
+  fadeInOut: 0
   fadeInDuration: 0
   fadeOutDuration: 0
   bypassEffects: 0
@@ -76,8 +78,5 @@ MonoBehaviour:
     lFReference: 0
     diffusion: 0
     density: 0
-  clampToLoopPoints: 0
-  loopMode: 0
-  loopStart: 1.5
-  loopEnd: 145.5
-  bpm: 120
+  neverRepeat: 0
+  lastClipIndex: -1

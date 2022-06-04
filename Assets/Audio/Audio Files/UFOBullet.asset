@@ -21,21 +21,22 @@ MonoBehaviour:
     - Spatialization is enabled
 
     - Minor pitch shift is applied'
-  category: 
-  file: {fileID: 8300000, guid: 2fb52cb44d5976a4eb3e726c411299ac, type: 3}
   files:
-  - {fileID: 8300000, guid: 8dd979fdf2d558642b952d90d0ccaf0a, type: 3}
-  useLibrary: 0
+  - {fileID: 8300000, guid: 2fb52cb44d5976a4eb3e726c411299ac, type: 3}
+  loopStart: 0
+  loopEnd: 0
+  bpm: 120
   relativeVolume: 1
   spatialize: 0
   maxDistance: 0
   priority: 192
   startingPitch: 1
   pitchShift: 0.1
-  playReversed: 0
+  loopMode: 0
   delay: 0
   ignoreTimeScale: 0
-  fadeMode: 0
+  mixerGroupOverride: {fileID: 0}
+  fadeInOut: 0
   fadeInDuration: 0
   fadeOutDuration: 0
   bypassEffects: 0

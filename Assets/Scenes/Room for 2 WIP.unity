@@ -557,12 +557,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7241a3e106230140bd9d59ff2d17ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  masterVolume: 1
-  masterMuted: 0
-  soundVolume: 1
-  soundMuted: 0
-  musicVolume: 1
-  musicMuted: 0
   settings: {fileID: 11400000, guid: 6b6fa5823069a2b4d91294064912048b, type: 2}
   library: {fileID: 11400000, guid: fca1db88ca4f43545997c79b07e84632, type: 2}
   listener: {fileID: 2089808184}

@@ -12,7 +12,8 @@ public class AudioHelper : MonoBehaviour, IReloadable
 
     public void Reinitialize()
     {
-        AudioManager.PlayMusic(TouhouCrisisMusic.FloweringNight);
+        AudioManager.MainMusicHelper.Stop();
+        AudioManager.PlayMusic(TouhouCrisisMusic.FloweringNight, true);
         AudioManager.PlaySound(TouhouCrisisSounds.WaitBeep);
     }
 
@@ -51,8 +52,8 @@ public class AudioHelper : MonoBehaviour, IReloadable
 
     private void PlayFire(bool miss)
     {
-        AudioManager.Instance.PlaySoundInternal(player.ActiveWeapon.fireSound);
-        AudioManager.Instance.PlaySoundInternal(player.ActiveWeapon.casingSound);
+        AudioManager.PlaySound(player.ActiveWeapon.fireSound);
+        AudioManager.PlaySound(player.ActiveWeapon.casingSound);
     }
 
     bool shoutReloadOnce = false;
