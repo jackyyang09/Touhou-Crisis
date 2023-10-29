@@ -11,49 +11,54 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
 {
     [SerializeField] public const string playerNamePrefKey = "PlayerName";
 
-    [SerializeField] JSAMSoundFileObject buttonShoot = null;
-    [SerializeField] RailShooterLogic railShooter = null;
+    [SerializeField] Launcher launcher;
 
-    [SerializeField] Launcher launcher = null;
-
+    [Header("Startup")]
     [SerializeField] Ease easeType = Ease.Linear;
     [SerializeField] float uiMoveSpeed = 0.15f;
     [SerializeField] float bgFadeTime = 0.5f;
     [SerializeField] float gameStartDelay = 0.25f;
 
-    [SerializeField] TMPro.TextMeshProUGUI versionLabel = null;
+    [SerializeField] TMPro.TextMeshProUGUI versionLabel;
 
-    [SerializeField] OptimizedCanvas lobbyTopBar = null;
-    [SerializeField] LoadingScreen loadingScreen = null;
+    [SerializeField] LoadingScreen loadingScreen;
 
-    [SerializeField] OptimizedCanvas roomSetupScreen = null;
-    [SerializeField] OptimizedCanvas lobbyScreen = null;
-    [SerializeField] OptimizedCanvas gameSetup = null;
+    [Header("Room Setup")]
+    [SerializeField] OptimizedCanvas roomSetupScreen;
+    [SerializeField] GameObject onlinePlayButton;
+    [SerializeField] GameObject[] twoPlayerButtonListener;
+    [SerializeField] UnityEngine.UI.Image noInternetImage;
 
-    [SerializeField] GameObject onePlayerButton = null;
-    [SerializeField] GameObject twoPlayerButtons = null;
-    [SerializeField] GameObject[] twoPlayerButtonListener = null;
+    [Header("Lobby")]
+    [SerializeField] OptimizedCanvas lobbyScreen;
+    [SerializeField] OptimizedCanvas lobbyTopBar;
+    [SerializeField] GameObject onePlayerButton;
+    [SerializeField] GameObject twoPlayerButtons;
+    [SerializeField] OptimizedCanvas[] multiplayerMask;
+    [SerializeField] OptimizedCanvas[] hostPrivilegeMask;
 
-    [SerializeField] OptimizedCanvas[] multiplayerMask = null;
-    [SerializeField] OptimizedCanvas[] hostPrivilegeMask = null;
-
-    [SerializeField] OptimizedCanvas player1ReimuPlate = null;
-    [SerializeField] OptimizedCanvas player1MarisaPlate = null;
+    [Header("Lobby - Players")]
+    [SerializeField] OptimizedCanvas player1ReimuPlate;
+    [SerializeField] OptimizedCanvas player1MarisaPlate;
     RectTransform player1NameRect;
     float player1NameDest;
-    [SerializeField] OptimizedCanvas player2MarisaPlate = null;
-    [SerializeField] OptimizedCanvas player2ReimuPlate = null;
+    [SerializeField] OptimizedCanvas player2MarisaPlate;
+    [SerializeField] OptimizedCanvas player2ReimuPlate;
     RectTransform player2NameRect;
     float player2NameDest;
 
-    [SerializeField] GameObject startGameClientBlock = null;
+    [Header("Game Setup")]
+    [SerializeField] OptimizedCanvas gameSetup;
+    [SerializeField] GameObject startGameClientBlock;
 
-    [SerializeField] UnityEngine.UI.RawImage reimuBG = null;
-    [SerializeField] UnityEngine.UI.RawImage marisaBG = null;
+    [Header("Global")]
+    [SerializeField] UnityEngine.UI.RawImage reimuBG;
+    [SerializeField] UnityEngine.UI.RawImage marisaBG;
+    [SerializeField] GameObject onlineCrosshair;
+    [SerializeField] JSAMSoundFileObject buttonShoot;
+    [SerializeField] RailShooterLogic railShooter;
 
-    [SerializeField] GameObject onlineCrosshair = null;
-
-    Coroutine gameStartRoutine = null;
+    Coroutine gameStartRoutine;
 
     string player2Name;
 
@@ -90,6 +95,13 @@ public class MainMenuUI : MonoBehaviourPunCallbacks
     public void PlayButtonSound()
     {
         AudioManager.PlaySound(buttonShoot);
+    }
+
+    public void CheckInternetStatus()
+    {
+        bool hasInternet = Application.internetReachability != NetworkReachability.NotReachable;
+        noInternetImage.enabled = !hasInternet;
+        onlinePlayButton.SetActive(hasInternet);
     }
 
     public void JoinOrCreateGame(float delay)

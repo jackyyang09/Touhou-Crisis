@@ -7,8 +7,6 @@ using Photon.Realtime;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
-    [SerializeField] string gameVersion = "1";
-
     /// <summary>
     /// The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created.
     /// </summary>
@@ -16,17 +14,19 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField]
     private byte maxPlayersPerRoom = 4;
 
-    [SerializeField] TMPro.TextMeshProUGUI progressLabel = null;
+    [SerializeField] OptimizedCanvas connectingCanvas;
+    [SerializeField] TMPro.TextMeshProUGUI progressLabel;
 
-    [SerializeField] OptimizedCanvas lobbyScreen = null;
-    [SerializeField] Image multiplayerButtonImage = null;
-    [SerializeField] Button multiplayerButton = null;
+    [SerializeField] OptimizedCanvas lobbyScreen;
+    [SerializeField] Image multiplayerButtonImage;
+    [SerializeField] Button multiplayerButton;
 
-    [SerializeField] TMPro.TMP_InputField roomCodeField = null;
-    [SerializeField] TMPro.TextMeshProUGUI roomCode = null;
+    [SerializeField] OptimizedCanvas roomSetupCanvas;
+    [SerializeField] TMPro.TMP_InputField roomCodeField;
+    [SerializeField] TMPro.TextMeshProUGUI roomCode;
 
-    [SerializeField] TMPro.TextMeshProUGUI player1NameText = null;
-    [SerializeField] TMPro.TextMeshProUGUI player2NameText = null;
+    [SerializeField] TMPro.TextMeshProUGUI player1NameText;
+    [SerializeField] TMPro.TextMeshProUGUI player2NameText;
 
     public bool quickPlay = false;
 
@@ -92,10 +92,15 @@ public class Launcher : MonoBehaviourPunCallbacks
         else
         {
             isConnecting = PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = gameVersion;
+            PhotonNetwork.GameVersion = Application.version;
         }
         Debug.Log("Trying to connect...");
         quickPlay = roomCodeField.text == string.Empty;
+    }
+
+    public void CancelConnection()
+    {
+        PhotonNetwork.Disconnect();
     }
 
     public override void OnConnectedToMaster()
@@ -131,6 +136,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         HideConnectingText();
+        roomSetupCanvas.ShowDelayed(0.1f);
         isConnecting = false;
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}", cause);
     }
@@ -227,7 +233,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void ShowConnectingText()
     {
-        progressLabel.enabled = true;
+        connectingCanvas.Show();
         if (connectingTextRoutine == null)
         {
             connectingTextRoutine = StartCoroutine(AnimateConnectingText());
@@ -236,11 +242,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void HideConnectingText()
     {
+        connectingCanvas.Hide();
         if (connectingTextRoutine != null)
         {
             StopCoroutine(connectingTextRoutine);
             connectingTextRoutine = null;
-            progressLabel.enabled = false;
         }
     }
 
